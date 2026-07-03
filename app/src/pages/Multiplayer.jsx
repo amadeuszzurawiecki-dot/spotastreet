@@ -12,6 +12,7 @@ import {
   getDocs
 } from '../config/firebase';
 import useUserProfile from '../hooks/useUserProfile';
+import useAppSettings from '../hooks/useAppSettings';
 import GameMap from '../components/Map/GameMap';
 import { GameHUD } from '../components/HUD/HUD';
 import StreetAutocomplete from '../components/StreetAutocomplete';
@@ -81,6 +82,7 @@ export function Multiplayer() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const user = useUserProfile();
+  const appSettings = useAppSettings();
 
   const gameMode = searchParams.get('mode') || 'where-is-street';
 
@@ -147,6 +149,10 @@ export function Multiplayer() {
       }
     }
   }, [gameState, matchData, statsRecorded, isPlayer1, user]);
+
+  useEffect(() => {
+    appSettings.loadSettings();
+  }, []);
 
   const [allStreets, setAllStreets] = useState([]);
 
@@ -826,7 +832,7 @@ export function Multiplayer() {
       })
       .filter(Boolean);
     const summaryMapBounds = getSummaryMapBounds(summaryMapItems);
-    const showSummaryMap = (gameMode === 'where-is-street' || gameMode === 'where-is-place') && summaryMapItems.length > 0;
+    const showSummaryMap = appSettings.summaryMapEnabled && (gameMode === 'where-is-street' || gameMode === 'where-is-place') && summaryMapItems.length > 0;
 
     return (
       <div className="mp-summary-page animate-fade-in">

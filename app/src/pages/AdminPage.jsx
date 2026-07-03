@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useUserProfile from '../hooks/useUserProfile';
+import useAppSettings from '../hooks/useAppSettings';
 import { isAdminEmail } from '../config/admin';
 import {
   fetchAllCloudProfiles,
@@ -18,6 +19,7 @@ import './AdminPage.css';
 export function AdminPage() {
   const navigate = useNavigate();
   const user = useUserProfile();
+  const appSettings = useAppSettings();
   const [cloudProfiles, setCloudProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -27,7 +29,7 @@ export function AdminPage() {
   const googleBtnRef = useRef(null);
   const isRenderedRef = useRef(false);
 
-  const [activeTab, setActiveTab] = useState('users'); // 'users' | 'challenges'
+  const [activeTab, setActiveTab] = useState('users'); // 'users' | 'challenges' | 'settings'
   const [challenges, setChallenges] = useState([]);
   const [loadingChallenges, setLoadingChallenges] = useState(false);
 
@@ -118,6 +120,26 @@ export function AdminPage() {
       loadChallengesList();
     }
   }, [activeTab]);
+
+  useEffect(() => {
+    appSettings.loadSettings();
+  }, []);
+
+  const handleToggleSummaryMap = async () => {
+    const nextValue = !appSettings.summaryMapEnabled;
+    setActionStatus({
+      type: 'info',
+      message: nextValue ? 'Włączanie mapy podsumowania pojedynku...' : 'Wyłączanie mapy podsumowania pojedynku...'
+    });
+
+    const ok = await appSettings.updateSettings({ summaryMapEnabled: nextValue });
+    setActionStatus({
+      type: ok ? 'success' : 'error',
+      message: ok
+        ? (nextValue ? 'Mapa podsumowania pojedynku została włączona.' : 'Mapa podsumowania pojedynku została wyłączona.')
+        : 'Nie udało się zapisać ustawienia mapy podsumowania.'
+    });
+  };
 
   const handleImageFileChange = (e) => {
     const file = e.target.files[0];
@@ -655,6 +677,12 @@ export function AdminPage() {
           >
             📅 Wyzwania Codzienne
           </button>
+          <button 
+            className={`admin-tab-btn ${activeTab === 'settings' ? 'admin-tab-btn--active' : ''}`}
+            onClick={() => setActiveTab('settings')}
+          >
+            ⚙️ Ustawienia aplikacji
+          </button>
         </div>
 
         {activeTab === 'users' ? (
@@ -794,7 +822,7 @@ export function AdminPage() {
               </div>
             </section>
           </>
-        ) : (
+        ) : activeTab === 'challenges' ? (
           <div className="admin-challenges-container">
             {/* Challenge Creator Form */}
             <section className="admin-section glass-card admin-challenge-form-sec">
@@ -1030,6 +1058,40 @@ export function AdminPage() {
               )}
             </section>
           </div>
+        ) : (
+          <section className="admin-section glass-card">
+            <div className="admin-section__header">
+              <div>
+                <h2 className="admin-section__title">Ustawienia aplikacji</h2>
+                <p className="admin-section__desc">Globalne przełączniki funkcji widoczne dla użytkowników aplikacji.</p>
+              </div>
+            </div>
+
+            <div className="admin-settings-list">
+              <div className="admin-feature-toggle">
+                <div className="admin-feature-toggle__main">
+                  <span className="admin-feature-toggle__icon">🗺️</span>
+                  <div>
+                    <h3>Mapa rozegranych rund w podsumowaniu pojedynku</h3>
+                    <p>
+                      Po wyłączeniu podsumowanie multiplayera pokaże tylko wynik i listę rund, bez mapy z numerami rund.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  className={`admin-switch ${appSettings.summaryMapEnabled ? 'admin-switch--on' : ''}`}
+                  onClick={handleToggleSummaryMap}
+                  aria-pressed={appSettings.summaryMapEnabled}
+                >
+                  <span className="admin-switch__thumb" />
+                  <span className="admin-switch__label">
+                    {appSettings.summaryMapEnabled ? 'Włączona' : 'Wyłączona'}
+                  </span>
+                </button>
+              </div>
+            </div>
+          </section>
         )}
       </main>
 

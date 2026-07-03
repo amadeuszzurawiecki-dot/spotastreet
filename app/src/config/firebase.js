@@ -273,3 +273,27 @@ export async function deleteDailyChallenge(challengeId) {
     return false;
   }
 }
+
+export async function fetchAppSettings() {
+  try {
+    const docSnap = await withRetry(() => getDoc(doc(db, "settings", "app")));
+    return docSnap.exists() ? docSnap.data() : null;
+  } catch (e) {
+    console.warn('Firestore fetchAppSettings error:', e.message);
+    return null;
+  }
+}
+
+export async function saveAppSettings(settings) {
+  if (!settings || typeof settings !== 'object') return false;
+  try {
+    await setDoc(doc(db, "settings", "app"), {
+      ...settings,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
+    return true;
+  } catch (e) {
+    console.warn('Firestore saveAppSettings error:', e.message);
+    return false;
+  }
+}
