@@ -55,7 +55,6 @@ function StreetAutocomplete({ streetNames, onSubmit, disabled, requireValidSelec
     const submittedValue = matched || trimmedQuery;
     if (submittedValue && (!requireValidSelection || matched)) {
       onSubmit(submittedValue, matched);
-      setQuery('');
     }
   };
 

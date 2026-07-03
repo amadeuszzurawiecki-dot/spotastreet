@@ -48,6 +48,7 @@ export function Multiplayer() {
   const [pinPosition, setPinPosition] = useState(null);
   const [timeLeft, setTimeLeft] = useState(ROUND_DURATION);
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [isSubmittingAnswer, setIsSubmittingAnswer] = useState(false);
   const [streetNames, setStreetNames] = useState([]);
   const [typedGuess, setTypedGuess] = useState('');
   
@@ -64,6 +65,10 @@ export function Multiplayer() {
 
   const isPlayer1 = matchData && matchData.player1.email?.toLowerCase().trim() === user.email?.toLowerCase().trim();
   const currentRound = matchData ? matchData.currentRound : 0;
+  const currentRoundAnswers = matchData?.roundAnswers?.[currentRound] || {};
+  const myAnswer = isPlayer1 ? currentRoundAnswers.player1 : currentRoundAnswers.player2;
+  const oppAnswer = isPlayer1 ? currentRoundAnswers.player2 : currentRoundAnswers.player1;
+  const answerControlsDisabled = hasSubmitted || isSubmittingAnswer || !!myAnswer || timeLeft <= 0;
 
   const handleSetReady = async () => {
     if (!matchId) return;
@@ -357,6 +362,14 @@ export function Multiplayer() {
     };
   }, [gameState, currentRound]);
 
+  // Reset local answer controls whenever Firestore moves the match to a fresh round.
+  useEffect(() => {
+    setHasSubmitted(false);
+    setIsSubmittingAnswer(false);
+    setPinPosition(null);
+    setTypedGuess('');
+  }, [currentRound]);
+
   // Opponent Bot Simulation trigger
   useEffect(() => {
     if (gameState !== 'waiting_opponent' || !matchData || !opponent?.isBot) return;
@@ -411,7 +424,7 @@ export function Multiplayer() {
   };
 
   const handleTimeout = () => {
-    if (hasSubmitted) return;
+    if (isSubmittingAnswer || myAnswer) return;
     submitAnswer(null, true);
   };
 
@@ -457,8 +470,9 @@ export function Multiplayer() {
 
   // Submit local user guess
   const submitAnswer = async (selection = null, timedOut = false, textGuessOverride = null) => {
-    if (hasSubmitted) return;
+    if (isSubmittingAnswer || myAnswer) return;
     setHasSubmitted(true);
+    setIsSubmittingAnswer(true);
 
     let score = 0;
     let distance = 0;
@@ -510,12 +524,15 @@ export function Multiplayer() {
       console.error("Error submitting multiplayer answer:", e);
       setHasSubmitted(false);
       setError(e.message || String(e));
+    } finally {
+      setIsSubmittingAnswer(false);
     }
   };
 
   // Navigate rounds synchronously in Firestore
   const handleNextRound = async () => {
     setHasSubmitted(false);
+    setIsSubmittingAnswer(false);
     setPinPosition(null);
     setTypedGuess('');
 
@@ -828,10 +845,6 @@ export function Multiplayer() {
       : (pinPosition && activeQuestion.segments ? distanceToStreet(pinPosition, activeQuestion.segments).closestPoint : null))
     : null;
 
-  const currentRoundAnswers = matchData?.roundAnswers?.[currentRound] || {};
-  const myAnswer = isPlayer1 ? currentRoundAnswers.player1 : currentRoundAnswers.player2;
-  const oppAnswer = isPlayer1 ? currentRoundAnswers.player2 : currentRoundAnswers.player1;
-
   const showResultOnMap = gameState === 'round_result';
   const isRoundDraw = myAnswer && oppAnswer && myAnswer.score === oppAnswer.score;
 
@@ -869,7 +882,7 @@ export function Multiplayer() {
         streetSegments={gameMode === 'what-street' || showResultOnMap ? targetStreetSegments : null}
         showStreet={gameMode === 'what-street' || showResultOnMap}
         closestPoint={closestPoint}
-        disabled={hasSubmitted}
+        disabled={answerControlsDisabled}
         roundKey={currentRound}
         fitBounds={mapBounds}
         paddingOptions={showResultOnMap ? { paddingTopLeft: [40, 90], paddingBottomRight: [40, 320], maxZoom: 16, animate: true, duration: 0.8 } : null}
@@ -944,7 +957,7 @@ export function Multiplayer() {
                 <StreetAutocomplete
                   streetNames={streetNames}
                   onSubmit={handleAutocompleteSubmit}
-                  disabled={hasSubmitted}
+                  disabled={answerControlsDisabled}
                   requireValidSelection={false}
                 />
               )}
