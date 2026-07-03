@@ -186,6 +186,106 @@
   width: 100%;
 }
 
+.map-style-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-sm);
+}
+
+.map-style-card {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--bg-glass-border);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+}
+
+.map-style-card:hover,
+.map-style-card:focus-visible,
+.map-style-card--selected {
+  border-color: rgba(0, 230, 118, 0.42);
+  background: rgba(0, 230, 118, 0.06);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.map-style-card__preview {
+  position: relative;
+  width: 58px;
+  height: 46px;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background:
+    linear-gradient(140deg, transparent 42%, rgba(0, 230, 118, 0.55) 43%, rgba(0, 230, 118, 0.55) 49%, transparent 50%),
+    linear-gradient(35deg, transparent 36%, rgba(255, 255, 255, 0.16) 37%, rgba(255, 255, 255, 0.16) 43%, transparent 44%);
+}
+
+.map-style-card--dark .map-style-card__preview {
+  background-color: #111827;
+}
+
+.map-style-card--light .map-style-card__preview {
+  background-color: #e8ecef;
+}
+
+.map-style-card--voyager .map-style-card__preview {
+  background-color: #cfd8d1;
+}
+
+.map-style-card--midnight .map-style-card__preview {
+  background-color: #050b12;
+}
+
+.map-style-card__route {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 23px;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--green-primary);
+  transform: rotate(-14deg);
+  box-shadow: 0 0 10px rgba(0, 230, 118, 0.34);
+}
+
+.map-style-card__pin {
+  position: absolute;
+  right: 11px;
+  top: 12px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid var(--green-primary);
+}
+
+.map-style-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.map-style-card__name {
+  font-family: var(--font-display);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.map-style-card__desc {
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  line-height: 1.25;
+}
+
 /* Statistics list (Same format as before) */
 .profile-stats-section {
   padding: var(--space-lg);
@@ -369,3 +469,8 @@
   flex: 1;
 }
 
+@media (max-width: 520px) {
+  .map-style-grid {
+    grid-template-columns: 1fr;
+  }
+}

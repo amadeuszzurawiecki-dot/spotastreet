@@ -5,6 +5,7 @@ import TopNav from '../components/Navigation/TopNav';
 import { AVATARS } from '../data/avatars';
 import { TOWNS } from '../data/towns';
 import { isAdminEmail } from '../config/admin';
+import { DEFAULT_MAP_STYLE_ID, MAP_STYLES } from '../config/mapStyles';
 import './Profile.css';
 
 export function Profile() {
@@ -16,6 +17,7 @@ export function Profile() {
   const [town, setTown] = useState(user.town);
   const [avatarId, setAvatarId] = useState(user.avatarId);
   const [hideEmail, setHideEmail] = useState(user.hideEmail || false);
+  const [mapStyle, setMapStyle] = useState(user.mapStyle || DEFAULT_MAP_STYLE_ID);
   const [message, setMessage] = useState('');
   const [showCheckout, setShowCheckout] = useState(false);
   const [isPaying, setIsPaying] = useState(false);
@@ -30,6 +32,7 @@ export function Profile() {
       town: town || 'Legnica',
       avatarId,
       hideEmail,
+      mapStyle,
     });
     setMessage('Zmiany zostały zapisane! ✓');
     setTimeout(() => setMessage(''), 3000);
@@ -243,6 +246,30 @@ export function Profile() {
             <label htmlFor="profile-hide-email" style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', cursor: 'pointer', userSelect: 'none' }}>
               Ukryj mój adres e-mail w rankingu
             </label>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label">Styl mapy</label>
+            <div className="map-style-grid">
+              {MAP_STYLES.map(style => (
+                <button
+                  key={style.id}
+                  type="button"
+                  className={`map-style-card map-style-card--${style.id} ${mapStyle === style.id ? 'map-style-card--selected' : ''}`}
+                  onClick={() => setMapStyle(style.id)}
+                  aria-pressed={mapStyle === style.id}
+                >
+                  <span className="map-style-card__preview">
+                    <span className="map-style-card__route" />
+                    <span className="map-style-card__pin" />
+                  </span>
+                  <span className="map-style-card__body">
+                    <span className="map-style-card__name">{style.name}</span>
+                    <span className="map-style-card__desc">{style.description}</span>
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
 
           <button className="btn-primary profile-save-btn" onClick={handleSave}>

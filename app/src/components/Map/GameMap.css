@@ -9,8 +9,24 @@
   height: 100%;
 }
 
-.leaflet-tile {
-  filter: grayscale(1) brightness(0.6) contrast(8);
+.game-map .leaflet-tile {
+  filter: none;
+}
+
+.game-map--dark .leaflet-tile {
+  filter: grayscale(1) brightness(0.72) contrast(1.18);
+}
+
+.game-map--light .leaflet-tile {
+  filter: grayscale(0.45) brightness(0.98) contrast(1.08);
+}
+
+.game-map--voyager .leaflet-tile {
+  filter: saturate(0.72) brightness(0.9) contrast(1.08);
+}
+
+.game-map--midnight .leaflet-tile {
+  filter: grayscale(1) brightness(0.46) contrast(1.35);
 }
 
 /* Custom Pin Marker */

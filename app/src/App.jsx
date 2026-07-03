@@ -135,7 +135,8 @@ function App() {
               dailyGamesPlayed: cloudProfile.dailyGamesPlayed || { date: '', count: 0 },
               onlineWins: cloudProfile.onlineWins || 0,
               onlineLosses: cloudProfile.onlineLosses || 0,
-              onlineDraws: cloudProfile.onlineDraws || 0
+              onlineDraws: cloudProfile.onlineDraws || 0,
+              mapStyle: cloudProfile.mapStyle || user.mapStyle || 'dark'
             });
           }
         } catch (e) {

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { syncUserProfile, deleteUserProfile } from '../config/firebase';
+import { DEFAULT_MAP_STYLE_ID } from '../config/mapStyles';
 
 const defaultCar = {
   brandId: 'toyota',
@@ -44,6 +45,7 @@ const useUserProfile = create(
       onlineWins: 0,
       onlineLosses: 0,
       onlineDraws: 0,
+      mapStyle: DEFAULT_MAP_STYLE_ID,
 
       setGoogleUser: (userPayload) => {
         const emailKey = userPayload.email?.toLowerCase()?.trim() || userPayload.sub;
@@ -68,6 +70,7 @@ const useUserProfile = create(
           onlineWins: existingProfile?.onlineWins || 0,
           onlineLosses: existingProfile?.onlineLosses || 0,
           onlineDraws: existingProfile?.onlineDraws || 0,
+          mapStyle: existingProfile?.mapStyle || DEFAULT_MAP_STYLE_ID,
         };
 
         if (existingProfile && existingProfile.hasCompletedProfile) {
@@ -90,6 +93,7 @@ const useUserProfile = create(
             onlineWins: existingProfile.onlineWins || 0,
             onlineLosses: existingProfile.onlineLosses || 0,
             onlineDraws: existingProfile.onlineDraws || 0,
+            mapStyle: existingProfile.mapStyle || DEFAULT_MAP_STYLE_ID,
             savedProfiles: {
               ...savedProfiles,
               [emailKey]: initialProfileData
@@ -112,6 +116,7 @@ const useUserProfile = create(
             onlineWins: 0,
             onlineLosses: 0,
             onlineDraws: 0,
+            mapStyle: DEFAULT_MAP_STYLE_ID,
             savedProfiles: {
               ...savedProfiles,
               [emailKey]: initialProfileData
@@ -145,6 +150,7 @@ const useUserProfile = create(
           onlineWins: existingProfile.onlineWins || 0,
           onlineLosses: existingProfile.onlineLosses || 0,
           onlineDraws: existingProfile.onlineDraws || 0,
+          mapStyle: existingProfile.mapStyle || DEFAULT_MAP_STYLE_ID,
         };
 
         set({
@@ -174,7 +180,7 @@ const useUserProfile = create(
       },
 
       completeProfileSetup: () => {
-        const { googleUser, email, name, town, avatarId, car, stats, challengeAttempts, savedProfiles, hasCompletedOnboarding, hideEmail, isPremium, customAvatar, dailyGamesPlayed, onlineWins, onlineLosses, onlineDraws } = get();
+        const { googleUser, email, name, town, avatarId, car, stats, challengeAttempts, savedProfiles, hasCompletedOnboarding, hideEmail, isPremium, customAvatar, dailyGamesPlayed, onlineWins, onlineLosses, onlineDraws, mapStyle } = get();
         const emailKey = email?.toLowerCase()?.trim() || googleUser?.sub;
 
         const updatedProfileData = {
@@ -194,6 +200,7 @@ const useUserProfile = create(
           onlineWins: onlineWins || 0,
           onlineLosses: onlineLosses || 0,
           onlineDraws: onlineDraws || 0,
+          mapStyle: mapStyle || DEFAULT_MAP_STYLE_ID,
         };
 
         set({

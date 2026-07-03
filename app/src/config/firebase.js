@@ -66,6 +66,7 @@ export async function syncUserProfile(userProfile) {
       onlineWins: userProfile.onlineWins || 0,
       onlineLosses: userProfile.onlineLosses || 0,
       onlineDraws: userProfile.onlineDraws || 0,
+      mapStyle: userProfile.mapStyle || 'dark',
       updatedAt: new Date().toISOString()
     }, { merge: true });
   } catch (e) {

@@ -2,6 +2,8 @@ import { MapContainer, TileLayer, useMapEvents, Polyline, Marker, Tooltip, useMa
 import { useEffect, useMemo } from 'react';
 import L from 'leaflet';
 import { LEGNICA_CENTER } from '../../utils/geo';
+import { getMapStyle } from '../../config/mapStyles';
+import useUserProfile from '../../hooks/useUserProfile';
 import './GameMap.css';
 
 // Default placement pin icon
@@ -109,27 +111,12 @@ function ResetView({ center, zoom, trigger }) {
   return null;
 }
 
-function getSummaryItemBounds(item) {
-  const points = [];
-  item?.segments?.forEach(segment => segment.forEach(point => points.push(point)));
-  if (item?.labelPosition) points.push(item.labelPosition);
-  if (points.length < 2) return null;
-  return points;
-}
-
 function FocusSummaryRound({ item }) {
   const map = useMap();
 
   useEffect(() => {
     if (!item?.labelPosition) return;
-
-    const bounds = getSummaryItemBounds(item);
-    if (bounds) {
-      map.flyToBounds(bounds, { padding: [52, 52], maxZoom: 17, duration: 0.55 });
-      return;
-    }
-
-    map.flyTo(item.labelPosition, 16, { animate: true, duration: 0.55 });
+    map.flyTo(item.labelPosition, 17, { animate: true, duration: 0.55 });
   }, [item, map]);
 
   return null;
@@ -172,6 +159,8 @@ function GameMap({
 }) {
   const pinIcon = useMemo(() => createPinIcon(), []);
   const targetIcon = useMemo(() => createTargetIcon(), []);
+  const user = useUserProfile();
+  const mapStyle = getMapStyle(user.mapStyle);
   
   const playerResultIcon = useMemo(() => {
     return createPlayerPinIcon(playerAvatar, playerAvatarImg, playerBg, playerIsPremium);
@@ -186,7 +175,7 @@ function GameMap({
   ), [summaryRounds, focusedSummaryRound]);
 
   return (
-    <div className="game-map">
+    <div className={`game-map game-map--${mapStyle.id}`}>
       <MapContainer
         center={LEGNICA_CENTER}
         zoom={13}
@@ -199,10 +188,10 @@ function GameMap({
         touchZoom={enableZoom}
       >
         <TileLayer
-          url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/dark_nolabels/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
+          url={mapStyle.url}
+          attribution={mapStyle.attribution}
           maxZoom={19}
-          subdomains="abcd"
+          subdomains={mapStyle.subdomains}
         />
         
         <MapClickHandler onMapClick={onMapClick} disabled={disabled} />
