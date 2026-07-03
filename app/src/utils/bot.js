@@ -5,6 +5,7 @@
 
 import { calculateScore } from './scoring';
 import { haversineDistance, LEGNICA_CENTER } from './geo';
+import { normalizeStreetName } from './streets';
 
 /**
  * Simple Beta distribution approximation using Box-Muller
@@ -60,7 +61,7 @@ export function generateBotStreetGuess(correctStreet, allStreets) {
   }
   
   // Bot guesses wrong — pick a random wrong street
-  const wrongStreets = allStreets.filter(s => s !== correctStreet);
+  const wrongStreets = allStreets.filter(s => normalizeStreetName(s) !== normalizeStreetName(correctStreet));
   const guess = wrongStreets[Math.floor(Math.random() * wrongStreets.length)];
   return { correct: false, score: 0, guess };
 }
@@ -95,4 +96,3 @@ export function generateBotCoordinates(targetLatLng, distanceInMeters) {
   
   return [botLat, botLng];
 }
-

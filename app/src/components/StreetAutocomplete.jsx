@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import { fuzzySearchStreets } from '../utils/streets';
+import { fuzzySearchStreets, normalizeStreetName } from '../utils/streets';
 import './StreetAutocomplete.css';
 
 /**
  * Autocomplete input for street name guessing
  */
-function StreetAutocomplete({ streetNames, onSubmit, disabled }) {
+function StreetAutocomplete({ streetNames, onSubmit, disabled, requireValidSelection = true }) {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -39,27 +39,22 @@ function StreetAutocomplete({ streetNames, onSubmit, disabled }) {
 
   const findMatchingStreet = (q) => {
     if (!q) return null;
-    let cleanQ = q.trim().toLowerCase();
-    if (cleanQ.startsWith('ul. ')) cleanQ = cleanQ.slice(4);
-    else if (cleanQ.startsWith('ul.')) cleanQ = cleanQ.slice(3);
-    else if (cleanQ.startsWith('ulica ')) cleanQ = cleanQ.slice(6);
+    const cleanQ = normalizeStreetName(q);
     
     return streetNames.find(name => {
-      let cleanName = name.toLowerCase();
-      if (cleanName.startsWith('ul. ')) cleanName = cleanName.slice(4);
-      else if (cleanName.startsWith('ul.')) cleanName = cleanName.slice(3);
-      else if (cleanName.startsWith('ulica ')) cleanName = cleanName.slice(6);
-      return cleanName === cleanQ;
+      return normalizeStreetName(name) === cleanQ;
     });
   };
 
   const matchedStreet = findMatchingStreet(query);
-  const isValidSelection = !!matchedStreet;
+  const trimmedQuery = query.trim();
+  const isSubmittable = requireValidSelection ? !!matchedStreet : trimmedQuery.length > 0;
 
   const handleSubmit = () => {
     const matched = findMatchingStreet(query);
-    if (matched) {
-      onSubmit(matched);
+    const submittedValue = matched || trimmedQuery;
+    if (submittedValue && (!requireValidSelection || matched)) {
+      onSubmit(submittedValue, matched);
       setQuery('');
     }
   };
@@ -158,7 +153,7 @@ function StreetAutocomplete({ streetNames, onSubmit, disabled }) {
         <button
           className="autocomplete__submit"
           onClick={handleSubmit}
-          disabled={disabled || !isValidSelection}
+          disabled={disabled || !isSubmittable}
         >
           Sprawdź
         </button>

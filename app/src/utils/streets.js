@@ -6,6 +6,20 @@ let streetsCache = null;
 let streetNamesCache = null;
 
 /**
+ * Normalize street names for answer comparison.
+ * Handles common prefixes, case and Polish diacritics.
+ */
+export function normalizeStreetName(name = '') {
+  return String(name)
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/^(ul\.?|ulica)\s+/, '')
+    .replace(/\s+/g, ' ');
+}
+
+/**
  * Load street geometries from static JSON
  * @returns {Promise<Array<{ name: string, segments: Array<Array<[number, number]>> }>>}
  */
@@ -86,10 +100,10 @@ export async function selectRandomStreets(count = 10) {
 export function fuzzySearchStreets(query, names, limit = 8) {
   if (!query || query.length === 0) return [];
   
-  const normalizedQuery = query.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const normalizedQuery = normalizeStreetName(query);
   
   const scored = names.map(name => {
-    const normalizedName = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const normalizedName = normalizeStreetName(name);
     
     // Exact prefix match (highest priority)
     if (normalizedName.startsWith(normalizedQuery)) {

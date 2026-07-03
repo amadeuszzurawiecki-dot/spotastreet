@@ -15,7 +15,7 @@ import useUserProfile from '../hooks/useUserProfile';
 import GameMap from '../components/Map/GameMap';
 import { GameHUD } from '../components/HUD/HUD';
 import StreetAutocomplete from '../components/StreetAutocomplete';
-import { selectRandomStreets, loadStreetNames, loadStreets } from '../utils/streets';
+import { selectRandomStreets, loadStreetNames, loadStreets, normalizeStreetName } from '../utils/streets';
 import { 
   distanceToStreet, 
   distanceToPoint, 
@@ -289,7 +289,7 @@ export function Multiplayer() {
 
   // Handle Match status transitions and countdown timers
   useEffect(() => {
-    if (gameState !== 'playing' || !matchData) return;
+    if (!matchData || (gameState !== 'playing' && gameState !== 'waiting_opponent' && gameState !== 'round_result')) return;
 
     const roundIndex = matchData.currentRound;
     const answers = matchData.roundAnswers?.[roundIndex] || {};
@@ -297,12 +297,18 @@ export function Multiplayer() {
     // Check if both players have submitted answers for the current round
     const hasP1Answered = !!answers.player1;
     const hasP2Answered = !!answers.player2;
+    const myNextReady = isPlayer1 ? !!matchData.player1NextRoundReady : !!matchData.player2NextRoundReady;
+    const otherNextReady = isPlayer1 ? !!matchData.player2NextRoundReady : !!matchData.player1NextRoundReady;
 
     if (hasP1Answered && hasP2Answered) {
-      // Both submitted! Transition to round result view
-      setGameState('round_result');
       if (timerRef.current) clearInterval(timerRef.current);
-    } else {
+      if (myNextReady && !otherNextReady) {
+        setGameState('waiting_opponent');
+      } else if (!myNextReady || !otherNextReady) {
+        // Both submitted! Transition to round result view
+        setGameState('round_result');
+      }
+    } else if (gameState !== 'round_result') {
       // Game is still in active thinking phase
       const myAnswer = isPlayer1 ? answers.player1 : answers.player2;
       if (myAnswer) {
@@ -312,6 +318,21 @@ export function Multiplayer() {
       }
     }
   }, [matchData, gameState, isPlayer1]);
+
+  // Advance to the next round when both players clicked "Następna runda".
+  useEffect(() => {
+    if (!matchId || !matchData || gameState !== 'waiting_opponent') return;
+    if (!matchData.player1NextRoundReady || !matchData.player2NextRoundReady) return;
+
+    const nextRoundIndex = matchData.currentRound + 1;
+    if (nextRoundIndex >= TOTAL_ROUNDS) return;
+
+    updateDoc(doc(db, "matches", matchId), {
+      currentRound: nextRoundIndex,
+      player1NextRoundReady: false,
+      player2NextRoundReady: false
+    }).catch((e) => console.error("Error advancing round:", e));
+  }, [matchId, matchData, gameState]);
 
   // Round local timer countdown
   useEffect(() => {
@@ -424,33 +445,25 @@ export function Multiplayer() {
       guessText = botRes.guess;
     }
 
-    const currentAnswers = matchData.roundAnswers || {};
-    const roundAnswers = {
-      ...currentAnswers,
-      [roundIndex]: {
-        ...currentAnswers[roundIndex],
-        player2: { score, distance, pinPosition: guessCoords, guessText }
-      }
-    };
-
     const newBotRounds = [...(matchData.player2.rounds || []), { score, distance, guess: guessText }];
     const newBotScore = matchData.player2.score + score;
 
     await updateDoc(doc(db, "matches", matchId), {
-      roundAnswers,
+      [`roundAnswers.${roundIndex}.player2`]: { score, distance, pinPosition: guessCoords, guessText },
       "player2.score": newBotScore,
       "player2.rounds": newBotRounds
     });
   };
 
   // Submit local user guess
-  const submitAnswer = async (selection = null, timedOut = false) => {
+  const submitAnswer = async (selection = null, timedOut = false, textGuessOverride = null) => {
     if (hasSubmitted) return;
     setHasSubmitted(true);
 
     let score = 0;
     let distance = 0;
     let submissionPosition = selection || pinPosition;
+    const answerText = textGuessOverride ?? typedGuess;
 
     if (gameMode === 'where-is-street') {
       if (submissionPosition && !timedOut) {
@@ -467,7 +480,7 @@ export function Multiplayer() {
       }
     } else {
       // what-street
-      if (typedGuess.toLowerCase().trim() === activeQuestion.name.toLowerCase().trim() && !timedOut) {
+      if (normalizeStreetName(answerText) === normalizeStreetName(activeQuestion.name) && !timedOut) {
         score = 100;
       }
     }
@@ -479,28 +492,25 @@ export function Multiplayer() {
       score,
       distance: submissionPosition ? distance : undefined,
       pinPosition: submissionPosition || null,
-      guessText: typedGuess,
+      guessText: answerText,
       timedOut
-    };
-
-    const currentAnswers = matchData.roundAnswers || {};
-    const roundAnswers = {
-      ...currentAnswers,
-      [roundIndex]: {
-        ...currentAnswers[roundIndex],
-        [playerKey]: userRoundResult
-      }
     };
 
     const myProfileData = isPlayer1 ? matchData.player1 : matchData.player2;
     const updatedRounds = [...(myProfileData.rounds || []), userRoundResult];
     const updatedScore = myProfileData.score + score;
 
-    await updateDoc(doc(db, "matches", matchId), {
-      roundAnswers,
-      [`${playerKey}.score`]: updatedScore,
-      [`${playerKey}.rounds`]: updatedRounds
-    });
+    try {
+      await updateDoc(doc(db, "matches", matchId), {
+        [`roundAnswers.${roundIndex}.${playerKey}`]: userRoundResult,
+        [`${playerKey}.score`]: updatedScore,
+        [`${playerKey}.rounds`]: updatedRounds
+      });
+    } catch (e) {
+      console.error("Error submitting multiplayer answer:", e);
+      setHasSubmitted(false);
+      setError(e.message || String(e));
+    }
   };
 
   // Navigate rounds synchronously in Firestore
@@ -776,6 +786,7 @@ export function Multiplayer() {
             {matchData.questions.map((quest, idx) => {
               const p1Round = p1.rounds?.[idx] || { score: 0 };
               const p2Round = p2.rounds?.[idx] || { score: 0 };
+              const questionName = typeof quest === 'string' ? quest : quest.name;
               
               const isP1Closer = (p1Round.score || 0) > (p2Round.score || 0);
               const isP2Closer = (p2Round.score || 0) > (p1Round.score || 0);
@@ -783,7 +794,7 @@ export function Multiplayer() {
               return (
                 <div key={idx} className="mp-round-row">
                   <div className="mp-round-index" style={{ width: '24px' }}>{idx + 1}.</div>
-                  <div className="mp-round-question-name">{quest.name}</div>
+                  <div className="mp-round-question-name">{questionName}</div>
                   
                   <div className="mp-round-scores-comparison">
                     <span className={`mp-round-p1-score ${isP1Closer ? 'winner-text' : ''}`}>
@@ -841,7 +852,7 @@ export function Multiplayer() {
 
   const handleAutocompleteSubmit = (streetName) => {
     setTypedGuess(streetName);
-    submitAnswer(null, false);
+    submitAnswer(null, false, streetName);
   };
 
   const handleConfirmClick = () => {
@@ -934,6 +945,7 @@ export function Multiplayer() {
                   streetNames={streetNames}
                   onSubmit={handleAutocompleteSubmit}
                   disabled={hasSubmitted}
+                  requireValidSelection={false}
                 />
               )}
             </>
