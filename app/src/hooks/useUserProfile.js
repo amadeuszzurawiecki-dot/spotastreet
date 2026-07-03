@@ -9,6 +9,7 @@ import {
   signInWithGooglePopup,
 } from '../config/firebase';
 import { DEFAULT_MAP_STYLE_ID } from '../config/mapStyles';
+import { parseGoogleCredential } from '../utils/googleAuth';
 
 const defaultCar = {
   brandId: 'toyota',
@@ -23,6 +24,32 @@ const defaultStats = {
   'where-is-place': { wins: 0, losses: 0 },
   'what-street': { wins: 0, losses: 0 },
 };
+
+function sanitizeSavedProfiles(savedProfiles = {}) {
+  return Object.fromEntries(
+    Object.entries(savedProfiles || {}).map(([key, profile]) => ([
+      key,
+      {
+        email: profile?.email || '',
+        name: profile?.name || '',
+        town: profile?.town || 'Legnica',
+        avatarId: profile?.avatarId || 'bolciarz-1',
+        car: profile?.car || defaultCar,
+        stats: profile?.stats || defaultStats,
+        challengeAttempts: profile?.challengeAttempts || {},
+        hasCompletedProfile: profile?.hasCompletedProfile === true,
+        hasCompletedOnboarding: profile?.hasCompletedOnboarding === true,
+        hideEmail: profile?.hideEmail === true,
+        customAvatar: profile?.customAvatar || null,
+        dailyGamesPlayed: profile?.dailyGamesPlayed || { date: '', count: 0 },
+        onlineWins: Number(profile?.onlineWins) || 0,
+        onlineLosses: Number(profile?.onlineLosses) || 0,
+        onlineDraws: Number(profile?.onlineDraws) || 0,
+        mapStyle: profile?.mapStyle || DEFAULT_MAP_STYLE_ID,
+      },
+    ]))
+  );
+}
 
 const useUserProfile = create(
   persist(
@@ -104,7 +131,25 @@ const useUserProfile = create(
       },
 
       loginWithGoogleCredential: async (googleCredential) => {
-        await signInWithGoogleIdToken(googleCredential);
+        try {
+          await signInWithGoogleIdToken(googleCredential);
+        } catch (e) {
+          if (e?.code !== 'auth/configuration-not-found') throw e;
+
+          const payload = parseGoogleCredential(googleCredential);
+          if (!payload?.email) throw e;
+
+          get().setGoogleUser({
+            sub: payload.sub,
+            email: payload.email,
+            name: payload.name || payload.given_name || payload.email.split('@')[0],
+            picture: payload.picture || '',
+          }, {
+            authUid: '',
+            isAdmin: false,
+            isLocalFallback: true,
+          });
+        }
       },
 
       loginWithGooglePopup: async () => {
@@ -455,6 +500,7 @@ const useUserProfile = create(
           hideEmail: safeState.hideEmail === true,
           customAvatar: safeState.customAvatar || null,
           mapStyle: safeState.mapStyle || currentState.mapStyle,
+          savedProfiles: sanitizeSavedProfiles(safeState.savedProfiles),
         };
       },
       partialize: (state) => ({
@@ -464,6 +510,7 @@ const useUserProfile = create(
         hideEmail: state.hideEmail,
         customAvatar: state.customAvatar,
         mapStyle: state.mapStyle,
+        savedProfiles: sanitizeSavedProfiles(state.savedProfiles),
       }),
     }
   )
