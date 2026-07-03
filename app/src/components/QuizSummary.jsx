@@ -107,9 +107,9 @@ function QuizSummary({
   const showConfetti = playerScore >= 800;
 
   const getVerdict = () => {
-    if (isDraw) return { text: 'Remis!', emoji: '🤝', color: '#FFEB3B' };
-    if (playerWon) return { text: 'Wygrywasz!', emoji: '🏆', color: '#00E676' };
-    return { text: 'Bot wygrywa!', emoji: '😤', color: '#F44336' };
+    if (isDraw) return { text: 'Remis!', icon: 'target', color: '#FFEB3B' };
+    if (playerWon) return { text: 'Wygrywasz!', icon: 'trophy', color: '#00E676' };
+    return { text: 'Bot wygrywa!', icon: 'alert', color: '#F44336' };
   };
 
   const verdict = getVerdict();
@@ -175,7 +175,7 @@ function QuizSummary({
         {/* Verdict (only for bot matches) */}
         {!challengeId && (
           <div className="quiz-summary__verdict animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-            <span className="quiz-summary__verdict-emoji">{verdict.emoji}</span>
+            <span className={`quiz-summary__verdict-emoji line-icon line-icon--${verdict.icon}`} aria-hidden="true" />
             <span className="quiz-summary__verdict-text" style={{ color: verdict.color }}>{verdict.text}</span>
           </div>
         )}
@@ -184,12 +184,12 @@ function QuizSummary({
         {!challengeId && (
           <div className="quiz-summary__comparison animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
             <div className={`quiz-summary__player ${playerWon ? 'quiz-summary__player--winner' : ''}`}>
-              <span className="quiz-summary__player-label">👤 Ty</span>
+              <span className="quiz-summary__player-label">Ty</span>
               <span className="quiz-summary__player-score">{playerScore}</span>
             </div>
             <div className="quiz-summary__vs">vs</div>
             <div className={`quiz-summary__player ${!playerWon && !isDraw ? 'quiz-summary__player--winner' : ''}`}>
-              <span className="quiz-summary__player-label">🤖 Bot</span>
+              <span className="quiz-summary__player-label">Bot</span>
               <span className="quiz-summary__player-score">{botScore}</span>
             </div>
           </div>
@@ -266,13 +266,13 @@ function QuizSummary({
                                 {avatarImg ? (
                                   <img src={avatarImg} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 ) : (
-                                  <span style={{ fontSize: '0.8rem' }}>👤</span>
+                                  <span className="line-icon line-icon--user" aria-hidden="true" />
                                 )}
                               </div>
                               <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left', minWidth: 0 }}>
                                 <span style={{ fontWeight: '700', fontSize: '0.78rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'flex', alignItems: 'center', gap: '3px' }}>
                                   {row.name} {isSelf && <span className="player-you-tag" style={{ marginLeft: '4px', fontSize: '0.55rem' }}>Ty</span>}
-                                  {row.isPremium && <span style={{ fontSize: '0.6rem', color: 'var(--green-primary)' }}>⚡</span>}
+                                  {row.isPremium && <span className="player-you-tag">Premium</span>}
                                 </span>
                                 <span style={{ fontSize: '0.62rem', opacity: 0.5, display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
                                   {row.hideEmail ? (isSelf ? `${row.email} (ukryty)` : 'e-mail ukryty') : row.email}

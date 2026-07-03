@@ -75,6 +75,14 @@
   font-weight: 900;
 }
 
+.theme-toggle .line-icon,
+.menu-drawer__link .line-icon,
+.menu-drawer__theme .line-icon,
+.desktop-rail__theme .line-icon {
+  width: 18px;
+  height: 18px;
+}
+
 .topnav-hamburger {
   width: 42px;
   display: flex;
@@ -156,8 +164,13 @@
   border-radius: var(--radius-md);
   background: var(--surface-muted);
   color: var(--text-primary);
-  font-size: 1rem;
-  font-weight: 900;
+  display: grid;
+  place-items: center;
+}
+
+.menu-drawer__close .line-icon {
+  width: 20px;
+  height: 20px;
 }
 
 .menu-drawer__nav {
@@ -299,8 +312,13 @@
   }
 
   .topnav-cta::before {
-    content: '↗';
+    content: '';
+    width: 9px;
+    height: 9px;
+    border-top: 1.5px solid currentColor;
+    border-right: 1.5px solid currentColor;
     margin-right: 8px;
+    transform: rotate(45deg);
   }
 
   .theme-toggle {

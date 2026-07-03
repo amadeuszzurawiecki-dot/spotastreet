@@ -61,10 +61,12 @@ export function AdminStatsModal({ onClose }) {
         {/* Header */}
         <div className="admin-stats__header">
           <div>
-            <div className="admin-stats__badge">📊 GLOBALNE STATYSTYKI FLOTY BOLTERS</div>
+            <div className="admin-stats__badge">GLOBALNE STATYSTYKI FLOTY BOLTERS</div>
             <h2 className="admin-stats__title text-display">Konta i Wybrane Auta</h2>
           </div>
-          <button className="admin-stats__close" onClick={onClose}>✕</button>
+          <button className="admin-stats__close" onClick={onClose} aria-label="Zamknij">
+            <span className="line-icon line-icon--close" aria-hidden="true" />
+          </button>
         </div>
 
         {/* Overview Cards */}
@@ -78,14 +80,14 @@ export function AdminStatsModal({ onClose }) {
             <span className="admin-card__label">Różne Marki Aut</span>
           </div>
           <div className="admin-card">
-            <span className="admin-card__num">🟢 Global</span>
+            <span className="admin-card__num">Global</span>
             <span className="admin-card__label">Status Chmury</span>
           </div>
         </div>
 
         {/* Players & Cars Table */}
         <div className="admin-stats__section-title">
-          👥 Lista Zarejestrowanych Kierowców ({combinedList.length}):
+          Lista Zarejestrowanych Kierowców ({combinedList.length}):
         </div>
         
         <div className="admin-stats__table-container">
@@ -105,14 +107,14 @@ export function AdminStatsModal({ onClose }) {
                   <tr key={idx}>
                     <td>
                       <div className="admin-table__user">
-                        <span className="admin-table__avatar">👤</span>
+                        <span className="admin-table__avatar line-icon line-icon--user" aria-hidden="true" />
                         <div>
                           <div className="admin-table__name">{p.name}</div>
                           <div className="admin-table__email">{p.email}</div>
                         </div>
                       </div>
                     </td>
-                    <td>📍 {p.town}</td>
+                    <td>{p.town}</td>
                     <td>
                       <CarBadge car={p.car} />
                     </td>

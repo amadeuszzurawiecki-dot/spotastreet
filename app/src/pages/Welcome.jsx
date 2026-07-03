@@ -76,7 +76,7 @@ export function Welcome({ onLoginSuccess }) {
       <div className="welcome__glow" />
       
       <div className="welcome__content glass-card animate-scale-in">
-        <div className="welcome__badge">⚡ QUIZ TOPOGRAFICZNY</div>
+        <div className="welcome__badge">QUIZ TOPOGRAFICZNY</div>
         
         <h1 className="welcome__title text-display" style={{ fontSize: '3rem', letterSpacing: '0.05em' }}>
           SPOTASTREET
@@ -86,7 +86,12 @@ export function Welcome({ onLoginSuccess }) {
           Zaloguj się oficjalnym kontem Google, aby wziąć udział w wyzwaniach topograficznych i dołączyć do rankingu!
         </p>
 
-        {errorMsg && <div className="welcome__error animate-fade-in">⚠️ {errorMsg}</div>}
+        {errorMsg && (
+          <div className="welcome__error animate-fade-in">
+            <span className="line-icon line-icon--alert" aria-hidden="true" />
+            {errorMsg}
+          </div>
+        )}
 
         {/* Official Google Sign-In Button Container */}
         <div className="welcome__gsi-container">

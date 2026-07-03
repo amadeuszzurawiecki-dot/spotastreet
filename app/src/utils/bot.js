@@ -71,7 +71,7 @@ export function generateBotStreetGuess(correctStreet, allStreets) {
  */
 export const BOT_PROFILE = {
   name: 'Legniczanin',
-  avatar: '🤖',
+  avatar: 'AI',
   tagline: 'Znam te ulice jak własną kieszeń... prawie.',
 };
 

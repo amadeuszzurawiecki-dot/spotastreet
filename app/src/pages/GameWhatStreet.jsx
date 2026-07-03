@@ -188,14 +188,14 @@ function GameWhatStreet() {
     return (
       <GameVariantSelect 
         gameTitle="Co to za ulica?" 
-        gameIcon="🔍" 
+        gameIcon="scan" 
         onSelectVariant={(config) => {
           if (config.variant === 'multiplayer') {
             navigate('/game/multiplayer?mode=what-street');
             return;
           }
           if (!user.canPlaySingleplayer()) {
-            if (window.confirm("Osiągnąłeś limit 3 darmowych gier jednoosobowych na dzień. Czy chcesz przejść do profilu, aby aktywować Premium? ⚡")) {
+            if (window.confirm("Osiągnąłeś limit 3 darmowych gier jednoosobowych na dzień. Czy chcesz przejść do profilu, aby aktywować Premium?")) {
               navigate('/profile');
             }
             return;
@@ -221,7 +221,7 @@ function GameWhatStreet() {
   }
 
   const avatar = user.avatarId === 'custom'
-    ? { emoji: '👤', image: user.customAvatar, bg: 'transparent' }
+    ? { emoji: 'U', image: user.customAvatar, bg: 'transparent' }
     : (AVATARS.find(a => a.id === user.avatarId) || AVATARS[0]);
 
   // 3. Game over
@@ -283,7 +283,7 @@ function GameWhatStreet() {
         playerIsPremium={user.isPremium}
         
         opponentName="Legniczanin"
-        opponentAvatar="🤖"
+        opponentAvatar="AI"
         opponentScore={botScore}
         opponentRoundPoints={roundResult?.botScore}
         
@@ -334,7 +334,7 @@ function GameWhatStreet() {
           ) : (
             <>
               <div className="hud-bottom-bar__round" style={{ color: roundResult?.playerCorrect ? 'var(--green-primary)' : '#F44336' }}>
-                {roundResult?.playerCorrect ? '🎯 Dobra odpowiedź!' : (roundResult?.timedOut ? '⏰ Czas minął!' : '❌ Błędna odpowiedź!')}
+                {roundResult?.playerCorrect ? 'Dobra odpowiedź!' : (roundResult?.timedOut ? 'Czas minął!' : 'Błędna odpowiedź!')}
               </div>
               <div className="hud-bottom-bar__target">
                 To ulica: <span className="hud-bottom-bar__target-highlight">{(currentStreet?.name || '').toUpperCase()}</span>
@@ -342,7 +342,7 @@ function GameWhatStreet() {
               <div className="hud-bottom-bar__details" style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '4px', display: 'flex', gap: '16px' }}>
                 <span>Ty: <strong style={{ color: 'var(--green-primary)' }}>+{roundResult?.playerScore} pkt</strong></span>
                 {gameVariant !== 'training' && (
-                  <span>🤖 Bot: <strong style={{ color: '#FF9800' }}>+{roundResult?.botScore} pkt</strong></span>
+                  <span>Bot: <strong style={{ color: '#FF9800' }}>+{roundResult?.botScore} pkt</strong></span>
                 )}
               </div>
             </>
@@ -357,7 +357,7 @@ function GameWhatStreet() {
           )}
         </div>
 
-        <div className="hud-bottom-bar__footer">Stworzono z ⚡ dla Legnickich Bolciarzy</div>
+        <div className="hud-bottom-bar__footer">Stworzono dla Legnickich Bolciarzy</div>
       </div>
     </div>
   );

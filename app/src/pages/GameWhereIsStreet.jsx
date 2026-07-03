@@ -210,14 +210,14 @@ function GameWhereIsStreet() {
     return (
       <GameVariantSelect 
         gameTitle="Gdzie jest ta ulica?" 
-        gameIcon="⛳" 
+        gameIcon="pin" 
         onSelectVariant={(config) => {
           if (config.variant === 'multiplayer') {
             navigate('/game/multiplayer?mode=where-is-street');
             return;
           }
           if (!user.canPlaySingleplayer()) {
-            if (window.confirm("Osiągnąłeś limit 3 darmowych gier jednoosobowych na dzień. Czy chcesz przejść do profilu, aby aktywować Premium? ⚡")) {
+            if (window.confirm("Osiągnąłeś limit 3 darmowych gier jednoosobowych na dzień. Czy chcesz przejść do profilu, aby aktywować Premium?")) {
               navigate('/profile');
             }
             return;
@@ -243,7 +243,7 @@ function GameWhereIsStreet() {
   }
 
   const avatar = user.avatarId === 'custom'
-    ? { emoji: '👤', image: user.customAvatar, bg: 'transparent' }
+    ? { emoji: 'U', image: user.customAvatar, bg: 'transparent' }
     : (AVATARS.find(a => a.id === user.avatarId) || AVATARS[0]);
 
   // 3. Game over — show summary
@@ -315,7 +315,7 @@ function GameWhereIsStreet() {
         playerIsPremium={user.isPremium}
         
         opponentName="Legniczanin"
-        opponentAvatar="🤖"
+        opponentAvatar="AI"
         opponentScore={botScore}
         opponentRoundPoints={roundResult?.botScore}
         
@@ -369,7 +369,7 @@ function GameWhereIsStreet() {
           )}
         </div>
 
-        <div className="hud-bottom-bar__footer">Stworzono z ⚡ dla Legnickich Bolciarzy</div>
+        <div className="hud-bottom-bar__footer">Stworzono dla Legnickich Bolciarzy</div>
       </div>
     </div>
   );

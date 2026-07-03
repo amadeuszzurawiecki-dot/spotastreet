@@ -4,17 +4,17 @@ import './OnboardingModal.css';
 
 const SLIDES = [
   {
-    icon: '📍',
+    icon: 'pin',
     title: 'Witaj w Bolters Legnica!',
     desc: 'Unikalna gra topograficzna stworzona specjalnie dla mieszkańców Legnicy i prawdziwych kierowców Bolta.',
   },
   {
-    icon: '⏱️',
+    icon: 'target',
     title: 'Graj i Rywalizuj',
     desc: 'Zgaduj ulice, trafiaj w dziesiątkę pinezką i zdobywaj punkty w rywalizacji z komputerem oraz innymi graczymi!',
   },
   {
-    icon: '🚘',
+    icon: 'settings',
     title: 'Skonfiguruj swój profil',
     desc: 'Wybierz swój ulubiony avatar Legnickiego Bolciarza i zarejestruj swoje auto, aby zabłysnąć w rankingach.',
   },
@@ -38,7 +38,9 @@ export function OnboardingModal({ onClose }) {
   return (
     <div className="onboarding-overlay animate-fade-in">
       <div className="onboarding-modal glass-card animate-scale-in">
-        <div className="onboarding-modal__icon">{slide.icon}</div>
+        <div className="onboarding-modal__icon">
+          <span className={`line-icon line-icon--${slide.icon}`} aria-hidden="true" />
+        </div>
         <h2 className="onboarding-modal__title text-display">{slide.title}</h2>
         <p className="onboarding-modal__desc">{slide.desc}</p>
 

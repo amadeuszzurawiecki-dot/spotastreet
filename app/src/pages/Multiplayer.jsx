@@ -259,7 +259,7 @@ export function Multiplayer() {
               name: p.name,
               lat: p.lat,
               lng: p.lng,
-              icon: p.icon || '🏰'
+              icon: p.icon || 'pin'
             }));
           }
 
@@ -648,9 +648,9 @@ export function Multiplayer() {
             {isMatched ? 'Potwierdź gotowość do rozpoczęcia pojedynku.' : 'Kojarzenie kierowców do pojedynku 1v1 w trybie:'}
           </p>
           <div className="lobby-mode-name">
-            {gameMode === 'where-is-street' && '⛳ Gdzie jest ta ulica?'}
-            {gameMode === 'where-is-place' && '🏰 Gdzie jest to miejsce?'}
-            {gameMode === 'what-street' && '🔍 Co to za ulica?'}
+            {gameMode === 'where-is-street' && 'Gdzie jest ta ulica?'}
+            {gameMode === 'where-is-place' && 'Gdzie jest to miejsce?'}
+            {gameMode === 'what-street' && 'Co to za ulica?'}
           </div>
         </header>
 
@@ -681,7 +681,7 @@ export function Multiplayer() {
                     border: amIReady ? '1px solid rgba(0, 230, 118, 0.2)' : '1px solid rgba(255, 152, 0, 0.2)'
                   }}
                 >
-                  {amIReady ? 'GOTÓW 🟢' : 'OCZEKIWANIE 🟡'}
+                  {amIReady ? 'GOTÓW' : 'OCZEKIWANIE'}
                 </span>
               </div>
 
@@ -710,7 +710,7 @@ export function Multiplayer() {
                     border: isOpponentReady ? '1px solid rgba(0, 230, 118, 0.2)' : '1px solid rgba(255, 152, 0, 0.2)'
                   }}
                 >
-                  {isOpponentReady ? 'GOTÓW 🟢' : 'OCZEKIWANIE 🟡'}
+                  {isOpponentReady ? 'GOTÓW' : 'OCZEKIWANIE'}
                 </span>
               </div>
             </div>
@@ -737,7 +737,7 @@ export function Multiplayer() {
         <div className="lobby-status">
           {error ? (
             <p className="lobby-status-text" style={{ color: '#F44336', fontWeight: 'bold', fontSize: '0.85rem' }}>
-              ⚠️ Błąd połączenia: {error}
+              Błąd połączenia: {error}
             </p>
           ) : isMatched ? (
             <p className="lobby-status-text animate-pulse" style={{ color: 'var(--green-primary)', fontWeight: 'bold' }}>
@@ -759,12 +759,12 @@ export function Multiplayer() {
               disabled={amIReady}
               style={{ width: '100%', height: '48px', fontSize: '1rem', background: amIReady ? '#475569' : '' }}
             >
-              {amIReady ? 'Czekanie na drugiego gracza...' : 'JESTEM GOTOWY 🚦'}
+              {amIReady ? 'Czekanie na drugiego gracza...' : 'JESTEM GOTOWY'}
             </button>
           ) : (
             allowBotTrigger && (
               <button className="btn-primary animate-fade-in-up" onClick={handleAddBotOpponent} style={{ width: '100%' }}>
-                🤖 Zagraj z wirtualnym kierowcą (Botem)
+                Zagraj z wirtualnym kierowcą
               </button>
             )
           )}
@@ -841,7 +841,7 @@ export function Multiplayer() {
         <div className="mp-summary-content">
           <header className="mp-summary-header">
             <h1 className="mp-verdict-title text-display">
-              {isDraw ? 'REMIS! 🤝' : playerWon ? 'WYGRANA! 🏆' : 'PRZEGRANA! 😤'}
+              {isDraw ? 'REMIS!' : playerWon ? 'WYGRANA!' : 'PRZEGRANA!'}
             </h1>
             <p className="mp-verdict-desc">
               {isDraw 
@@ -1005,7 +1005,7 @@ export function Multiplayer() {
         fitBounds={mapBounds}
         paddingOptions={showResultOnMap ? { paddingTopLeft: [40, 90], paddingBottomRight: [40, 320], maxZoom: 16, animate: true, duration: 0.8 } : null}
         
-        playerAvatar={user.customAvatar ? '👤' : selfAvatar.emoji}
+        playerAvatar={user.customAvatar ? 'U' : selfAvatar.emoji}
         playerAvatarImg={user.customAvatar || selfAvatar.image}
         playerBg={selfAvatar.bg}
         playerRoundScore={myAnswer?.score}
@@ -1016,7 +1016,7 @@ export function Multiplayer() {
         botRoundScore={oppAnswer?.score}
         botRoundDistance={oppAnswer?.distance}
         opponentName={opponent?.name || 'Przeciwnik'}
-        opponentAvatar={opponent?.customAvatar ? '👤' : oppAvatar.emoji}
+        opponentAvatar={opponent?.customAvatar ? 'U' : oppAvatar.emoji}
         opponentAvatarImg={opponent?.customAvatar || oppAvatar.image}
         opponentBg={oppAvatar.bg}
         opponentIsPremium={opponent?.isPremium || false}
@@ -1094,7 +1094,7 @@ export function Multiplayer() {
           {gameState === 'round_result' && (
             <>
               <div className="hud-bottom-bar__round" style={{ color: (myAnswer?.score || 0) > (oppAnswer?.score || 0) ? 'var(--green-primary)' : 'var(--text-secondary)' }}>
-                {isRoundDraw ? 'Runda remisowa! 🤝' : (myAnswer?.score || 0) > (oppAnswer?.score || 0) ? 'Wygrywasz tę rundę! 🎉' : 'Przeciwnik był lepszy w tej rundzie!'}
+                {isRoundDraw ? 'Runda remisowa!' : (myAnswer?.score || 0) > (oppAnswer?.score || 0) ? 'Wygrywasz tę rundę!' : 'Przeciwnik był lepszy w tej rundzie!'}
               </div>
               <div className="hud-bottom-bar__target">
                 {gameMode === 'what-street' 

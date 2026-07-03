@@ -28,7 +28,7 @@ function GameVariantSelect({ gameTitle, gameIcon, onSelectVariant, onBack }) {
 
   const handleStartMultiplayer = () => {
     if (!user.isPremium) {
-      if (window.confirm("Pojedynek 1v1 na żywo jest dostępny tylko dla użytkowników Premium. Czy chcesz przejść do profilu, aby aktywować Premium? ⚡")) {
+      if (window.confirm("Pojedynek 1v1 na żywo jest dostępny tylko dla użytkowników Premium. Czy chcesz przejść do profilu, aby aktywować Premium?")) {
         navigate('/profile');
       }
       return;
@@ -85,12 +85,12 @@ function GameVariantSelect({ gameTitle, gameIcon, onSelectVariant, onBack }) {
           </div>
 
           <button className="btn-primary start-btn" onClick={handleStartTraining} style={{ marginTop: '30px', width: '100%' }}>
-            🚦 Uruchom trening
+            Uruchom trening
           </button>
         </div>
 
         <button className="btn-secondary back-btn-variant" onClick={() => setSelectedMainOption(null)}>
-          ← Wróć do wariantów
+          Wróć do wariantów
         </button>
       </div>
     );
@@ -105,21 +105,22 @@ function GameVariantSelect({ gameTitle, gameIcon, onSelectVariant, onBack }) {
           WYBIERZ WARIANT GRY
         </h1>
         <div className="variant-select-header__game-title">
-          {gameIcon} {gameTitle.toUpperCase()}
+          {gameIcon && <span className={`line-icon line-icon--${gameIcon}`} aria-hidden="true" />}
+          {gameTitle.toUpperCase()}
         </div>
       </header>
 
       <div className="variant-grid animate-scale-in">
         {/* Trening */}
         <button className="variant-card" onClick={() => setSelectedMainOption('training')}>
-          <div className="variant-card__icon">🚦</div>
+          <span className="variant-card__icon line-icon line-icon--settings" aria-hidden="true" />
           <h3 className="variant-card__title">Trening</h3>
           <p className="variant-card__desc">Ustaw i ćwicz</p>
         </button>
 
         {/* Walka z AI */}
         <button className="variant-card" onClick={handleStartAi}>
-          <div className="variant-card__icon">🤖</div>
+          <span className="variant-card__icon line-icon line-icon--target" aria-hidden="true" />
           <h3 className="variant-card__title">Walka z AI</h3>
           <p className="variant-card__desc">Pokonaj bota</p>
         </button>
@@ -129,15 +130,15 @@ function GameVariantSelect({ gameTitle, gameIcon, onSelectVariant, onBack }) {
           className="variant-card" 
           onClick={handleStartMultiplayer}
         >
-          <div className="variant-card__icon">⚔️</div>
+          <span className="variant-card__icon line-icon line-icon--ranking" aria-hidden="true" />
           <h3 className="variant-card__title">Pojedynek</h3>
           <p className="variant-card__desc">Rywalizacja 1v1 online</p>
-          {!user.isPremium && <div className="variant-card__lock-badge">🔒 PREMIUM</div>}
+          {!user.isPremium && <div className="variant-card__lock-badge">PREMIUM</div>}
         </button>
       </div>
 
       <button className="btn-secondary back-btn-variant" onClick={onBack}>
-        ← Wróć do menu
+        Wróć do menu
       </button>
     </div>
   );

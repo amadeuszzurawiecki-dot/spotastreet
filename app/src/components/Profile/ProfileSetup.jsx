@@ -97,7 +97,7 @@ export function ProfileSetup({ onComplete }) {
         
         {/* Powitanie nad divem */}
         <h1 className="setup-greeting text-display">
-          Cześć, <span className="setup-greeting--accent">{firstName}</span>! 👋
+          Cześć, <span className="setup-greeting--accent">{firstName}</span>!
         </h1>
 
         {/* Prostokątny Div z całą treścią */}
@@ -145,7 +145,7 @@ export function ProfileSetup({ onComplete }) {
                       {avatar.image ? (
                         <img src={avatar.image} alt={avatar.id} className="setup-avatar-card__img" />
                       ) : (
-                        <span className="setup-avatar-card__emoji">{avatar.emoji}</span>
+                        <span className="line-icon line-icon--user" aria-hidden="true" />
                       )}
                     </div>
                   </button>
@@ -161,7 +161,7 @@ export function ProfileSetup({ onComplete }) {
                   style={{ display: 'none' }}
                 />
                 <label htmlFor="setup-image-upload" className="btn-secondary" style={{ width: 'auto', padding: '10px 16px', fontSize: '0.85rem', cursor: 'pointer' }}>
-                  📁 Wgraj własne zdjęcie profilowe
+                  Wgraj własne zdjęcie profilowe
                 </label>
               </div>
 

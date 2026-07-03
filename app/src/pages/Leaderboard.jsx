@@ -73,7 +73,7 @@ export function Leaderboard() {
               id: 'default_cudow',
               title: 'Znawca Dzielnicy Cudów',
               description: 'Rozpoznaj słynne patusiarskie ulice',
-              icon: '☠️',
+              icon: 'scan',
               rounds: 15,
               timeLimit: 15,
               gameMode: 'what-street',
@@ -83,7 +83,7 @@ export function Leaderboard() {
               id: 'default_sienkiewicza',
               title: 'Ekspert z Osiedla Sienkiewicza',
               description: 'Henryk byłby dumny',
-              icon: '🌷',
+              icon: 'pin',
               rounds: 15,
               timeLimit: 15,
               gameMode: 'where-is-street',
@@ -127,7 +127,7 @@ export function Leaderboard() {
         </div>
 
         <header className="leaderboard-header" style={{ marginBottom: '24px' }}>
-          <h2 className="leaderboard-title text-display">🏆 Ranking Wyzwań Codziennych</h2>
+          <h2 className="leaderboard-title text-display">Ranking Wyzwań Codziennych</h2>
           <p className="leaderboard-subtitle">Historia wyzwań i najlepsi gracze (najnowsze u góry)</p>
         </header>
         
@@ -157,7 +157,7 @@ export function Leaderboard() {
               <div key={ch.id} className="glass-card challenge-rank-card" style={{ padding: '20px', marginBottom: '20px', borderRadius: '4px', textAlign: 'left' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '12px', marginBottom: '12px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <span style={{ fontSize: '1.6rem' }}>{ch.icon || '🏁'}</span>
+                    <span className={`line-icon line-icon--${ch.icon || 'target'}`} aria-hidden="true" />
                     <div>
                       <h4 style={{ margin: 0, fontWeight: 700, fontSize: '1.05rem', color: 'var(--green-primary)' }}>{ch.title}</h4>
                       <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>{ch.description}</p>
@@ -190,7 +190,7 @@ export function Leaderboard() {
                         return (
                           <tr key={idx} className={isSelf ? 'leaderboard-row--current-user' : ''} style={{ background: isSelf ? 'rgba(0, 230, 118, 0.08)' : 'transparent' }}>
                             <td style={{ fontWeight: '700' }}>
-                              {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}`}
+                              {idx + 1}
                             </td>
                             <td>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
@@ -201,13 +201,13 @@ export function Leaderboard() {
                                   {avatarImg ? (
                                     <img src={avatarImg} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                   ) : (
-                                    <span style={{ fontSize: '0.8rem' }}>👤</span>
+                                    <span className="line-icon line-icon--user" aria-hidden="true" />
                                   )}
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, flex: 1 }}>
                                   <span style={{ fontWeight: '700', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                     {row.name} {isSelf && <span className="player-you-tag" style={{ fontSize: '0.6rem' }}>Ty</span>}
-                                    {row.isPremium && <span style={{ fontSize: '0.6rem', color: 'var(--green-primary)' }}>⚡</span>}
+                                    {row.isPremium && <span className="player-you-tag">Premium</span>}
                                   </span>
                                   <span style={{ fontSize: '0.65rem', opacity: 0.6, display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                     {row.hideEmail ? (isSelf ? `${row.email} (ukryty)` : 'e-mail ukryty') : row.email}
@@ -254,7 +254,7 @@ export function Leaderboard() {
             </div>
           ) : list.length === 0 ? (
             <div className="leaderboard-empty">
-              <p>Brak wyników w tym trybie. Bądź pierwszym bolciarze z punktami! 🏁</p>
+              <p>Brak wyników w tym trybie. Bądź pierwszym bolciarze z punktami!</p>
             </div>
           ) : (
             <table className="clean-leaderboard-table">
@@ -279,7 +279,7 @@ export function Leaderboard() {
                       className={`leaderboard-row ${isCurrentUser ? 'leaderboard-row--current-user' : ''}`}
                     >
                       <td className={`cell-rank cell-rank--${idx + 1}`}>
-                        {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `${idx + 1}`}
+                        {idx + 1}
                       </td>
 
                       <td className="cell-player">
@@ -291,14 +291,14 @@ export function Leaderboard() {
                             {avatarImg ? (
                               <img src={avatarImg} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             ) : (
-                              <span style={{ fontSize: '1rem' }}>👤</span>
+                              <span className="line-icon line-icon--user" aria-hidden="true" />
                             )}
                           </div>
                           <div className="player-details" style={{ minWidth: 0, flex: 1 }}>
                             <span className="player-name" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'flex', alignItems: 'center', gap: '4px' }}>
                               {item.name}
                               {isCurrentUser && <span className="player-you-tag">Ty</span>}
-                              {item.isPremium && <span style={{ fontSize: '0.65rem', color: 'var(--green-primary)' }}>⚡</span>}
+                              {item.isPremium && <span className="player-you-tag">Premium</span>}
                             </span>
                             <span className="player-email">
                               {item.hideEmail ? (isCurrentUser ? `${item.email} (ukryty)` : 'e-mail ukryty') : (item.email || 'brak e-mail')}
@@ -328,7 +328,7 @@ export function Leaderboard() {
       <main className="leaderboard-container">
         {isOffline && (
           <div className="offline-banner" style={{ marginBottom: '20px' }}>
-            <span className="offline-banner__icon">⚠️</span>
+            <span className="offline-banner__icon line-icon line-icon--alert" aria-hidden="true" />
             <div>
               <strong>Brak odpowiedzi z bazy chmurowej:</strong> Działasz w trybie offline. Dane rankingu są ładowane lokalnie.
             </div>
@@ -338,31 +338,31 @@ export function Leaderboard() {
         {view === 'menu' && (
           <div className="leaderboard-menu-container animate-fade-in">
             <header className="leaderboard-header">
-              <h2 className="leaderboard-title text-display">🏆 Rankingi Legnicy</h2>
+          <h2 className="leaderboard-title text-display">Rankingi Legnicy</h2>
               <p className="leaderboard-subtitle">Wybierz kategorię, aby zobaczyć najlepszych kierowców</p>
             </header>
 
             <div className="leaderboard-menu-grid">
               <div className="leaderboard-menu-card" onClick={() => setView('challenges')}>
-                <span className="leaderboard-menu-card__icon">🏆</span>
+                <span className="leaderboard-menu-card__icon line-icon line-icon--trophy" aria-hidden="true" />
                 <span className="leaderboard-menu-card__title">Wyzwania codzienne</span>
                 <span className="leaderboard-menu-card__subtitle">Historia wyzwań i wyniki</span>
               </div>
 
               <div className="leaderboard-menu-card" onClick={() => setView('where-is-street')}>
-                <span className="leaderboard-menu-card__icon">📍</span>
+                <span className="leaderboard-menu-card__icon line-icon line-icon--pin" aria-hidden="true" />
                 <span className="leaderboard-menu-card__title">Gdzie jest ta ulica?</span>
                 <span className="leaderboard-menu-card__subtitle">Rozpoznawanie ulic na mapie</span>
               </div>
 
               <div className="leaderboard-menu-card" onClick={() => setView('where-is-place')}>
-                <span className="leaderboard-menu-card__icon">🗺️</span>
+                <span className="leaderboard-menu-card__icon line-icon line-icon--target" aria-hidden="true" />
                 <span className="leaderboard-menu-card__title">Gdzie jest to miejsce?</span>
                 <span className="leaderboard-menu-card__subtitle">Rozpoznawanie zabytków i punktów</span>
               </div>
 
               <div className="leaderboard-menu-card" onClick={() => setView('what-street')}>
-                <span className="leaderboard-menu-card__icon">❓</span>
+                <span className="leaderboard-menu-card__icon line-icon line-icon--scan" aria-hidden="true" />
                 <span className="leaderboard-menu-card__title">Co to za ulica?</span>
                 <span className="leaderboard-menu-card__subtitle">Nazywanie podświetlonych ulic</span>
               </div>

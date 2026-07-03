@@ -18,7 +18,7 @@ export function CarBadge({ car }) {
           dangerouslySetInnerHTML={{ __html: svgContent }} 
         />
       ) : (
-        <span className="car-badge__logo">🚗</span>
+        <span className="car-badge__logo line-icon line-icon--settings" aria-hidden="true" />
       )}
       <span className="car-badge__name">{car.brandName || car.brandId}</span>
       <span className="car-badge__model">{car.model}</span>

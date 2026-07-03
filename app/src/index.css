@@ -13,11 +13,11 @@
   --space-xl: 32px;
   --space-2xl: 48px;
 
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 8px;
-  --radius-xl: 8px;
-  --radius-full: 999px;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-full: 0;
 
   --transition-fast: 140ms ease;
   --transition-base: 220ms ease;
@@ -152,6 +152,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  border-radius: 0 !important;
 }
 
 html {
@@ -237,7 +238,7 @@ img {
 }
 
 .text-display {
-  font-weight: 850;
+  font-weight: 750;
 }
 
 .text-heading {
@@ -346,10 +347,216 @@ img {
   animation: scaleIn 260ms ease both;
 }
 
+.line-icon {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md);
+  color: currentColor;
+}
+
+.line-icon::before,
+.line-icon::after {
+  content: '';
+  position: absolute;
+  box-sizing: border-box;
+}
+
+.line-icon--pin::before {
+  width: 18px;
+  height: 18px;
+  border: 2px solid currentColor;
+  border-radius: 50% 50% 50% 3px;
+  transform: rotate(-45deg);
+}
+
+.line-icon--pin::after {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.line-icon--target::before,
+.line-icon--trophy::before {
+  width: 26px;
+  height: 26px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.line-icon--target::after,
+.line-icon--trophy::after {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.line-icon--scan::before {
+  width: 25px;
+  height: 25px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.line-icon--scan::after {
+  right: 10px;
+  bottom: 10px;
+  width: 12px;
+  height: 2px;
+  background: currentColor;
+  transform: rotate(45deg);
+  transform-origin: right center;
+}
+
+.line-icon--user::before {
+  inset: 7px 15px auto;
+  height: 10px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.line-icon--user::after {
+  left: 10px;
+  right: 10px;
+  bottom: 8px;
+  height: 13px;
+  border: 2px solid currentColor;
+  border-radius: 14px 14px 4px 4px;
+}
+
+.line-icon--ranking::before {
+  left: 11px;
+  right: 11px;
+  top: 10px;
+  height: 28px;
+  border: 2px solid currentColor;
+}
+
+.line-icon--ranking::after {
+  left: 16px;
+  top: 18px;
+  width: 16px;
+  height: 2px;
+  background: currentColor;
+  box-shadow: 0 7px 0 currentColor, 0 14px 0 currentColor;
+}
+
+.line-icon--settings::before {
+  inset: 12px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.line-icon--settings::after {
+  left: 23px;
+  top: 7px;
+  width: 2px;
+  height: 34px;
+  background: currentColor;
+  box-shadow: -12px 12px 0 -1px currentColor, 12px -12px 0 -1px currentColor;
+  transform: rotate(45deg);
+}
+
+.line-icon--camera::before {
+  left: 10px;
+  right: 10px;
+  top: 16px;
+  height: 20px;
+  border: 2px solid currentColor;
+}
+
+.line-icon--camera::after {
+  left: 19px;
+  top: 20px;
+  width: 10px;
+  height: 10px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  box-shadow: -6px -8px 0 -4px currentColor;
+}
+
+.line-icon--sun::before {
+  inset: 14px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.line-icon--sun::after {
+  left: 23px;
+  top: 7px;
+  width: 2px;
+  height: 34px;
+  background: currentColor;
+  transform: rotate(90deg);
+}
+
+.line-icon--moon::before {
+  inset: 10px 14px 10px 10px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.line-icon--moon::after {
+  inset: 8px 8px 8px 20px;
+  border-radius: 50%;
+  background: var(--surface-muted);
+}
+
+.line-icon--close::before,
+.line-icon--close::after {
+  left: 23px;
+  top: 12px;
+  width: 2px;
+  height: 24px;
+  background: currentColor;
+}
+
+.line-icon--close::before {
+  transform: rotate(45deg);
+}
+
+.line-icon--close::after {
+  transform: rotate(-45deg);
+}
+
+.line-icon--alert::before {
+  width: 24px;
+  height: 24px;
+  border: 2px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.line-icon--alert::after {
+  width: 2px;
+  height: 12px;
+  background: currentColor;
+  box-shadow: 0 16px 0 currentColor;
+}
+
+.line-icon--arrow-left::before,
+.line-icon--arrow-right::before {
+  width: 14px;
+  height: 14px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+}
+
+.line-icon--arrow-left::before {
+  transform: rotate(-135deg);
+}
+
+.line-icon--arrow-right::before {
+  transform: rotate(45deg);
+}
+
 .leaflet-control-zoom,
 .leaflet-bar {
   border: 1px solid var(--border) !important;
-  border-radius: var(--radius-md) !important;
+  border-radius: 0 !important;
   overflow: hidden;
   box-shadow: var(--shadow-sm) !important;
 }
@@ -372,6 +579,26 @@ img {
   color: var(--text-primary) !important;
   border: 1px solid var(--border);
   box-shadow: var(--shadow-md) !important;
+}
+
+.profile-page,
+.leaderboard-page,
+.welcome,
+.variant-select-container,
+.quiz-summary,
+.mp-summary-page,
+.lobby-container,
+.admin-container,
+.admin-layout,
+.game-loading,
+.profile-setup {
+  background: transparent !important;
+}
+
+body *:not(#spotastreet-square-corners),
+body *:not(#spotastreet-square-corners)::before,
+body *:not(#spotastreet-square-corners)::after {
+  border-radius: 0 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

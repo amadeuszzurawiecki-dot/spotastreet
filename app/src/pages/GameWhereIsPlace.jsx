@@ -214,14 +214,14 @@ function GameWhereIsPlace() {
     return (
       <GameVariantSelect 
         gameTitle="Gdzie jest to miejsce?" 
-        gameIcon="🏰" 
+        gameIcon="target" 
         onSelectVariant={(config) => {
           if (config.variant === 'multiplayer') {
             navigate('/game/multiplayer?mode=where-is-place');
             return;
           }
           if (!user.canPlaySingleplayer()) {
-            if (window.confirm("Osiągnąłeś limit 3 darmowych gier jednoosobowych na dzień. Czy chcesz przejść do profilu, aby aktywować Premium? ⚡")) {
+            if (window.confirm("Osiągnąłeś limit 3 darmowych gier jednoosobowych na dzień. Czy chcesz przejść do profilu, aby aktywować Premium?")) {
               navigate('/profile');
             }
             return;
@@ -247,7 +247,7 @@ function GameWhereIsPlace() {
   }
 
   const avatar = user.avatarId === 'custom'
-    ? { emoji: '👤', image: user.customAvatar, bg: 'transparent' }
+    ? { emoji: 'U', image: user.customAvatar, bg: 'transparent' }
     : (AVATARS.find(a => a.id === user.avatarId) || AVATARS[0]);
 
   // 3. Game over
@@ -280,7 +280,7 @@ function GameWhereIsPlace() {
   const currentPlace = places[currentRound];
   const actualTarget = currentPlace ? [currentPlace.lat, currentPlace.lng] : null;
   const summaryBounds = showResult && pinPosition && actualTarget ? getPointsCombinedBounds([pinPosition, actualTarget]) : null;
-  const targetTitle = currentPlace ? `${currentPlace.icon} ${currentPlace.name}` : '';
+  const targetTitle = currentPlace ? currentPlace.name : '';
 
   return (
     <div className="game-page">
@@ -318,7 +318,7 @@ function GameWhereIsPlace() {
         playerIsPremium={user.isPremium}
         
         opponentName="Legniczanin"
-        opponentAvatar="🤖"
+        opponentAvatar="AI"
         opponentScore={botScore}
         opponentRoundPoints={roundResult?.botScore}
         
@@ -371,7 +371,7 @@ function GameWhereIsPlace() {
           )}
         </div>
 
-        <div className="hud-bottom-bar__footer">Stworzono z ⚡ dla Legnickich Bolciarzy</div>
+        <div className="hud-bottom-bar__footer">Stworzono dla Legnickich Bolciarzy</div>
       </div>
     </div>
   );

@@ -25,10 +25,9 @@ export function TopNav() {
   };
 
   const navItems = [
-    { label: 'Graj', path: '/', icon: '▶', desc: 'Tryby i wyzwania' },
-    { label: 'Profil', path: '/profile', icon: '◉', desc: 'Konto i mapa' },
-    { label: 'Ranking', path: '/leaderboard', icon: '▤', desc: 'Wyniki graczy' },
-    { label: 'Admin', path: '/admin', icon: '⚙', desc: 'Panel' },
+    { label: 'Profil', path: '/profile', icon: 'user', desc: 'Konto i mapa' },
+    { label: 'Ranking', path: '/leaderboard', icon: 'ranking', desc: 'Wyniki graczy' },
+    { label: 'Admin', path: '/admin', icon: 'settings', desc: 'Panel' },
   ];
 
   const LogoSygnet = () => (
@@ -66,7 +65,7 @@ export function TopNav() {
         </button>
 
         <button className="theme-toggle" onClick={toggleTheme} aria-label="Przełącz motyw">
-          <span>{theme === 'dark' ? '☾' : '☀'}</span>
+          <span className={`line-icon line-icon--${theme === 'dark' ? 'moon' : 'sun'}`} aria-hidden="true" />
         </button>
 
         {/* Right Side: Hamburger Button */}
@@ -94,7 +93,7 @@ export function TopNav() {
               className={`desktop-rail__card ${location.pathname === item.path ? 'desktop-rail__card--active' : ''}`}
               onClick={() => handleNavigate(item.path)}
             >
-              <span className="desktop-rail__icon">{item.icon}</span>
+              <span className={`desktop-rail__icon line-icon line-icon--${item.icon}`} aria-hidden="true" />
               <span>
                 <span className="desktop-rail__label">{item.label}</span>
                 <span className="desktop-rail__desc">{item.desc}</span>
@@ -104,7 +103,7 @@ export function TopNav() {
         </nav>
 
         <button className="desktop-rail__theme" onClick={toggleTheme}>
-          <span>{theme === 'dark' ? '☾' : '☀'}</span>
+          <span className={`line-icon line-icon--${theme === 'dark' ? 'moon' : 'sun'}`} aria-hidden="true" />
           <span>{theme === 'dark' ? 'Tryb ciemny' : 'Tryb jasny'}</span>
         </button>
 
@@ -120,7 +119,9 @@ export function TopNav() {
             <LogoSygnet />
             <span className="topnav-logo__text">SPOTASTREET</span>
           </div>
-          <button className="menu-drawer__close" onClick={() => setIsOpen(false)}>✕</button>
+          <button className="menu-drawer__close" onClick={() => setIsOpen(false)} aria-label="Zamknij menu">
+            <span className="line-icon line-icon--close" aria-hidden="true" />
+          </button>
         </div>
 
         <nav className="menu-drawer__nav">
@@ -131,14 +132,14 @@ export function TopNav() {
                 className={`menu-drawer__link ${location.pathname === item.path ? 'menu-drawer__link--active' : ''}`}
                 onClick={() => handleNavigate(item.path)}
               >
-                <span>{item.icon}</span>
+                <span className={`line-icon line-icon--${item.icon}`} aria-hidden="true" />
                 <span>{item.label}</span>
               </button>
             ))}
           </div>
 
           <button className="menu-drawer__theme" onClick={toggleTheme}>
-            <span>{theme === 'dark' ? '☾' : '☀'}</span>
+            <span className={`line-icon line-icon--${theme === 'dark' ? 'moon' : 'sun'}`} aria-hidden="true" />
             <span>{theme === 'dark' ? 'Tryb ciemny' : 'Tryb jasny'}</span>
           </button>
           

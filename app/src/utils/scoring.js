@@ -30,22 +30,22 @@ export function calculatePlaceScore(distanceMeters) {
 /**
  * Get feedback tier based on distance
  * @param {number} distanceMeters
- * @returns {{ tier: string, color: string, emoji: string, label: string }}
+ * @returns {{ tier: string, color: string, icon: string, label: string }}
  */
 export function getDistanceFeedback(distanceMeters) {
   if (distanceMeters <= 10) {
-    return { tier: 'perfect', color: '#00E676', emoji: '🎯', label: 'Strzał w dziesiątkę!' };
+    return { tier: 'perfect', color: '#00E676', icon: 'target', label: 'Strzał w dziesiątkę!' };
   }
   if (distanceMeters <= 50) {
-    return { tier: 'excellent', color: '#00E676', emoji: '🔥', label: 'Świetnie!' };
+    return { tier: 'excellent', color: '#00E676', icon: 'target', label: 'Świetnie!' };
   }
   if (distanceMeters <= 200) {
-    return { tier: 'good', color: '#FFEB3B', emoji: '👍', label: 'Nieźle!' };
+    return { tier: 'good', color: '#FFEB3B', icon: 'pin', label: 'Nieźle!' };
   }
   if (distanceMeters <= 500) {
-    return { tier: 'medium', color: '#FF9800', emoji: '😬', label: 'Może być' };
+    return { tier: 'medium', color: '#FF9800', icon: 'scan', label: 'Może być' };
   }
-  return { tier: 'bad', color: '#F44336', emoji: '💀', label: 'Pudło!' };
+  return { tier: 'bad', color: '#F44336', icon: 'alert', label: 'Pudło!' };
 }
 
 /**

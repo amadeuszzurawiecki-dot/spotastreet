@@ -99,7 +99,7 @@ export function GameHUD({
   playerIsPremium = false,
   
   opponentName = 'Legniczanin',
-  opponentAvatar = '🤖',
+  opponentAvatar = 'AI',
   opponentBg = '#2A2A3E',
   opponentScore,
   opponentRoundPoints,
@@ -186,7 +186,7 @@ export function GameHUD({
               className="hud-unified-pill hud-unified-pill--training" 
               style={isChallenge ? { background: 'rgba(0, 230, 118, 0.1)', border: '1px solid rgba(0, 230, 118, 0.25)', color: 'var(--green-primary)' } : {}}
             >
-              <span>{isChallenge ? '🏆 Wyzwanie' : '🚦 Trening'}</span>
+              <span>{isChallenge ? 'Wyzwanie' : 'Trening'}</span>
             </div>
             <div className="hud-unified-score">
               <span className="hud-unified-score-val" style={{ fontSize: '0.78rem', color: '#94a3b8' }}>
@@ -214,4 +214,3 @@ export function GameHUD({
     </div>
   );
 }
-

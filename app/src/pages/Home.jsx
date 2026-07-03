@@ -10,7 +10,7 @@ const PIN_MODES = [
   {
     id: 'where-is-street',
     path: '/game/where-is-street',
-    icon: '⛳',
+    icon: 'pin',
     title: 'Gdzie jest ta ulica?',
     description: 'Upuść pinezkę jak najbliżej wylosowanej ulicy',
     available: true,
@@ -18,7 +18,7 @@ const PIN_MODES = [
   {
     id: 'where-is-place',
     path: '/game/where-is-place',
-    icon: '🏰',
+    icon: 'target',
     title: 'Gdzie jest to miejsce?',
     description: 'Zaznacz popularne miejsce w Legnicy',
     available: true,
@@ -29,7 +29,7 @@ const ADDRESS_MODES = [
   {
     id: 'what-street',
     path: '/game/what-street',
-    icon: '🔍',
+    icon: 'scan',
     title: 'Co to za ulica?',
     description: 'Rozpoznaj ulicę podświetloną na mapie',
     available: true,
@@ -89,7 +89,7 @@ function Home() {
               id: 'default_cudow',
               title: 'Znawca Dzielnicy Cudów',
               description: 'Rozpoznaj słynne patusiarskie ulice',
-              icon: '☠️',
+              icon: 'scan',
               rounds: 15,
               timeLimit: 15,
               gameMode: 'what-street',
@@ -101,7 +101,7 @@ function Home() {
               id: 'default_sienkiewicza',
               title: 'Ekspert z Osiedla Sienkiewicza',
               description: 'Henryk byłby dumny',
-              icon: '🌷',
+              icon: 'pin',
               rounds: 15,
               timeLimit: 15,
               gameMode: 'where-is-street',
@@ -158,7 +158,7 @@ function Home() {
         disabled={!mode.available}
         style={{ animationDelay: `${index * 80}ms` }}
       >
-        <div className="mode-card__icon">{mode.icon}</div>
+        <span className={`mode-card__icon line-icon line-icon--${mode.icon}`} aria-hidden="true" />
         <div className="mode-card__content">
           <h3 className="mode-card__title">{mode.title}</h3>
           <p className="mode-card__desc">{mode.description}</p>
@@ -180,7 +180,7 @@ function Home() {
           <path d="M10,80 L90,80" stroke="rgba(255,255,255,0.05)" strokeWidth="2" />
           <circle cx="50" cy="50" r="4" fill="var(--green-primary)" />
         </svg>
-        <span className="challenge-card__fallback-icon">{challenge.icon || '🏁'}</span>
+        <span className={`challenge-card__fallback-icon line-icon line-icon--${challenge.icon || 'target'}`} aria-hidden="true" />
       </div>
     );
   };
@@ -208,7 +208,7 @@ function Home() {
             <div className="home-hero__side">
               <p>Rozpoznawaj ulice, wskazuj miejsca i sprawdzaj, kto naprawdę zna układ miasta.</p>
               <button className="home-hero__action" onClick={() => navigate('/game/what-street')}>
-                Zacznij grę →
+                Zacznij grę
               </button>
             </div>
           </section>
@@ -222,7 +222,7 @@ function Home() {
         <div className="home-modes__section">
           {isOffline && (
             <div className="offline-banner">
-              <span className="offline-banner__icon">⚠️</span>
+              <span className="offline-banner__icon line-icon line-icon--alert" aria-hidden="true" />
               <div>
                 <strong>Brak odpowiedzi z bazy chmurowej:</strong> Działasz w trybie offline. Wyzwania i ranking są ładowane lokalnie.
               </div>
@@ -237,14 +237,14 @@ function Home() {
                 onClick={() => scrollCarousel('left')}
                 aria-label="Wstecz"
               >
-                ←
+                <span className="line-icon line-icon--arrow-left" aria-hidden="true" />
               </button>
               <button 
                 className="challenges-nav-arrow" 
                 onClick={() => scrollCarousel('right')}
                 aria-label="Dalej"
               >
-                →
+                <span className="line-icon line-icon--arrow-right" aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -320,7 +320,7 @@ function Home() {
 
       {/* Footer */}
       <footer className="home-footer">
-        <p>Stworzono z ⚡ dla Legnickich Bolciarzy</p>
+        <p>Stworzono dla Legnickich Bolciarzy</p>
       </footer>
     </div>
   );

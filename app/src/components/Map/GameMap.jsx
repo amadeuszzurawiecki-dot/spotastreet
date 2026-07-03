@@ -38,7 +38,7 @@ const createRoundBadgeIcon = (round, status = 'draw') => L.divIcon({
 const createPlayerPinIcon = (avatarChar, avatarImg, bg, isPremium) => {
   const htmlContent = avatarImg 
     ? `<img src="${avatarImg}" class="map-avatar-img" />`
-    : `<span class="map-avatar-emoji">${avatarChar || '👤'}</span>`;
+    : `<span class="map-avatar-emoji">${avatarChar || 'U'}</span>`;
     
   return L.divIcon({
     className: 'custom-player-pin',
@@ -57,7 +57,7 @@ const createPlayerPinIcon = (avatarChar, avatarImg, bg, isPremium) => {
 const createOpponentPinIcon = (avatarChar, avatarImg, bg, isPremium) => {
   const htmlContent = avatarImg 
     ? `<img src="${avatarImg}" class="map-avatar-img" />`
-    : `<span class="map-avatar-emoji">${avatarChar || '🤖'}</span>`;
+    : `<span class="map-avatar-emoji">${avatarChar || 'AI'}</span>`;
     
   return L.divIcon({
     className: 'custom-opponent-pin',
@@ -155,7 +155,7 @@ function GameMap({
   botRoundScore,
   botRoundDistance,
   opponentName = 'Legniczanin',
-  opponentAvatar = '🤖',
+  opponentAvatar = 'AI',
   opponentAvatarImg,
   opponentBg = '#2A2A3E',
   opponentIsPremium = false,

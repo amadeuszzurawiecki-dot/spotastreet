@@ -233,9 +233,11 @@
 /* Reorganization Menu selector grid */
 .leaderboard-menu-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  grid-template-columns: 1fr;
+  gap: 0;
   margin-top: 24px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
 }
 
 @media (max-width: 600px) {
@@ -245,47 +247,37 @@
 }
 
 .leaderboard-menu-card {
-  background: var(--units-blue);
-  border: 1px solid transparent;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: var(--radius-lg);
-  padding: 24px;
-  text-align: center;
-  cursor: pointer;
-  transition: transform var(--transition-base), border-color var(--transition-base), background var(--transition-base);
-  display: flex;
-  flex-direction: column;
+  min-height: 84px;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
   align-items: center;
-  justify-content: center;
   gap: 12px;
+  padding: 14px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  box-shadow: none;
+  transition: border-color var(--transition-base), background var(--transition-base);
 }
 
 .leaderboard-menu-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--units-ink);
-}
-
-.leaderboard-menu-card:nth-child(2) {
-  background: var(--units-yellow);
-}
-
-.leaderboard-menu-card:nth-child(3) {
-  background: var(--units-orange);
-}
-
-.leaderboard-menu-card:nth-child(4) {
-  background: var(--units-green);
+  border-color: var(--green-primary);
+  background: var(--green-subtle);
 }
 
 .leaderboard-menu-card__icon {
-  font-size: 2.2rem;
+  background: var(--surface-muted);
+  color: var(--green-primary);
 }
 
 .leaderboard-menu-card__title {
   font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.1rem;
+  font-weight: 750;
+  font-size: 0.98rem;
   color: var(--text-primary);
 }
 
@@ -329,14 +321,19 @@
 
   .leaderboard-menu-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 14px;
+    gap: 0;
   }
 
   .leaderboard-menu-card {
-    min-height: 220px;
-    align-items: flex-start;
-    justify-content: space-between;
-    text-align: left;
+    min-height: 188px;
+    grid-template-columns: 1fr;
+    align-content: space-between;
+    align-items: start;
+    border-right: 1px solid var(--border);
+  }
+
+  .leaderboard-menu-card:last-child {
+    border-right: 0;
   }
 }
 
@@ -355,7 +352,6 @@
 
 .leaderboard-filter-btn,
 .leaderboard-table-card,
-.leaderboard-menu-card,
 .challenge-rank-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -386,14 +382,5 @@
 .leaderboard-row:hover,
 .leaderboard-row--current-user,
 .leaderboard-row--current-user:hover {
-  background: var(--green-subtle);
-}
-
-.leaderboard-menu-card {
-  color: var(--text-primary);
-}
-
-.leaderboard-menu-card:hover {
-  border-color: var(--green-primary);
   background: var(--green-subtle);
 }

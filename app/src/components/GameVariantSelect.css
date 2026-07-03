@@ -33,6 +33,7 @@
   justify-self: center;
   display: inline-flex;
   align-items: center;
+  gap: 8px;
   min-height: 34px;
   padding: 0 12px;
   border: 1px solid var(--border);
@@ -43,6 +44,11 @@
   font-size: 0.78rem;
   font-weight: 850;
   letter-spacing: 0.05em;
+}
+
+.variant-select-header__game-title .line-icon {
+  width: 18px;
+  height: 18px;
 }
 
 .variant-select-header__subtitle {
@@ -97,12 +103,8 @@
 .variant-card__icon {
   width: 56px;
   height: 56px;
-  display: grid;
-  place-items: center;
-  border-radius: var(--radius-md);
   background: var(--surface-muted);
   color: var(--green-primary);
-  font-size: 1.55rem;
 }
 
 .variant-card__title {

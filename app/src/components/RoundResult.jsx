@@ -20,15 +20,15 @@ function RoundResult({
   totalBotScore,
 }) {
   const feedback = type === 'distance' 
-    ? (timedOut ? { tier: 'bad', color: '#F44336', emoji: '⏰', label: 'Czas minął!' } : getDistanceFeedback(playerDistance))
-    : (playerCorrect ? { tier: 'perfect', color: '#00E676', emoji: '🎯', label: 'Świetnie!' } : { tier: 'bad', color: '#F44336', emoji: '❌', label: timedOut ? 'Czas minął!' : 'Pudło!' });
+    ? (timedOut ? { tier: 'bad', color: '#F44336', icon: 'alert', label: 'Czas minął!' } : getDistanceFeedback(playerDistance))
+    : (playerCorrect ? { tier: 'perfect', color: '#00E676', icon: 'target', label: 'Świetnie!' } : { tier: 'bad', color: '#F44336', icon: 'alert', label: timedOut ? 'Czas minął!' : 'Pudło!' });
 
   return (
     <div className="round-result-overlay">
       <div className="round-result glass-card animate-slide-up">
         {/* Player Result */}
         <div className="round-result__header" style={{ color: feedback.color }}>
-          <span className="round-result__emoji">{feedback.emoji}</span>
+          <span className={`round-result__emoji line-icon line-icon--${feedback.icon}`} aria-hidden="true" />
           <span className="round-result__label">{feedback.label}</span>
         </div>
 
@@ -57,7 +57,7 @@ function RoundResult({
           </div>
           
           <div className="round-result__bot-score-container">
-            <span className="round-result__score-label">🤖 Legniczanin</span>
+            <span className="round-result__score-label">Legniczanin</span>
             <span className="round-result__score-value">+{botScore} pkt</span>
             {type === 'distance' && botDistance !== undefined && (
               <span className="round-result__score-detail">({formatDistance(botDistance)})</span>

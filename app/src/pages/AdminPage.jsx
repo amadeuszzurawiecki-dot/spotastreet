@@ -36,7 +36,7 @@ export function AdminPage() {
   // Challenge Form State
   const [challengeTitle, setChallengeTitle] = useState('');
   const [challengeDesc, setChallengeDesc] = useState('');
-  const [challengeIcon, setChallengeIcon] = useState('🏆');
+  const [challengeIcon, setChallengeIcon] = useState('target');
   const [challengeGameMode, setChallengeGameMode] = useState('where-is-street');
   const [challengeRounds, setChallengeRounds] = useState(15);
   const [challengeTimeLimit, setChallengeTimeLimit] = useState(15);
@@ -74,7 +74,7 @@ export function AdminPage() {
         id: 'challenge_default_cudow',
         title: 'Znawca Dzielnicy Cudów',
         description: 'Rozpoznaj słynne patusiarskie ulice',
-        icon: '☠️',
+        icon: 'target',
         gameMode: 'what-street',
         rounds: 15,
         timeLimit: 15,
@@ -88,7 +88,7 @@ export function AdminPage() {
         id: 'challenge_default_sienkiewicza',
         title: 'Ekspert z Osiedla Sienkiewicza',
         description: 'Henryk byłby dumny',
-        icon: '🌷',
+        icon: 'pin',
         gameMode: 'where-is-street',
         rounds: 15,
         timeLimit: 15,
@@ -286,7 +286,7 @@ export function AdminPage() {
       // Reset form
       setChallengeTitle('');
       setChallengeDesc('');
-      setChallengeIcon('🏆');
+      setChallengeIcon('target');
       setChallengeStreets('');
       setChallengeImageUrl('');
       setChallengeDisabled(false);
@@ -301,7 +301,7 @@ export function AdminPage() {
     setEditingChallengeId(ch.id);
     setChallengeTitle(ch.title);
     setChallengeDesc(ch.description || '');
-    setChallengeIcon(ch.icon || '🏆');
+    setChallengeIcon(ch.icon || 'target');
     setChallengeGameMode(ch.gameMode || 'where-is-street');
     setChallengeRounds(ch.rounds || 15);
     setChallengeTimeLimit(ch.timeLimit || 15);
@@ -335,7 +335,7 @@ export function AdminPage() {
     setEditingChallengeId(null);
     setChallengeTitle('');
     setChallengeDesc('');
-    setChallengeIcon('🏆');
+    setChallengeIcon('target');
     setChallengeStreets('');
     setChallengeImageUrl('');
     setChallengeDisabled(false);
@@ -566,7 +566,7 @@ export function AdminPage() {
     return (
       <div className="admin-container">
         <div className="admin-auth-card glass-card animate-scale-in">
-          <div className="admin-badge">🔐 WERYFIKACJA ADMINISTRATORA</div>
+          <div className="admin-badge">WERYFIKACJA ADMINISTRATORA</div>
           <h1 className="admin-title text-display">Panel Administracyjny</h1>
           <p className="admin-subtitle">
             Dostęp do zarządzania kontami Bolters wymaga zalogowania autoryzowanym kontem Google Administratora.
@@ -596,7 +596,7 @@ export function AdminPage() {
     return (
       <div className="admin-container">
         <div className="admin-auth-card glass-card animate-scale-in">
-          <div className="admin-badge admin-badge--danger">⛔ BRAK UPRAWNIEŃ</div>
+          <div className="admin-badge admin-badge--danger">BRAK UPRAWNIEŃ</div>
           <h1 className="admin-title text-display">Odmowa Dostępu</h1>
           <p className="admin-subtitle">
             Konto <strong style={{ color: '#fff' }}>{user.email}</strong> nie znajduje się na liście autoryzowanych administratorów.
@@ -608,7 +608,7 @@ export function AdminPage() {
 
           <div className="admin-actions-row" style={{ marginTop: '1.5rem', justifyContent: 'center', gap: '1rem' }}>
             <button className="btn-primary" onClick={() => user.logout()}>
-              🔄 Zaloguj na inne konto
+              Zaloguj na inne konto
             </button>
             <button className="btn-secondary" onClick={() => navigate('/')}>
               ← Wróć do gry
@@ -625,20 +625,20 @@ export function AdminPage() {
       {/* Top Header Bar */}
       <header className="admin-header glass-card">
         <div className="admin-header__left">
-          <div className="admin-badge">⚡ PANEL ADMINISTRATORA</div>
+          <div className="admin-badge">PANEL ADMINISTRATORA</div>
           <h1 className="admin-header__title">Panel Administracyjny SPOTASTREET</h1>
         </div>
 
         <div className="admin-header__right">
           <div className="admin-user-pill">
-            <span className="admin-user-pill__avatar">👑</span>
+            <span className="admin-user-pill__avatar line-icon line-icon--user" aria-hidden="true" />
             <div className="admin-user-pill__info">
               <span className="admin-user-pill__name">{user.name || 'Admin'}</span>
               <span className="admin-user-pill__email">{user.email}</span>
             </div>
           </div>
           <button className="btn-secondary btn-sm" onClick={() => navigate('/')}>
-            🎮 Przejdź do gry
+            Przejdź do gry
           </button>
           <button className="btn-danger btn-sm" onClick={() => user.logout()}>
             Wyloguj
@@ -652,7 +652,9 @@ export function AdminPage() {
         {actionStatus && (
           <div className={`admin-alert admin-alert--${actionStatus.type} animate-fade-in`}>
             <span>{actionStatus.message}</span>
-            <button className="admin-alert__close" onClick={() => setActionStatus(null)}>✕</button>
+            <button className="admin-alert__close" onClick={() => setActionStatus(null)} aria-label="Zamknij">
+              <span className="line-icon line-icon--close" aria-hidden="true" />
+            </button>
           </div>
         )}
 
@@ -662,19 +664,21 @@ export function AdminPage() {
             className={`admin-tab-btn ${activeTab === 'users' ? 'admin-tab-btn--active' : ''}`}
             onClick={() => setActiveTab('users')}
           >
-            👥 Użytkownicy i Statystyki
+            <span className="line-icon line-icon--user" aria-hidden="true" />
+            Użytkownicy i Statystyki
           </button>
           <button 
             className={`admin-tab-btn ${activeTab === 'challenges' ? 'admin-tab-btn--active' : ''}`}
             onClick={() => setActiveTab('challenges')}
           >
-            📅 Wyzwania Codzienne
+            <span className="line-icon line-icon--target" aria-hidden="true" />
+            Wyzwania Codzienne
           </button>
           <button 
             className={`admin-tab-btn ${activeTab === 'settings' ? 'admin-tab-btn--active' : ''}`}
             onClick={() => setActiveTab('settings')}
           >
-            ⚙️ Ustawienia aplikacji
+            Ustawienia aplikacji
           </button>
         </div>
 
@@ -683,7 +687,7 @@ export function AdminPage() {
             {/* Stats Overview */}
             <div className="admin-stats-grid">
               <div className="admin-stat-box glass-card">
-                <div className="admin-stat-box__icon">👥</div>
+                <div className="admin-stat-box__icon"><span className="line-icon line-icon--user" aria-hidden="true" /></div>
                 <div className="admin-stat-box__data">
                   <span className="admin-stat-box__value">{allUsers.length}</span>
                   <span className="admin-stat-box__label">Aktywne Konta</span>
@@ -691,7 +695,7 @@ export function AdminPage() {
               </div>
 
               <div className="admin-stat-box glass-card">
-                <div className="admin-stat-box__icon">☁️</div>
+                <div className="admin-stat-box__icon"><span className="line-icon line-icon--settings" aria-hidden="true" /></div>
                 <div className="admin-stat-box__data">
                   <span className="admin-stat-box__value">{cloudProfiles.length}</span>
                   <span className="admin-stat-box__label">Zapisane w Chmurze</span>
@@ -699,7 +703,7 @@ export function AdminPage() {
               </div>
 
               <div className="admin-stat-box glass-card">
-                <div className="admin-stat-box__icon">🛡️</div>
+                <div className="admin-stat-box__icon"><span className="line-icon line-icon--target" aria-hidden="true" /></div>
                 <div className="admin-stat-box__data">
                   <span className="admin-stat-box__value">Aktywny</span>
                   <span className="admin-stat-box__label">Status Autoryzacji</span>
@@ -719,12 +723,12 @@ export function AdminPage() {
                   <input 
                     type="text" 
                     className="admin-search-input"
-                    placeholder="🔍 Szukaj po nazwie, emailu lub mieście..."
+                    placeholder="Szukaj po nazwie, emailu lub mieście..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
                   <button className="btn-secondary" onClick={loadProfiles} title="Odśwież listę kont">
-                    🔄 Odśwież
+                    Odśwież
                   </button>
                 </div>
               </div>
@@ -751,7 +755,7 @@ export function AdminPage() {
                               {getAvatarImage(u) ? (
                                 <img src={getAvatarImage(u)} alt="" />
                               ) : (
-                                <span>👤</span>
+                                <span className="line-icon line-icon--user" aria-hidden="true" />
                               )}
                             </div>
                             <div className="admin-user-card__identity">
@@ -765,7 +769,7 @@ export function AdminPage() {
                           </div>
 
                           <div className="admin-user-card__meta">
-                            <span>📍 {u.town}</span>
+                            <span>{u.town}</span>
                             <span>{u.hideEmail ? 'Email ukryty' : 'Email widoczny'}</span>
                             <span className="table-source-tag">{u.source}</span>
                           </div>
@@ -835,10 +839,10 @@ export function AdminPage() {
                     />
                   </div>
                   <div className="form-group flex-1">
-                    <label>Ikona (Emoji)</label>
+                    <label>Ikona liniowa</label>
                     <input 
                       type="text" 
-                      placeholder="np. 💀, 🌷, 🏰, 🚗" 
+                      placeholder="np. target, pin, scan" 
                       value={challengeIcon} 
                       onChange={(e) => setChallengeIcon(e.target.value)}
                     />
@@ -903,7 +907,7 @@ export function AdminPage() {
                         checked={challengeDisabled} 
                         onChange={(e) => setChallengeDisabled(e.target.checked)} 
                       />
-                      🚫 Wyzwanie wyłączone / zablokowane
+                      Wyzwanie wyłączone / zablokowane
                     </label>
                   </div>
                 </div>
@@ -950,7 +954,7 @@ export function AdminPage() {
 
                 <div style={{ display: 'flex', gap: 12 }}>
                   <button type="submit" className="btn-primary" style={{ flex: 1 }}>
-                    {editingChallengeId ? '💾 Zapisz Zmiany' : '💾 Zaplanuj i Zapisz Wyzwanie'}
+                    {editingChallengeId ? 'Zapisz Zmiany' : 'Zaplanuj i Zapisz Wyzwanie'}
                   </button>
                   {editingChallengeId && (
                     <button type="button" className="btn-secondary" onClick={handleCancelEdit}>
@@ -974,7 +978,7 @@ export function AdminPage() {
                   onClick={handleLoadDefaultChallenges}
                   style={{ background: 'rgba(0, 230, 118, 0.1)', border: '1px solid rgba(0, 230, 118, 0.25)', color: 'var(--green-primary)' }}
                 >
-                  🚀 Wczytaj Wyzwania Domyślne
+                  Wczytaj Wyzwania Domyślne
                 </button>
               </div>
 
@@ -999,7 +1003,7 @@ export function AdminPage() {
                             style={{ width: 44, height: 44, objectFit: 'cover', borderRadius: 6, marginRight: 8, border: '1px solid var(--bg-glass-border)' }} 
                           />
                         ) : (
-                          <span className="admin-challenge-card__icon">{ch.icon || '🏆'}</span>
+                          <span className={`admin-challenge-card__icon line-icon line-icon--${ch.icon || 'target'}`} aria-hidden="true" />
                         )}
                         <div className="admin-challenge-card__details">
                           <h4 style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -1012,10 +1016,10 @@ export function AdminPage() {
                           </h4>
                           <p>{ch.description || 'Brak opisu'}</p>
                           <div className="admin-challenge-card__meta">
-                            <span>📅 {ch.date}</span>
-                            <span>⏱️ {ch.timeLimit || 15}s/runda</span>
-                            <span>🔄 {ch.rounds} rund</span>
-                            <span>🎮 {ch.gameMode}</span>
+                            <span>{ch.date}</span>
+                            <span>{ch.timeLimit || 15}s/runda</span>
+                            <span>{ch.rounds} rund</span>
+                            <span>{ch.gameMode}</span>
                           </div>
                           {ch.streets && ch.streets.length > 0 && (
                             <div className="admin-challenge-card__streets">
@@ -1030,19 +1034,19 @@ export function AdminPage() {
                           className="btn-secondary btn-sm"
                           onClick={() => handleStartEdit(ch)}
                         >
-                          ✏️ Edytuj
+                          Edytuj
                         </button>
                         <button 
                           className="btn-secondary btn-sm"
                           onClick={() => handleToggleDisable(ch)}
                         >
-                          {ch.disabled ? '✅ Włącz' : '🚫 Wyłącz'}
+                          {ch.disabled ? 'Włącz' : 'Wyłącz'}
                         </button>
                         <button 
                           className="btn-danger btn-sm"
                           onClick={() => handleDeleteChallenge(ch.id)}
                         >
-                          🗑️ Usuń
+                          Usuń
                         </button>
                       </div>
                     </div>
@@ -1063,7 +1067,7 @@ export function AdminPage() {
             <div className="admin-settings-list">
               <div className="admin-feature-toggle">
                 <div className="admin-feature-toggle__main">
-                  <span className="admin-feature-toggle__icon">🗺️</span>
+                  <span className="admin-feature-toggle__icon line-icon line-icon--pin" aria-hidden="true" />
                   <div>
                     <h3>Mapa rozegranych rund w podsumowaniu pojedynku</h3>
                     <p>
@@ -1093,7 +1097,7 @@ export function AdminPage() {
         <div className="admin-modal-overlay animate-fade-in">
           <div className="admin-modal glass-card animate-scale-in">
             <div className="admin-modal__header">
-              <span className="admin-modal__icon">⚠️</span>
+              <span className="admin-modal__icon line-icon line-icon--alert" aria-hidden="true" />
               <h3>Potwierdzenie usunięcia konta</h3>
             </div>
             <div className="admin-modal__body">
@@ -1122,7 +1126,7 @@ export function AdminPage() {
         <div className="admin-modal-overlay animate-fade-in">
           <div className="admin-modal admin-user-editor glass-card animate-scale-in">
             <div className="admin-modal__header">
-              <span className="admin-modal__icon">👤</span>
+              <span className="admin-modal__icon line-icon line-icon--user" aria-hidden="true" />
               <div>
                 <h3>Edytuj profil użytkownika</h3>
                 <code className="admin-editor-email">{userDraft.email}</code>
@@ -1135,7 +1139,7 @@ export function AdminPage() {
                   {getAvatarImage(userDraft) ? (
                     <img src={getAvatarImage(userDraft)} alt="" />
                   ) : (
-                    <span>👤</span>
+                    <span className="line-icon line-icon--user" aria-hidden="true" />
                   )}
                 </div>
                 <label className="btn-secondary btn-sm admin-file-btn">
