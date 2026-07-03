@@ -503,16 +503,16 @@ export function Multiplayer() {
     const playerKey = isPlayer1 ? "player1" : "player2";
     
     const userRoundResult = {
-      score,
-      distance: submissionPosition ? distance : undefined,
+      score: Number(score) || 0,
+      distance: submissionPosition ? Number(distance) || 0 : null,
       pinPosition: submissionPosition || null,
-      guessText: answerText,
-      timedOut
+      guessText: answerText || '',
+      timedOut: !!timedOut
     };
 
     const myProfileData = isPlayer1 ? matchData.player1 : matchData.player2;
     const updatedRounds = [...(myProfileData.rounds || []), userRoundResult];
-    const updatedScore = myProfileData.score + score;
+    const updatedScore = (myProfileData.score || 0) + userRoundResult.score;
 
     try {
       await updateDoc(doc(db, "matches", matchId), {
@@ -815,11 +815,11 @@ export function Multiplayer() {
                   
                   <div className="mp-round-scores-comparison">
                     <span className={`mp-round-p1-score ${isP1Closer ? 'winner-text' : ''}`}>
-                      {p1Round.score} pkt {p1Round.distance !== undefined && `(${Math.round(p1Round.distance)}m)`}
+                      {p1Round.score} pkt {typeof p1Round.distance === 'number' && `(${Math.round(p1Round.distance)}m)`}
                     </span>
                     <span className="scores-divider">•</span>
                     <span className={`mp-round-p2-score ${isP2Closer ? 'winner-text' : ''}`}>
-                      {p2Round.score} pkt {p2Round.distance !== undefined && `(${Math.round(p2Round.distance)}m)`}
+                      {p2Round.score} pkt {typeof p2Round.distance === 'number' && `(${Math.round(p2Round.distance)}m)`}
                     </span>
                   </div>
                 </div>
@@ -984,8 +984,8 @@ export function Multiplayer() {
                   : `Cel: ${activeQuestion?.name?.toUpperCase() || ''}`}
               </div>
               <div className="hud-bottom-bar__details" style={{ display: 'flex', gap: '20px', fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
-                <span>Ty: <strong style={{ color: 'var(--green-primary)' }}>+{myAnswer?.score} pkt</strong> {myAnswer?.distance !== undefined && `(${Math.round(myAnswer.distance)}m)`}</span>
-                <span>{opponent?.name || 'Przeciwnik'}: <strong style={{ color: '#FF9800' }}>+{oppAnswer?.score} pkt</strong> {oppAnswer?.distance !== undefined && `(${Math.round(oppAnswer.distance)}m)`}</span>
+                <span>Ty: <strong style={{ color: 'var(--green-primary)' }}>+{myAnswer?.score} pkt</strong> {typeof myAnswer?.distance === 'number' && `(${Math.round(myAnswer.distance)}m)`}</span>
+                <span>{opponent?.name || 'Przeciwnik'}: <strong style={{ color: '#FF9800' }}>+{oppAnswer?.score} pkt</strong> {typeof oppAnswer?.distance === 'number' && `(${Math.round(oppAnswer.distance)}m)`}</span>
               </div>
             </>
           )}
