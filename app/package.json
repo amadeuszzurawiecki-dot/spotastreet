@@ -4,8 +4,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "cp -r ../images/* public/images/ 2>/dev/null || true; vite",
-    "build": "cp -r ../images/* public/images/ 2>/dev/null || true; vite build",
+    "dev": "node scripts/generate_build_info.js; cp -r ../images/* public/images/ 2>/dev/null || true; vite",
+    "build": "node scripts/generate_build_info.js; cp -r ../images/* public/images/ 2>/dev/null || true; vite build",
     "preview": "vite preview"
   },
   "devDependencies": {

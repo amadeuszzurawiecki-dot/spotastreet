@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import useUserProfile from './hooks/useUserProfile';
 import { fetchUserProfile } from './config/firebase';
@@ -17,7 +17,46 @@ import AdminPage from './pages/AdminPage';
 function App() {
   const user = useUserProfile();
   const location = useLocation();
+  const [buildInfo, setBuildInfo] = useState(null);
   const isLocalTestMode = import.meta.env.DEV || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+  useEffect(() => {
+    fetch('/build-info.json', { cache: 'no-store' })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((info) => setBuildInfo(info))
+      .catch(() => setBuildInfo(null));
+  }, []);
+
+  const BuildVersionBadge = () => {
+    if (!buildInfo?.version) return null;
+    return (
+      <div
+        title={`${buildInfo.commitMessage || buildInfo.version}${buildInfo.shortSha ? ` (${buildInfo.shortSha})` : ''}`}
+        style={{
+          position: 'fixed',
+          right: 12,
+          bottom: isLocalTestMode ? 60 : 12,
+          zIndex: 4999,
+          maxWidth: 'min(320px, calc(100vw - 24px))',
+          padding: '7px 10px',
+          background: 'rgba(10, 10, 15, 0.82)',
+          border: '1px solid rgba(255, 255, 255, 0.12)',
+          color: 'rgba(255, 255, 255, 0.72)',
+          fontSize: '0.72rem',
+          fontWeight: 700,
+          backdropFilter: 'blur(12px)',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.28)',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          pointerEvents: 'none',
+        }}
+      >
+        wersja: <span style={{ color: 'var(--green-primary)' }}>{buildInfo.version}</span>
+        {buildInfo.shortSha && <span style={{ color: 'rgba(255,255,255,0.42)' }}> · {buildInfo.shortSha}</span>}
+      </div>
+    );
+  };
 
   const TestLoginBar = () => {
     if (!isLocalTestMode) return null;
@@ -112,6 +151,7 @@ function App() {
     return (
       <>
         <AdminPage />
+        <BuildVersionBadge />
         <TestLoginBar />
       </>
     );
@@ -122,6 +162,7 @@ function App() {
     return (
       <>
         <Welcome />
+        <BuildVersionBadge />
         <TestLoginBar />
       </>
     );
@@ -132,6 +173,7 @@ function App() {
     return (
       <>
         <OnboardingModal />
+        <BuildVersionBadge />
         <TestLoginBar />
       </>
     );
@@ -142,6 +184,7 @@ function App() {
     return (
       <>
         <ProfileSetup />
+        <BuildVersionBadge />
         <TestLoginBar />
       </>
     );
@@ -161,6 +204,7 @@ function App() {
         <Route path="/admin" element={<AdminPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <BuildVersionBadge />
       <TestLoginBar />
     </>
   );
