@@ -10,7 +10,7 @@ const applyThemeToDocument = (theme) => {
 const useTheme = create(
   persist(
     (set, get) => ({
-      theme: 'dark',
+      theme: 'light',
       setTheme: (theme) => {
         const nextTheme = theme === 'light' ? 'light' : 'dark';
         applyThemeToDocument(nextTheme);

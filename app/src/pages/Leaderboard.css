@@ -310,7 +310,7 @@
 
 @media (min-width: 960px) {
   .leaderboard-page {
-    padding-left: var(--sidebar-width);
+    padding-left: 0;
   }
 
   .leaderboard-container {

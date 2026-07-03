@@ -196,9 +196,23 @@ function Home() {
       {/* Hero Section */}
       <header className="home-hero">
         <div className="home-hero__content">
-          <h1 className="home-hero__title text-display">
-            QUIZ TOPOGRAFICZNY <span style={{ color: 'var(--green-primary)' }}>SPOTASTREET</span>
-          </h1>
+          <div className="home-hero__node" aria-hidden="true" />
+          <section className="home-hero__panel">
+            <div>
+              <span className="home-hero__eyebrow">LEGNICA / SILNIK ROZGRYWKI</span>
+              <h1 className="home-hero__title text-display">
+                Precyzja miasta.
+                <span> Rywalizacja na mapie.</span>
+              </h1>
+            </div>
+            <div className="home-hero__side">
+              <p>Rozpoznawaj ulice, wskazuj miejsca i sprawdzaj, kto naprawdę zna układ miasta.</p>
+              <button className="home-hero__action" onClick={() => navigate('/game/what-street')}>
+                Zacznij grę →
+              </button>
+            </div>
+          </section>
+          <div className="home-hero__scroll">TRYBY GRY PONIŻEJ ↓</div>
         </div>
       </header>
 

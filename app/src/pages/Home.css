@@ -12,74 +12,129 @@
 
 .home-hero {
   width: 100%;
-  padding: 16px 14px 10px;
+  padding: 12px 14px 10px;
 }
 
 .home-hero__content {
-  min-height: 270px;
-  display: flex;
-  align-items: flex-end;
-  padding: 22px;
+  min-height: min(68vh, 660px);
+  display: grid;
+  place-items: center;
   overflow: hidden;
   position: relative;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background:
-    linear-gradient(180deg, rgba(2, 6, 23, 0.1) 0%, rgba(2, 6, 23, 0.72) 100%),
-    url('../assets/hero.png') center / cover;
-  box-shadow: var(--shadow-sm);
+  isolation: isolate;
+  border-bottom: 1px solid var(--border);
 }
 
-.home-hero__content::before {
-  content: 'LEGNICA / QUIZ MIEJSKI';
+.home-hero__node {
   position: absolute;
-  left: 22px;
-  top: 22px;
-  padding: 7px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: var(--radius-md);
-  background: rgba(2, 6, 23, 0.42);
-  color: rgba(255, 255, 255, 0.86);
+  top: 34%;
+  left: 28%;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--text-primary);
+  box-shadow:
+    0 0 0 16px color-mix(in srgb, var(--green-primary) 9%, transparent),
+    0 0 0 32px color-mix(in srgb, var(--green-primary) 5%, transparent);
+  opacity: 0.7;
+}
+
+.home-hero__panel {
+  width: min(100%, 960px);
+  min-height: 160px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  align-items: end;
+  padding: 24px;
+  border: 1px solid var(--border-strong);
+  border-radius: 0;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  box-shadow: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.home-hero__eyebrow {
+  display: inline-flex;
+  margin-bottom: 12px;
+  color: var(--text-tertiary);
   font-size: 0.68rem;
-  font-weight: 850;
-  letter-spacing: 0.08em;
-  backdrop-filter: blur(12px);
+  font-weight: 900;
+  letter-spacing: 0.18em;
 }
 
 .home-hero__title {
-  position: relative;
-  z-index: 1;
-  max-width: 760px;
-  color: #ffffff;
-  font-size: clamp(2rem, 9vw, 5rem);
-  line-height: 0.94;
+  color: var(--text-primary);
+  font-size: clamp(2rem, 8vw, 4.25rem);
+  line-height: 1.02;
   text-wrap: balance;
+}
+
+.home-hero__title span {
+  display: block;
+}
+
+.home-hero__side {
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  font-weight: 650;
+}
+
+.home-hero__action {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--text-primary);
+  color: var(--bg-primary);
+  font-family: var(--font-display);
+  font-weight: 850;
+}
+
+.home-hero__scroll {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--text-tertiary);
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.22em;
+  white-space: nowrap;
 }
 
 .home-modes {
   width: 100%;
-  max-width: 1120px;
+  max-width: 960px;
   margin: 0 auto;
-  padding: 10px 14px 36px;
+  padding: 28px 14px 48px;
 }
 
 .home-modes__section {
-  margin-top: 18px;
+  margin-top: 34px;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
 }
 
 .home-modes__title {
-  margin-bottom: 12px;
+  margin: 0;
+  padding: 24px;
+  border-bottom: 1px solid var(--border);
   color: var(--text-primary);
   font-family: var(--font-display);
-  font-size: 0.9rem;
+  font-size: clamp(1.45rem, 4vw, 2.15rem);
   font-weight: 850;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .home-modes__grid {
   display: grid;
-  gap: 10px;
+  gap: 0;
 }
 
 .offline-banner {
@@ -104,7 +159,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border);
 }
 
 .challenges-header-container h2 {
@@ -115,6 +170,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  padding-right: 20px;
 }
 
 .challenges-nav-arrow {
@@ -140,7 +196,7 @@
   display: flex;
   gap: 12px;
   overflow-x: auto;
-  padding: 2px 0 14px;
+  padding: 24px;
   scrollbar-width: none;
 }
 
@@ -158,14 +214,14 @@
 }
 
 .challenge-card {
-  flex: 0 0 min(78vw, 310px);
+  flex: 0 0 min(78vw, 292px);
   display: grid;
   grid-template-rows: 150px 1fr;
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--surface);
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
   cursor: pointer;
   transition: transform var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
 }
@@ -336,20 +392,21 @@
   align-items: center;
   gap: 12px;
   padding: 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  background: transparent;
   color: var(--text-primary);
   text-align: left;
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
   transition: transform var(--transition-base), border-color var(--transition-base), background var(--transition-base), box-shadow var(--transition-base);
 }
 
 .mode-card:not(.mode-card--locked):hover {
-  transform: translateY(-2px);
+  transform: none;
   border-color: var(--green-primary);
-  background: color-mix(in srgb, var(--surface) 88%, var(--green-primary));
-  box-shadow: var(--shadow-md);
+  background: var(--green-subtle);
+  box-shadow: none;
 }
 
 .mode-card:active:not(:disabled) {
@@ -398,12 +455,16 @@
 
 @media (min-width: 720px) {
   .home-hero {
-    padding: 22px 22px 10px;
+    padding: 0 22px 10px;
   }
 
   .home-hero__content {
-    min-height: 370px;
-    padding: 34px;
+    min-height: min(74vh, 740px);
+  }
+
+  .home-hero__panel {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    padding: 24px;
   }
 
   .home-modes {
@@ -414,26 +475,34 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .mode-card {
+    min-height: 188px;
+    grid-template-columns: 1fr;
+    align-content: space-between;
+    align-items: start;
+    border-right: 1px solid var(--border);
+  }
+
+  .mode-card:last-child {
+    border-right: 0;
+  }
+
   .challenge-card {
     flex-basis: 330px;
   }
 }
 
 @media (min-width: 960px) {
-  .home {
-    padding-left: var(--sidebar-width);
-  }
-
   .home-hero {
-    padding: 28px 28px 10px;
+    padding: 0 28px 10px;
   }
 
   .home-hero__content {
-    min-height: 430px;
+    min-height: calc(100vh - 106px);
   }
 
   .home-modes {
-    padding: 12px 28px 46px;
+    padding: 46px 28px 64px;
   }
 
   .home-modes__section {

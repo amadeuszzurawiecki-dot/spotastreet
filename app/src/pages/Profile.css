@@ -478,7 +478,7 @@
 
 @media (min-width: 960px) {
   .profile-page {
-    padding-left: var(--sidebar-width);
+    padding-left: 0;
   }
 
   .profile-container {

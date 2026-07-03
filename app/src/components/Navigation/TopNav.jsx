@@ -49,6 +49,18 @@ export function TopNav() {
           <span className="topnav-logo__text">SPOTASTREET</span>
         </div>
 
+        <nav className="topnav-links" aria-label="Nawigacja">
+          {navItems.map(item => (
+            <button
+              key={item.path}
+              className={`topnav-link ${location.pathname === item.path ? 'topnav-link--active' : ''}`}
+              onClick={() => handleNavigate(item.path)}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
+
         <button className="topnav-cta" onClick={() => handleNavigate('/')}>
           Graj teraz
         </button>
