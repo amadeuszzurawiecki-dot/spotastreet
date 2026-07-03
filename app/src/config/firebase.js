@@ -4,6 +4,7 @@ import {
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithCredential,
+  signInWithPopup,
   signOut as firebaseSignOut 
 } from 'firebase/auth';
 import { 
@@ -41,6 +42,13 @@ export async function signInWithGoogleIdToken(idToken) {
   if (!idToken) throw new Error('Missing Google credential');
   const credential = GoogleAuthProvider.credential(idToken);
   const result = await signInWithCredential(auth, credential);
+  return result.user;
+}
+
+export async function signInWithGooglePopup() {
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+  const result = await signInWithPopup(auth, provider);
   return result.user;
 }
 

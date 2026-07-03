@@ -6,16 +6,35 @@ import './Welcome.css';
 export function Welcome({ onLoginSuccess }) {
   const user = useUserProfile();
   const [errorMsg, setErrorMsg] = useState(null);
+  const [isSigningIn, setIsSigningIn] = useState(false);
   const googleBtnRef = useRef(null);
   const isRenderedRef = useRef(false);
 
   const handleCredentialResponse = async (response) => {
+    setIsSigningIn(true);
+    setErrorMsg(null);
     try {
       await user.loginWithGoogleCredential(response.credential);
       onLoginSuccess?.();
     } catch (e) {
       console.error('GIS Error:', e);
-      setErrorMsg('Błąd autoryzacji konta Google.');
+      setErrorMsg('Nie udało się dokończyć logowania przyciskiem Google. Spróbuj alternatywnego logowania poniżej.');
+    } finally {
+      setIsSigningIn(false);
+    }
+  };
+
+  const handlePopupLogin = async () => {
+    setIsSigningIn(true);
+    setErrorMsg(null);
+    try {
+      await user.loginWithGooglePopup();
+      onLoginSuccess?.();
+    } catch (e) {
+      console.error('Firebase popup login error:', e);
+      setErrorMsg(`Błąd autoryzacji konta Google${e?.code ? `: ${e.code}` : ''}.`);
+    } finally {
+      setIsSigningIn(false);
     }
   };
 
@@ -87,6 +106,16 @@ export function Welcome({ onLoginSuccess }) {
         <div className="welcome__gsi-container">
           <div ref={googleBtnRef} className="welcome__gsi-btn" />
         </div>
+
+        <button
+          className="btn-secondary"
+          type="button"
+          onClick={handlePopupLogin}
+          disabled={isSigningIn}
+          style={{ width: '100%', marginTop: '12px' }}
+        >
+          {isSigningIn ? 'Logowanie...' : 'Zaloguj przez Google'}
+        </button>
 
         <div className="welcome__footer-note">
           Logowanie jest dostępne wyłącznie przez oficjalne konto Google.

@@ -22,6 +22,7 @@ export function AdminPage() {
   const appSettings = useAppSettings();
   const [cloudProfiles, setCloudProfiles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isSigningIn, setIsSigningIn] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [deletingEmail, setDeletingEmail] = useState(null); // email being deleted or confirming deletion
   const [actionStatus, setActionStatus] = useState(null);
@@ -365,11 +366,27 @@ export function AdminPage() {
 
   // Handle Google Sign In if user is not logged in
   const handleCredentialResponse = async (response) => {
+    setIsSigningIn(true);
     try {
       await user.loginWithGoogleCredential(response.credential);
     } catch (e) {
       console.error('GIS Error:', e);
-      setActionStatus({ type: 'error', message: 'Błąd logowania kontem Google.' });
+      setActionStatus({ type: 'error', message: 'Nie udało się dokończyć logowania przyciskiem Google. Spróbuj alternatywnego logowania poniżej.' });
+    } finally {
+      setIsSigningIn(false);
+    }
+  };
+
+  const handlePopupLogin = async () => {
+    setIsSigningIn(true);
+    setActionStatus(null);
+    try {
+      await user.loginWithGooglePopup();
+    } catch (e) {
+      console.error('Firebase popup login error:', e);
+      setActionStatus({ type: 'error', message: `Błąd logowania kontem Google${e?.code ? `: ${e.code}` : ''}.` });
+    } finally {
+      setIsSigningIn(false);
     }
   };
 
@@ -585,6 +602,16 @@ export function AdminPage() {
           <div className="admin-gsi-wrapper">
             <div ref={googleBtnRef} className="admin-gsi-btn" />
           </div>
+
+          <button
+            className="btn-secondary"
+            type="button"
+            onClick={handlePopupLogin}
+            disabled={isSigningIn}
+            style={{ marginTop: '1rem' }}
+          >
+            {isSigningIn ? 'Logowanie...' : 'Zaloguj przez Google'}
+          </button>
 
           <button className="btn-secondary" style={{ marginTop: '1.5rem' }} onClick={() => navigate('/')}>
             ← Powrót do aplikacji

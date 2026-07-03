@@ -6,6 +6,7 @@ import {
   logoutUser,
   observeFirebaseAuth,
   signInWithGoogleIdToken,
+  signInWithGooglePopup,
 } from '../config/firebase';
 import { DEFAULT_MAP_STYLE_ID } from '../config/mapStyles';
 
@@ -104,6 +105,10 @@ const useUserProfile = create(
 
       loginWithGoogleCredential: async (googleCredential) => {
         await signInWithGoogleIdToken(googleCredential);
+      },
+
+      loginWithGooglePopup: async () => {
+        await signInWithGooglePopup();
       },
 
       setGoogleUser: (userPayload, authMeta = {}) => {
