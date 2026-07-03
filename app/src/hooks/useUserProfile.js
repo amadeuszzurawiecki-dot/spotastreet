@@ -1,6 +1,12 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { syncUserProfile, deleteUserProfile } from '../config/firebase';
+import {
+  syncUserProfile,
+  deleteUserProfile,
+  logoutUser,
+  observeFirebaseAuth,
+  signInWithGoogleIdToken,
+} from '../config/firebase';
 import { DEFAULT_MAP_STYLE_ID } from '../config/mapStyles';
 
 const defaultCar = {
@@ -20,6 +26,9 @@ const defaultStats = {
 const useUserProfile = create(
   persist(
     (set, get) => ({
+      authReady: false,
+      authUid: '',
+      isAdmin: false,
       isLoggedIn: false,
       googleUser: null, // { sub, email, name, picture }
       hasCompletedProfile: false,
@@ -47,7 +56,57 @@ const useUserProfile = create(
       onlineDraws: 0,
       mapStyle: DEFAULT_MAP_STYLE_ID,
 
-      setGoogleUser: (userPayload) => {
+      initializeAuthListener: () => {
+        if (get()._authUnsubscribe) return get()._authUnsubscribe;
+
+        const unsubscribe = observeFirebaseAuth(async (firebaseUser) => {
+          if (!firebaseUser) {
+            set({
+              authReady: true,
+              authUid: '',
+              isAdmin: false,
+              isLoggedIn: false,
+              googleUser: null,
+              email: '',
+            });
+            return;
+          }
+
+          try {
+            const token = await firebaseUser.getIdTokenResult(true);
+            const userPayload = {
+              sub: firebaseUser.uid,
+              email: firebaseUser.email,
+              name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Bolter',
+              picture: firebaseUser.photoURL || '',
+            };
+
+            get().setGoogleUser(userPayload, {
+              authUid: firebaseUser.uid,
+              isAdmin: token.claims?.admin === true,
+            });
+          } catch (e) {
+            console.warn('Firebase auth state error:', e.message);
+            set({
+              authReady: true,
+              authUid: firebaseUser.uid,
+              isAdmin: false,
+              isLoggedIn: false,
+              googleUser: null,
+              email: '',
+            });
+          }
+        });
+
+        set({ _authUnsubscribe: unsubscribe });
+        return unsubscribe;
+      },
+
+      loginWithGoogleCredential: async (googleCredential) => {
+        await signInWithGoogleIdToken(googleCredential);
+      },
+
+      setGoogleUser: (userPayload, authMeta = {}) => {
         const emailKey = userPayload.email?.toLowerCase()?.trim() || userPayload.sub;
         const savedProfiles = get().savedProfiles || {};
         const existingProfile = savedProfiles[emailKey];
@@ -75,6 +134,9 @@ const useUserProfile = create(
 
         if (existingProfile && existingProfile.hasCompletedProfile) {
           set({
+            authReady: true,
+            authUid: authMeta.authUid || userPayload.sub || '',
+            isAdmin: authMeta.isAdmin === true,
             isLoggedIn: true,
             googleUser: userPayload,
             email: userPayload.email,
@@ -101,6 +163,9 @@ const useUserProfile = create(
           });
         } else {
           set({
+            authReady: true,
+            authUid: authMeta.authUid || userPayload.sub || '',
+            isAdmin: authMeta.isAdmin === true,
             isLoggedIn: true,
             googleUser: userPayload,
             email: userPayload.email,
@@ -123,13 +188,16 @@ const useUserProfile = create(
             }
           });
         }
-        syncUserProfile(get());
       },
 
-      logout: () => {
+      logout: async () => {
+        await logoutUser();
         set({
           isLoggedIn: false,
           googleUser: null,
+          authUid: '',
+          isAdmin: false,
+          email: '',
         });
       },
 
@@ -349,10 +417,14 @@ const useUserProfile = create(
           // If current user deleted themselves, logout
           const currentEmail = state.email?.toLowerCase()?.trim();
           if (currentEmail === emailKey) {
+            logoutUser();
             return {
               savedProfiles: newSaved,
               isLoggedIn: false,
               googleUser: null,
+              authUid: '',
+              isAdmin: false,
+              email: '',
             };
           }
 
@@ -363,7 +435,31 @@ const useUserProfile = create(
       },
     }),
     {
-      name: 'bolters-persistent-user-database',
+      name: 'spotastreet-user-store-v3',
+      version: 3,
+      merge: (persistedState, currentState) => {
+        const safeState = persistedState && typeof persistedState === 'object'
+          ? persistedState
+          : {};
+
+        return {
+          ...currentState,
+          town: safeState.town || currentState.town,
+          avatarId: safeState.avatarId || currentState.avatarId,
+          car: safeState.car || currentState.car,
+          hideEmail: safeState.hideEmail === true,
+          customAvatar: safeState.customAvatar || null,
+          mapStyle: safeState.mapStyle || currentState.mapStyle,
+        };
+      },
+      partialize: (state) => ({
+        town: state.town,
+        avatarId: state.avatarId,
+        car: state.car,
+        hideEmail: state.hideEmail,
+        customAvatar: state.customAvatar,
+        mapStyle: state.mapStyle,
+      }),
     }
   )
 );

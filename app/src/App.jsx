@@ -20,11 +20,21 @@ function App() {
   const { theme, applyStoredTheme } = useTheme();
   const location = useLocation();
   const [buildInfo, setBuildInfo] = useState(null);
+  const [profileHydrated, setProfileHydrated] = useState(false);
   const isLocalTestMode = import.meta.env.DEV || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
   useEffect(() => {
     applyStoredTheme();
   }, [theme, applyStoredTheme]);
+
+  useEffect(() => {
+    localStorage.removeItem('bolters-persistent-user-database');
+    localStorage.removeItem('bolters_google_client_id');
+    const unsubscribe = user.initializeAuthListener();
+    return () => {
+      if (typeof unsubscribe === 'function') unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     fetch('/build-info.json', { cache: 'no-store' })
@@ -64,45 +74,73 @@ function App() {
     );
   };
 
-  // Sync user profile from Firestore when logged in
+  // Sync user profile from Firestore when logged in with Firebase Auth
   useEffect(() => {
-    if (user.isLoggedIn && user.email) {
-      async function syncFromCloud() {
-        try {
-          const cloudProfile = await fetchUserProfile(user.email);
-          if (cloudProfile) {
-            user.updateProfile({
-              name: cloudProfile.name || user.name,
-              town: cloudProfile.town || user.town,
-              avatarId: cloudProfile.avatarId || user.avatarId,
-              car: cloudProfile.car || user.car,
-              stats: cloudProfile.stats || user.stats,
-              challengeAttempts: cloudProfile.challengeAttempts || user.challengeAttempts,
-              hasCompletedProfile: cloudProfile.hasCompletedProfile || false,
-              hasCompletedOnboarding: cloudProfile.hasCompletedOnboarding || user.hasCompletedOnboarding,
-              hideEmail: cloudProfile.hideEmail || false,
-              isPremium: cloudProfile.isPremium || false,
-              customAvatar: cloudProfile.customAvatar || null,
-              dailyGamesPlayed: cloudProfile.dailyGamesPlayed || { date: '', count: 0 },
-              onlineWins: cloudProfile.onlineWins || 0,
-              onlineLosses: cloudProfile.onlineLosses || 0,
-              onlineDraws: cloudProfile.onlineDraws || 0,
-              mapStyle: cloudProfile.mapStyle || user.mapStyle || 'dark'
-            });
-          }
-        } catch (e) {
-          console.warn('Error fetching cloud profile on startup:', e);
-        }
-      }
-      syncFromCloud();
+    if (!user.authReady) {
+      setProfileHydrated(false);
+      return;
     }
-  }, [user.isLoggedIn, user.email]);
+
+    if (!user.isLoggedIn || !user.email) {
+      setProfileHydrated(true);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function syncFromCloud() {
+      try {
+        const cloudProfile = await fetchUserProfile(user.email);
+        if (!cancelled && cloudProfile) {
+          user.updateProfile({
+            name: cloudProfile.name || user.name,
+            town: cloudProfile.town || user.town,
+            avatarId: cloudProfile.avatarId || user.avatarId,
+            car: cloudProfile.car || user.car,
+            stats: cloudProfile.stats || user.stats,
+            challengeAttempts: cloudProfile.challengeAttempts || user.challengeAttempts,
+            hasCompletedProfile: cloudProfile.hasCompletedProfile || false,
+            hasCompletedOnboarding: cloudProfile.hasCompletedOnboarding || false,
+            hideEmail: cloudProfile.hideEmail || false,
+            isPremium: cloudProfile.isPremium || false,
+            customAvatar: cloudProfile.customAvatar || null,
+            dailyGamesPlayed: cloudProfile.dailyGamesPlayed || { date: '', count: 0 },
+            onlineWins: cloudProfile.onlineWins || 0,
+            onlineLosses: cloudProfile.onlineLosses || 0,
+            onlineDraws: cloudProfile.onlineDraws || 0,
+            mapStyle: cloudProfile.mapStyle || user.mapStyle || 'dark'
+          });
+        }
+      } catch (e) {
+        console.warn('Error fetching cloud profile on startup:', e);
+      } finally {
+        if (!cancelled) setProfileHydrated(true);
+      }
+    }
+    syncFromCloud();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user.authReady, user.isLoggedIn, user.email]);
 
   // Special route: Admin panel handles its own login and authorization
   if (location.pathname === '/admin') {
     return (
       <>
         <AdminPage />
+        <BuildVersionBadge />
+      </>
+    );
+  }
+
+  if (!user.authReady || !profileHydrated) {
+    return (
+      <>
+        <div className="game-loading">
+          <div className="game-loading__spinner" />
+          <p>Sprawdzanie sesji...</p>
+        </div>
         <BuildVersionBadge />
       </>
     );

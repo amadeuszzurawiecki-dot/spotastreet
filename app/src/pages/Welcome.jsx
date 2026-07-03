@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import useUserProfile from '../hooks/useUserProfile';
-import { parseJwt, GOOGLE_CLIENT_ID } from '../utils/googleAuth';
+import { GOOGLE_CLIENT_ID } from '../utils/googleAuth';
 import './Welcome.css';
 
 export function Welcome({ onLoginSuccess }) {
@@ -9,20 +9,10 @@ export function Welcome({ onLoginSuccess }) {
   const googleBtnRef = useRef(null);
   const isRenderedRef = useRef(false);
 
-  const handleCredentialResponse = (response) => {
+  const handleCredentialResponse = async (response) => {
     try {
-      const payload = parseJwt(response.credential);
-      if (payload && payload.email) {
-        user.setGoogleUser({
-          sub: payload.sub,
-          email: payload.email,
-          name: payload.name || payload.given_name || payload.email.split('@')[0],
-          picture: payload.picture,
-        });
-        onLoginSuccess?.();
-      } else {
-        setErrorMsg('Nie udało się odczytać danych konta Google.');
-      }
+      await user.loginWithGoogleCredential(response.credential);
+      onLoginSuccess?.();
     } catch (e) {
       console.error('GIS Error:', e);
       setErrorMsg('Błąd autoryzacji konta Google.');

@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useUserProfile from '../hooks/useUserProfile';
 import useAppSettings from '../hooks/useAppSettings';
-import { isAdminEmail } from '../config/admin';
 import {
   fetchAllCloudProfiles,
   saveDailyChallenge,
@@ -12,7 +11,8 @@ import {
   updateUserProfileByEmail,
   resetUserChallengeAttempt,
 } from '../config/firebase';
-import { parseJwt, GOOGLE_CLIENT_ID } from '../utils/googleAuth';
+import { GOOGLE_CLIENT_ID } from '../utils/googleAuth';
+import { maskEmail } from '../utils/privacy';
 import { AVATARS } from '../data/avatars';
 import './AdminPage.css';
 
@@ -116,10 +116,11 @@ export function AdminPage() {
   };
 
   useEffect(() => {
+    if (!user.authReady || !user.isLoggedIn || !user.isAdmin) return;
     if (activeTab === 'challenges') {
       loadChallengesList();
     }
-  }, [activeTab]);
+  }, [activeTab, user.authReady, user.isLoggedIn, user.isAdmin]);
 
   useEffect(() => {
     appSettings.loadSettings();
@@ -214,7 +215,7 @@ export function AdminPage() {
       isPremium: !!userDraft.isPremium,
     };
 
-    setActionStatus({ type: 'info', message: `Zapisywanie profilu ${userDraft.email}...` });
+    setActionStatus({ type: 'info', message: `Zapisywanie profilu ${maskEmail(userDraft.email)}...` });
     const ok = await updateUserProfileByEmail(userDraft.email, fields);
     if (ok) {
       patchActiveLocalUser(userDraft.email, fields);
@@ -358,23 +359,14 @@ export function AdminPage() {
 
 
   useEffect(() => {
+    if (!user.authReady || !user.isLoggedIn || !user.isAdmin) return;
     loadProfiles();
-  }, []);
+  }, [user.authReady, user.isLoggedIn, user.isAdmin]);
 
   // Handle Google Sign In if user is not logged in
-  const handleCredentialResponse = (response) => {
+  const handleCredentialResponse = async (response) => {
     try {
-      const payload = parseJwt(response.credential);
-      if (payload && payload.email) {
-        user.setGoogleUser({
-          sub: payload.sub,
-          email: payload.email,
-          name: payload.name || payload.given_name || payload.email.split('@')[0],
-          picture: payload.picture,
-        });
-      } else {
-        setActionStatus({ type: 'error', message: 'Nie udało się odczytać danych Google.' });
-      }
+      await user.loginWithGoogleCredential(response.credential);
     } catch (e) {
       console.error('GIS Error:', e);
       setActionStatus({ type: 'error', message: 'Błąd logowania kontem Google.' });
@@ -527,11 +519,11 @@ export function AdminPage() {
 
   // Action: Toggle Premium Status of a user
   const handleTogglePremium = async (email, currentPremium) => {
-    setActionStatus({ type: 'info', message: `Zapisywanie statusu Premium dla ${email}...` });
+    setActionStatus({ type: 'info', message: `Zapisywanie statusu Premium dla ${maskEmail(email)}...` });
     try {
       const success = await updateUserPremiumStatus(email, !currentPremium);
       if (success) {
-        setActionStatus({ type: 'success', message: `Pomyślnie zmieniono status Premium dla ${email}!` });
+        setActionStatus({ type: 'success', message: `Pomyślnie zmieniono status Premium dla ${maskEmail(email)}!` });
         
         // Update local active user if they changed themselves
         if (email.toLowerCase().trim() === user.email?.toLowerCase()?.trim()) {
@@ -560,6 +552,18 @@ export function AdminPage() {
       onlineTotal: (profile.onlineWins || 0) + (profile.onlineLosses || 0) + (profile.onlineDraws || 0),
     };
   };
+
+  if (!user.authReady) {
+    return (
+      <div className="admin-container">
+        <div className="admin-auth-card glass-card animate-scale-in">
+          <div className="admin-badge">WERYFIKACJA ADMINISTRATORA</div>
+          <h1 className="admin-title text-display">Sprawdzanie uprawnień</h1>
+          <p className="admin-subtitle">Weryfikuję sesję Firebase Auth.</p>
+        </div>
+      </div>
+    );
+  }
 
   // State Gatekeeper 1: Not logged in
   if (!user.isLoggedIn) {
@@ -590,19 +594,18 @@ export function AdminPage() {
     );
   }
 
-  // State Gatekeeper 2: Logged in, but NOT authorized email
-  const isAuthorized = isAdminEmail(user.email);
-  if (!isAuthorized) {
+  // State Gatekeeper 2: Logged in, but missing Firebase custom claim admin=true
+  if (!user.isAdmin) {
     return (
       <div className="admin-container">
         <div className="admin-auth-card glass-card animate-scale-in">
           <div className="admin-badge admin-badge--danger">BRAK UPRAWNIEŃ</div>
           <h1 className="admin-title text-display">Odmowa Dostępu</h1>
           <p className="admin-subtitle">
-            Konto <strong style={{ color: '#fff' }}>{user.email}</strong> nie znajduje się na liście autoryzowanych administratorów.
+            To konto nie ma aktywnego uprawnienia administratora w Firebase Auth.
           </p>
           <p className="admin-info-note">
-            Dostęp przyznano wyłącznie dla konta: <code>amadeuszzurawiecki@gmail.com</code>
+            Dostęp do panelu wymaga custom claim <code>admin=true</code> nadanego po stronie backendu.
           </p>
 
 
@@ -634,7 +637,7 @@ export function AdminPage() {
             <span className="admin-user-pill__avatar line-icon line-icon--user" aria-hidden="true" />
             <div className="admin-user-pill__info">
               <span className="admin-user-pill__name">{user.name || 'Admin'}</span>
-              <span className="admin-user-pill__email">{user.email}</span>
+              <span className="admin-user-pill__email">{maskEmail(user.email)}</span>
             </div>
           </div>
           <button className="btn-secondary btn-sm" onClick={() => navigate('/')}>
@@ -763,7 +766,7 @@ export function AdminPage() {
                                 {u.name}
                                 {isSelf && <span className="tag-self">Ty</span>}
                               </div>
-                              <code className="table-email">{u.email}</code>
+                              <code className="table-email">{maskEmail(u.email)}</code>
                             </div>
                             {u.isPremium && <span className="badge-premium-pill">PREMIUM</span>}
                           </div>
@@ -806,7 +809,7 @@ export function AdminPage() {
                             <button 
                               className="btn-danger btn-sm"
                               onClick={() => setDeletingEmail(u.email)}
-                              title={`Usuń konto ${u.email}`}
+                              title={`Usuń konto ${maskEmail(u.email)}`}
                             >
                               Usuń
                             </button>
@@ -1129,7 +1132,7 @@ export function AdminPage() {
               <span className="admin-modal__icon line-icon line-icon--user" aria-hidden="true" />
               <div>
                 <h3>Edytuj profil użytkownika</h3>
-                <code className="admin-editor-email">{userDraft.email}</code>
+                <code className="admin-editor-email">{maskEmail(userDraft.email)}</code>
               </div>
             </div>
 

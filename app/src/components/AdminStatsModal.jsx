@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import useUserProfile from '../hooks/useUserProfile';
 import { fetchAllCloudProfiles } from '../config/firebase';
 import CarBadge from './CarBadge';
+import { maskEmail } from '../utils/privacy';
 import './AdminStatsModal.css';
 
 export function AdminStatsModal({ onClose }) {
@@ -110,7 +111,7 @@ export function AdminStatsModal({ onClose }) {
                         <span className="admin-table__avatar line-icon line-icon--user" aria-hidden="true" />
                         <div>
                           <div className="admin-table__name">{p.name}</div>
-                          <div className="admin-table__email">{p.email}</div>
+                          <div className="admin-table__email">{maskEmail(p.email)}</div>
                         </div>
                       </div>
                     </td>

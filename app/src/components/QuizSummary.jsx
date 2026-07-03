@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import useUserProfile from '../hooks/useUserProfile';
 import { fetchAllCloudProfiles } from '../config/firebase';
 import { AVATARS } from '../data/avatars';
+import { maskEmail } from '../utils/privacy';
 import './QuizSummary.css';
 
 /**
@@ -275,7 +276,7 @@ function QuizSummary({
                                   {row.isPremium && <span className="player-you-tag">Premium</span>}
                                 </span>
                                 <span style={{ fontSize: '0.62rem', opacity: 0.5, display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '100%' }}>
-                                  {row.hideEmail ? (isSelf ? `${row.email} (ukryty)` : 'e-mail ukryty') : row.email}
+                                  {maskEmail(row.email)}
                                 </span>
                               </div>
                             </div>

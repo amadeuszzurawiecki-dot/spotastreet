@@ -1,6 +1,9 @@
 import { initializeApp } from 'firebase/app';
 import { 
   getAuth, 
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithCredential,
   signOut as firebaseSignOut 
 } from 'firebase/auth';
 import { 
@@ -34,6 +37,34 @@ export const db = getFirestore(app);
 // Exporting additional Firestore functions for use in real-time matchmaking & gameplay
 export { updateDoc, addDoc, onSnapshot, query, where, collection, doc, getDocs };
 
+export async function signInWithGoogleIdToken(idToken) {
+  if (!idToken) throw new Error('Missing Google credential');
+  const credential = GoogleAuthProvider.credential(idToken);
+  const result = await signInWithCredential(auth, credential);
+  return result.user;
+}
+
+export function observeFirebaseAuth(callback) {
+  return onAuthStateChanged(auth, callback);
+}
+
+export async function getCurrentUserClaims(forceRefresh = false) {
+  if (!auth.currentUser) return {};
+  const token = await auth.currentUser.getIdTokenResult(forceRefresh);
+  return token.claims || {};
+}
+
+async function currentUserIsAdmin() {
+  const claims = await getCurrentUserClaims(false);
+  return claims.admin === true;
+}
+
+function currentUserOwnsEmail(email) {
+  return !!auth.currentUser?.email
+    && !!email
+    && auth.currentUser.email.toLowerCase().trim() === email.toLowerCase().trim();
+}
+
 export async function logoutUser() {
   try {
     await firebaseSignOut(auth);
@@ -47,6 +78,10 @@ export async function logoutUser() {
  */
 export async function syncUserProfile(userProfile) {
   if (!userProfile?.email) return;
+  if (!currentUserOwnsEmail(userProfile.email)) {
+    console.warn('Firestore sync blocked: authenticated user does not own this profile.');
+    return;
+  }
   try {
     const cleanEmail = userProfile.email.toLowerCase().replace(/[^a-z0-9]/g, '_');
     await setDoc(doc(db, "users", cleanEmail), {
@@ -96,6 +131,7 @@ export async function fetchUserProfile(email) {
  */
 export async function saveDailyChallenge(challenge) {
   try {
+    if (!(await currentUserIsAdmin())) return false;
     // challenge: { id, title, description, icon, rounds, timeLimit, gameMode, streets, date }
     await setDoc(doc(db, "challenges", challenge.id), challenge);
     return true;
@@ -167,6 +203,7 @@ export async function fetchAllCloudProfiles() {
 export async function deleteUserProfile(email) {
   if (!email) return false;
   try {
+    if (!currentUserOwnsEmail(email) && !(await currentUserIsAdmin())) return false;
     const cleanEmail = email.toLowerCase().replace(/[^a-z0-9]/g, '_');
     await deleteDoc(doc(db, "users", cleanEmail));
     return true;
@@ -182,6 +219,7 @@ export async function deleteUserProfile(email) {
 export async function updateUserAvatar(email, avatarId) {
   if (!email || !avatarId) return false;
   try {
+    if (!currentUserOwnsEmail(email)) return false;
     const cleanEmail = email.toLowerCase().replace(/[^a-z0-9]/g, '_');
     await setDoc(doc(db, "users", cleanEmail), {
       avatarId: avatarId,
@@ -200,6 +238,7 @@ export async function updateUserAvatar(email, avatarId) {
 export async function updateUserProfileByEmail(email, fields) {
   if (!email || !fields || typeof fields !== 'object') return false;
   try {
+    if (!(await currentUserIsAdmin())) return false;
     const cleanEmail = email.toLowerCase().replace(/[^a-z0-9]/g, '_');
     await setDoc(doc(db, "users", cleanEmail), {
       ...fields,
@@ -218,6 +257,7 @@ export async function updateUserProfileByEmail(email, fields) {
 export async function resetUserChallengeAttempt(email, challengeId = null) {
   if (!email) return false;
   try {
+    if (!(await currentUserIsAdmin())) return false;
     const cleanEmail = email.toLowerCase().replace(/[^a-z0-9]/g, '_');
     const userRef = doc(db, "users", cleanEmail);
     if (challengeId) {
@@ -248,6 +288,7 @@ export async function resetUserChallengeAttempt(email, challengeId = null) {
 export async function updateUserPremiumStatus(email, isPremium) {
   if (!email) return false;
   try {
+    if (!(await currentUserIsAdmin())) return false;
     const cleanEmail = email.toLowerCase().replace(/[^a-z0-9]/g, '_');
     await setDoc(doc(db, "users", cleanEmail), {
       isPremium: isPremium,
@@ -266,6 +307,7 @@ export async function updateUserPremiumStatus(email, isPremium) {
 export async function deleteDailyChallenge(challengeId) {
   if (!challengeId) return false;
   try {
+    if (!(await currentUserIsAdmin())) return false;
     await deleteDoc(doc(db, "challenges", challengeId));
     return true;
   } catch (e) {
@@ -287,6 +329,7 @@ export async function fetchAppSettings() {
 export async function saveAppSettings(settings) {
   if (!settings || typeof settings !== 'object') return false;
   try {
+    if (!(await currentUserIsAdmin())) return false;
     await setDoc(doc(db, "settings", "app"), {
       ...settings,
       updatedAt: new Date().toISOString()

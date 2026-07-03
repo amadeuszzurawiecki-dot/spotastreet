@@ -3,6 +3,7 @@ import useUserProfile from '../hooks/useUserProfile';
 import TopNav from '../components/Navigation/TopNav';
 import { fetchAllCloudProfiles, fetchDailyChallenges } from '../config/firebase';
 import { AVATARS } from '../data/avatars';
+import { maskEmail } from '../utils/privacy';
 import './Leaderboard.css';
 
 export function Leaderboard() {
@@ -210,7 +211,7 @@ export function Leaderboard() {
                                     {row.isPremium && <span className="player-you-tag">Premium</span>}
                                   </span>
                                   <span style={{ fontSize: '0.65rem', opacity: 0.6, display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                    {row.hideEmail ? (isSelf ? `${row.email} (ukryty)` : 'e-mail ukryty') : row.email}
+                                    {maskEmail(row.email)}
                                   </span>
                                 </div>
                               </div>
@@ -301,7 +302,7 @@ export function Leaderboard() {
                               {item.isPremium && <span className="player-you-tag">Premium</span>}
                             </span>
                             <span className="player-email">
-                              {item.hideEmail ? (isCurrentUser ? `${item.email} (ukryty)` : 'e-mail ukryty') : (item.email || 'brak e-mail')}
+                              {maskEmail(item.email)}
                             </span>
                           </div>
                         </div>
