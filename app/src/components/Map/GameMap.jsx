@@ -25,9 +25,9 @@ const createTargetIcon = () => L.divIcon({
   iconAnchor: [8, 8],
 });
 
-const createRoundBadgeIcon = (round) => L.divIcon({
+const createRoundBadgeIcon = (round, status = 'draw') => L.divIcon({
   className: 'round-map-badge-icon',
-  html: `<div class="round-map-badge">${round}</div>`,
+  html: `<div class="round-map-badge round-map-badge--${status}">${round}</div>`,
   iconSize: [34, 34],
   iconAnchor: [17, 17],
 });
@@ -109,6 +109,32 @@ function ResetView({ center, zoom, trigger }) {
   return null;
 }
 
+function getSummaryItemBounds(item) {
+  const points = [];
+  item?.segments?.forEach(segment => segment.forEach(point => points.push(point)));
+  if (item?.labelPosition) points.push(item.labelPosition);
+  if (points.length < 2) return null;
+  return points;
+}
+
+function FocusSummaryRound({ item }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!item?.labelPosition) return;
+
+    const bounds = getSummaryItemBounds(item);
+    if (bounds) {
+      map.flyToBounds(bounds, { padding: [52, 52], maxZoom: 17, duration: 0.55 });
+      return;
+    }
+
+    map.flyTo(item.labelPosition, 16, { animate: true, duration: 0.55 });
+  }, [item, map]);
+
+  return null;
+}
+
 /**
  * GameMap component
  */
@@ -141,7 +167,8 @@ function GameMap({
   opponentBg = '#2A2A3E',
   opponentIsPremium = false,
   showResultDetails = false,
-  summaryRounds = []
+  summaryRounds = [],
+  focusedSummaryRound = null
 }) {
   const pinIcon = useMemo(() => createPinIcon(), []);
   const targetIcon = useMemo(() => createTargetIcon(), []);
@@ -153,6 +180,10 @@ function GameMap({
   const opponentResultIcon = useMemo(() => {
     return createOpponentPinIcon(opponentAvatar, opponentAvatarImg, opponentBg, opponentIsPremium);
   }, [opponentAvatar, opponentAvatarImg, opponentBg, opponentIsPremium]);
+
+  const focusedSummaryItem = useMemo(() => (
+    summaryRounds.find(item => item.round === focusedSummaryRound) || null
+  ), [summaryRounds, focusedSummaryRound]);
 
   return (
     <div className="game-map">
@@ -179,6 +210,7 @@ function GameMap({
         <ResetView center={LEGNICA_CENTER} zoom={13} trigger={roundKey} />
         
         {fitBounds && <FitBounds bounds={fitBounds} paddingOptions={paddingOptions} />}
+        {focusedSummaryItem && <FocusSummaryRound item={focusedSummaryItem} />}
 
         {summaryRounds.map((item) => (
           item.segments?.map((segment, segmentIndex) => (
@@ -201,10 +233,10 @@ function GameMap({
             <Marker
               key={`summary-label-${item.round}`}
               position={item.labelPosition}
-              icon={createRoundBadgeIcon(item.round)}
+              icon={createRoundBadgeIcon(item.round, item.status)}
             >
-              <Tooltip permanent direction="top" className="map-tooltip-unified map-tooltip-unified--round">
-                <div className="map-tooltip__score">Runda {item.round}</div>
+              <Tooltip permanent direction="top" className={`map-tooltip-unified map-tooltip-unified--round map-tooltip-unified--${item.status || 'draw'}`}>
+                <div className="map-tooltip__score">Runda {item.round}: {item.statusLabel}</div>
                 <div className="map-tooltip__distance">{item.name}</div>
               </Tooltip>
             </Marker>

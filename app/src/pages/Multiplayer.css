@@ -347,6 +347,21 @@
   border-radius: var(--radius-md);
   gap: var(--space-sm);
   text-align: left;
+  cursor: default;
+  transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+}
+
+.mp-round-row[tabindex] {
+  cursor: pointer;
+}
+
+.mp-round-row[tabindex]:hover,
+.mp-round-row[tabindex]:focus-visible,
+.mp-round-row--focused {
+  background: rgba(0, 230, 118, 0.06);
+  border-color: rgba(0, 230, 118, 0.32);
+  transform: translateY(-1px);
+  outline: none;
 }
 
 .mp-round-index {

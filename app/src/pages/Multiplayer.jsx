@@ -65,6 +65,18 @@ function getSummaryMapBounds(items) {
   return [[minLat, minLng], [maxLat, maxLng]];
 }
 
+function getRoundOutcomeStatus(myScore, opponentScore) {
+  if ((myScore || 0) > (opponentScore || 0)) {
+    return { status: 'won', statusLabel: 'wygrana' };
+  }
+
+  if ((myScore || 0) < (opponentScore || 0)) {
+    return { status: 'lost', statusLabel: 'przegrana' };
+  }
+
+  return { status: 'draw', statusLabel: 'remis' };
+}
+
 export function Multiplayer() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -92,6 +104,7 @@ export function Multiplayer() {
   const [isBotGame, setIsBotGame] = useState(false);
   const [error, setError] = useState(null);
   const [statsRecorded, setStatsRecorded] = useState(false);
+  const [focusedSummaryRound, setFocusedSummaryRound] = useState(null);
 
   const timerRef = useRef(null);
   const botSimTimeoutRef = useRef(null);
@@ -780,6 +793,9 @@ export function Multiplayer() {
       .map((quest, idx) => {
         const questionName = typeof quest === 'string' ? quest : quest.name;
         const color = SUMMARY_ROUTE_COLORS[idx % SUMMARY_ROUTE_COLORS.length];
+        const myRound = isPlayer1 ? p1.rounds?.[idx] : p2.rounds?.[idx];
+        const opponentRound = isPlayer1 ? p2.rounds?.[idx] : p1.rounds?.[idx];
+        const roundOutcome = getRoundOutcomeStatus(myRound?.score || 0, opponentRound?.score || 0);
 
         if (gameMode === 'where-is-street') {
           const street = allStreets.find(s => normalizeStreetName(s.name) === normalizeStreetName(questionName));
@@ -788,6 +804,7 @@ export function Multiplayer() {
             round: idx + 1,
             name: questionName,
             color,
+            ...roundOutcome,
             segments: street.segments,
             labelPosition: getSummaryLabelPosition(street.segments)
           };
@@ -799,6 +816,7 @@ export function Multiplayer() {
             round: idx + 1,
             name: questionName,
             color,
+            ...roundOutcome,
             segments: [],
             labelPosition: position
           };
@@ -873,6 +891,7 @@ export function Multiplayer() {
                   disabled
                   enableZoom={false}
                   summaryRounds={summaryMapItems}
+                  focusedSummaryRound={focusedSummaryRound}
                   fitBounds={summaryMapBounds}
                   paddingOptions={{ padding: [34, 34], maxZoom: 15, animate: false }}
                   roundKey={`summary-${matchId}-${summaryMapItems.length}`}
@@ -892,9 +911,17 @@ export function Multiplayer() {
               
               const isP1Closer = (p1Round.score || 0) > (p2Round.score || 0);
               const isP2Closer = (p2Round.score || 0) > (p1Round.score || 0);
+              const isFocusedRound = focusedSummaryRound === idx + 1;
 
               return (
-                <div key={idx} className="mp-round-row">
+                <div
+                  key={idx}
+                  className={`mp-round-row ${isFocusedRound ? 'mp-round-row--focused' : ''}`}
+                  tabIndex={showSummaryMap ? 0 : undefined}
+                  onMouseEnter={() => showSummaryMap && setFocusedSummaryRound(idx + 1)}
+                  onFocus={() => showSummaryMap && setFocusedSummaryRound(idx + 1)}
+                  onClick={() => showSummaryMap && setFocusedSummaryRound(idx + 1)}
+                >
                   <div className="mp-round-index" style={{ width: '24px' }}>{idx + 1}.</div>
                   <div className="mp-round-question-name">{questionName}</div>
                   

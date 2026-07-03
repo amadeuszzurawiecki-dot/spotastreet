@@ -179,6 +179,18 @@
   color: var(--green-primary);
 }
 
+.map-tooltip-unified--won .map-tooltip__score {
+  color: var(--green-primary);
+}
+
+.map-tooltip-unified--draw .map-tooltip__score {
+  color: #ffffff;
+}
+
+.map-tooltip-unified--lost .map-tooltip__score {
+  color: #ff5252;
+}
+
 .map-tooltip-unified .map-tooltip__distance {
   font-weight: 500;
   color: #94a3b8;
@@ -213,4 +225,19 @@
   font-family: var(--font-display);
   font-size: 0.9rem;
   font-weight: 900;
+}
+
+.round-map-badge--won {
+  background: var(--green-primary);
+  color: #06110b;
+}
+
+.round-map-badge--draw {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.round-map-badge--lost {
+  background: #ff5252;
+  color: #ffffff;
 }
