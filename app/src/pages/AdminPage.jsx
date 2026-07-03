@@ -582,10 +582,6 @@ export function AdminPage() {
             <div ref={googleBtnRef} className="admin-gsi-btn" />
           </div>
 
-          <button className="btn-primary admin-test-login" onClick={() => user.loginAsTestUser(true)}>
-            Wejdź jako admin testowy
-          </button>
-
           <button className="btn-secondary" style={{ marginTop: '1.5rem' }} onClick={() => navigate('/')}>
             ← Powrót do aplikacji
           </button>
@@ -611,9 +607,6 @@ export function AdminPage() {
 
 
           <div className="admin-actions-row" style={{ marginTop: '1.5rem', justifyContent: 'center', gap: '1rem' }}>
-            <button className="btn-primary" onClick={() => user.loginAsTestUser(true)}>
-              Wejdź jako admin testowy
-            </button>
             <button className="btn-primary" onClick={() => user.logout()}>
               🔄 Zaloguj na inne konto
             </button>

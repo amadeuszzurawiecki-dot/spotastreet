@@ -64,64 +64,9 @@ function App() {
     );
   };
 
-  const TestLoginBar = () => {
-    if (!isLocalTestMode) return null;
-    return (
-      <div style={{
-        position: 'fixed',
-        right: 12,
-        bottom: 12,
-        zIndex: 5000,
-        display: 'flex',
-        gap: 8,
-        flexWrap: 'wrap',
-        justifyContent: 'flex-end'
-      }}>
-        <button
-          onClick={() => user.loginAsTestUser(false)}
-          style={{
-            padding: '10px 12px',
-            background: 'var(--green-primary)',
-            color: '#0a0a0f',
-            fontWeight: 800,
-            border: 'none',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.35)'
-          }}
-        >
-          Test user
-        </button>
-        <button
-          onClick={() => user.loginAsTestUser(true)}
-          style={{
-            padding: '10px 12px',
-            background: '#fff',
-            color: '#0a0a0f',
-            fontWeight: 800,
-            border: 'none',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.35)'
-          }}
-        >
-          Test admin
-        </button>
-      </div>
-    );
-  };
-
-  useEffect(() => {
-    if (!isLocalTestMode) return;
-
-    const wantsAdmin = location.pathname === '/admin' || new URLSearchParams(location.search).get('testLogin') === 'admin';
-    const isTestUser = user.googleUser?.isTestUser;
-    const shouldAutoLogin = !user.isLoggedIn || (wantsAdmin && user.email !== 'amadeuszzurawiecki@gmail.com');
-
-    if (shouldAutoLogin || !isTestUser) {
-      user.loginAsTestUser(wantsAdmin);
-    }
-  }, [isLocalTestMode, location.pathname, location.search, user.isLoggedIn, user.email, user.googleUser?.isTestUser]);
-
   // Sync user profile from Firestore when logged in
   useEffect(() => {
-    if (user.isLoggedIn && user.email && !user.googleUser?.isTestUser) {
+    if (user.isLoggedIn && user.email) {
       async function syncFromCloud() {
         try {
           const cloudProfile = await fetchUserProfile(user.email);
@@ -159,7 +104,6 @@ function App() {
       <>
         <AdminPage />
         <BuildVersionBadge />
-        <TestLoginBar />
       </>
     );
   }
@@ -170,7 +114,6 @@ function App() {
       <>
         <Welcome />
         <BuildVersionBadge />
-        <TestLoginBar />
       </>
     );
   }
@@ -181,7 +124,6 @@ function App() {
       <>
         <OnboardingModal />
         <BuildVersionBadge />
-        <TestLoginBar />
       </>
     );
   }
@@ -192,7 +134,6 @@ function App() {
       <>
         <ProfileSetup />
         <BuildVersionBadge />
-        <TestLoginBar />
       </>
     );
   }
@@ -212,7 +153,6 @@ function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <BuildVersionBadge />
-      <TestLoginBar />
     </>
   );
 }

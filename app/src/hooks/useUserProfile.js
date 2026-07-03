@@ -123,53 +123,7 @@ const useUserProfile = create(
             }
           });
         }
-        if (!get().googleUser?.isTestUser) {
-          syncUserProfile(get());
-        }
-      },
-
-      loginAsTestUser: (asAdmin = false) => {
-        const savedProfiles = get().savedProfiles || {};
-        const email = asAdmin ? 'amadeuszzurawiecki@gmail.com' : 'tester@spotastreet.local';
-        const emailKey = email.toLowerCase().trim();
-        const existingProfile = savedProfiles[emailKey] || {};
-        const testProfile = {
-          email,
-          name: existingProfile.name || (asAdmin ? 'Admin Test' : 'Tester'),
-          town: existingProfile.town || 'Legnica',
-          avatarId: existingProfile.avatarId || 'amadi',
-          car: existingProfile.car || defaultCar,
-          stats: existingProfile.stats || defaultStats,
-          challengeAttempts: existingProfile.challengeAttempts || {},
-          hasCompletedProfile: true,
-          hasCompletedOnboarding: true,
-          hideEmail: !!existingProfile.hideEmail,
-          isPremium: asAdmin ? true : !!existingProfile.isPremium,
-          customAvatar: existingProfile.customAvatar || null,
-          dailyGamesPlayed: existingProfile.dailyGamesPlayed || { date: '', count: 0 },
-          onlineWins: existingProfile.onlineWins || 0,
-          onlineLosses: existingProfile.onlineLosses || 0,
-          onlineDraws: existingProfile.onlineDraws || 0,
-          mapStyle: existingProfile.mapStyle || DEFAULT_MAP_STYLE_ID,
-        };
-
-        set({
-          isLoggedIn: true,
-          googleUser: {
-            sub: asAdmin ? 'test-admin' : 'test-user',
-            email,
-            name: testProfile.name,
-            picture: null,
-            isTestUser: true,
-          },
-          ...testProfile,
-          savedProfiles: {
-            ...savedProfiles,
-            [emailKey]: testProfile,
-          },
-        });
-
-        // Test login is intentionally local-only while Google auth is disabled.
+        syncUserProfile(get());
       },
 
       logout: () => {

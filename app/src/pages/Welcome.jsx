@@ -29,11 +29,6 @@ export function Welcome({ onLoginSuccess }) {
     }
   };
 
-  const handleTestLogin = () => {
-    user.loginAsTestUser(false);
-    onLoginSuccess?.();
-  };
-
   useEffect(() => {
     localStorage.removeItem('bolters_google_client_id');
 
@@ -98,12 +93,8 @@ export function Welcome({ onLoginSuccess }) {
           <div ref={googleBtnRef} className="welcome__gsi-btn" />
         </div>
 
-        <button className="btn-primary welcome__test-login" onClick={handleTestLogin}>
-          Wejdź testowo bez Google
-        </button>
-
         <div className="welcome__footer-note">
-          Tryb testowy omija Google i tworzy lokalne konto testowe.
+          Logowanie jest dostępne wyłącznie przez oficjalne konto Google.
         </div>
       </div>
     </div>
