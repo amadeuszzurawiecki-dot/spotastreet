@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import useUserProfile from './hooks/useUserProfile';
 import { fetchUserProfile } from './config/firebase';
+import useTheme from './hooks/useTheme';
 import Welcome from './pages/Welcome';
 import ProfileSetup from './components/Profile/ProfileSetup';
 import OnboardingModal from './components/Onboarding/OnboardingModal';
@@ -16,9 +17,14 @@ import AdminPage from './pages/AdminPage';
 
 function App() {
   const user = useUserProfile();
+  const { theme, applyStoredTheme } = useTheme();
   const location = useLocation();
   const [buildInfo, setBuildInfo] = useState(null);
   const isLocalTestMode = import.meta.env.DEV || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+  useEffect(() => {
+    applyStoredTheme();
+  }, [theme, applyStoredTheme]);
 
   useEffect(() => {
     fetch('/build-info.json', { cache: 'no-store' })

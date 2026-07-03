@@ -1,6 +1,6 @@
 .quiz-summary {
   min-height: 100dvh;
-  background: var(--units-paper);
+  background: var(--bg-primary);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -86,7 +86,7 @@
   align-items: center;
   gap: var(--space-lg);
   padding: var(--space-md) var(--space-xl);
-  background: #fff;
+  background: var(--surface);
   border-radius: var(--radius-lg);
   border: 1px solid var(--bg-glass-border);
   width: 100%;
@@ -153,12 +153,21 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--units-blue);
+  background: var(--green-subtle);
   border-radius: var(--radius-sm);
   font-size: 0.7rem;
   font-weight: 700;
-  color: var(--units-ink);
+  color: var(--green-primary);
   flex-shrink: 0;
+}
+
+.quiz-summary__content > .glass-card,
+.quiz-summary__rounds {
+  border-radius: var(--radius-lg);
+}
+
+.quiz-summary__round-row {
+  border-bottom-color: var(--border);
 }
 
 .quiz-summary__round-street-name {

@@ -478,7 +478,7 @@
 
 @media (min-width: 960px) {
   .profile-page {
-    padding-left: 164px;
+    padding-left: var(--sidebar-width);
   }
 
   .profile-container {
@@ -531,5 +531,78 @@
 
   .map-style-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Modern app skin */
+.profile-page {
+  background: var(--bg-primary);
+}
+
+.profile-container {
+  max-width: 1120px;
+}
+
+.profile-card-header,
+.profile-settings,
+.profile-stats-section,
+.profile-premium-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.profile-card-header {
+  background:
+    linear-gradient(135deg, var(--green-subtle), transparent 62%),
+    var(--surface);
+}
+
+.profile-card-header__avatar,
+.stats-item__icon {
+  border-color: var(--border);
+  background: var(--surface-muted);
+  box-shadow: none;
+}
+
+.profile-card-header__name,
+.profile-section-title,
+.stats-item__title,
+.premium-status-box__badge {
+  font-weight: 850;
+}
+
+.form-input,
+.premium-status-box,
+.stats-item,
+.map-style-card {
+  background: var(--surface-muted);
+  border-color: var(--border);
+  border-radius: var(--radius-md);
+}
+
+.form-input:focus,
+.map-style-card:hover,
+.map-style-card:focus-visible,
+.map-style-card--selected {
+  border-color: var(--green-primary);
+  background: var(--green-subtle);
+}
+
+.clean-avatar-card {
+  box-shadow: none;
+  background: var(--surface-muted);
+}
+
+.profile-settings__message,
+.premium-status-box--active {
+  border-color: var(--green-primary);
+  background: var(--green-subtle);
+}
+
+@media (min-width: 960px) {
+  .profile-container {
+    padding: 34px 28px 48px;
   }
 }

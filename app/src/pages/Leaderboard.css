@@ -310,7 +310,7 @@
 
 @media (min-width: 960px) {
   .leaderboard-page {
-    padding-left: 164px;
+    padding-left: var(--sidebar-width);
   }
 
   .leaderboard-container {
@@ -338,4 +338,62 @@
     justify-content: space-between;
     text-align: left;
   }
+}
+
+/* Modern app skin */
+.leaderboard-page {
+  background: var(--bg-primary);
+}
+
+.leaderboard-container {
+  max-width: 1120px;
+}
+
+.leaderboard-title {
+  color: var(--text-primary);
+}
+
+.leaderboard-filter-btn,
+.leaderboard-table-card,
+.leaderboard-menu-card,
+.challenge-rank-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.leaderboard-filter-btn {
+  border-radius: var(--radius-full);
+  box-shadow: none;
+}
+
+.leaderboard-filter-btn:hover,
+.leaderboard-filter-btn--active {
+  border-color: var(--green-primary);
+  background: var(--green-subtle);
+  color: var(--green-primary);
+}
+
+.clean-leaderboard-table th {
+  border-bottom-color: var(--border);
+}
+
+.clean-leaderboard-table td {
+  border-bottom-color: var(--border);
+}
+
+.leaderboard-row:hover,
+.leaderboard-row--current-user,
+.leaderboard-row--current-user:hover {
+  background: var(--green-subtle);
+}
+
+.leaderboard-menu-card {
+  color: var(--text-primary);
+}
+
+.leaderboard-menu-card:hover {
+  border-color: var(--green-primary);
+  background: var(--green-subtle);
 }
