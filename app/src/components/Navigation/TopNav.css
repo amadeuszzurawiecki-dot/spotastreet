@@ -1,0 +1,202 @@
+.topnav {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-lg);
+  z-index: 1000;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+/* Logo */
+.topnav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.topnav-logo__sygnet {
+  filter: drop-shadow(0 0 6px rgba(0, 230, 118, 0.3));
+  transition: transform var(--transition-base);
+}
+
+.topnav-logo:hover .topnav-logo__sygnet {
+  transform: scale(1.08);
+}
+
+.topnav-logo__text {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: 0.05em;
+  color: #ffffff; /* White text for SPOTASTREET logo */
+}
+
+/* Hamburger button */
+.topnav-hamburger {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  z-index: 10001; /* Must float above drawer header */
+}
+
+.topnav-hamburger span {
+  display: block;
+  height: 2px;
+  background: var(--text-primary);
+  border-radius: 2px;
+  transition: all var(--transition-base);
+}
+
+/* Middle line */
+.topnav-hamburger span:nth-child(1) { width: 22px; }
+.topnav-hamburger span:nth-child(2) { width: 16px; }
+.topnav-hamburger span:nth-child(3) { width: 20px; }
+
+.topnav-hamburger:hover span {
+  background: var(--green-primary);
+}
+
+.topnav-hamburger:hover span:nth-child(2) {
+  width: 22px;
+}
+
+/* Menu open hamburger animation */
+.topnav-hamburger--open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+  width: 22px;
+  background: var(--text-primary);
+}
+
+.topnav-hamburger--open span:nth-child(2) {
+  opacity: 0;
+  width: 0;
+}
+
+.topnav-hamburger--open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+  width: 22px;
+  background: var(--text-primary);
+}
+
+/* Full-Screen Drawer Menu (Slides from the right) */
+.menu-drawer {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  max-width: 380px; /* sliding panel width */
+  z-index: 10000;
+  background: rgba(10, 10, 15, 0.98);
+  backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.menu-drawer--open {
+  transform: translateX(0);
+}
+
+.menu-drawer__header {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-lg);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.menu-drawer__close {
+  font-size: 1.5rem;
+  color: var(--text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+  padding: 8px;
+}
+
+.menu-drawer__close:hover {
+  color: var(--green-primary);
+}
+
+/* Nav links alignment: align-items to left, align to top */
+.menu-drawer__nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 40px var(--space-xl) var(--space-xl);
+  box-sizing: border-box;
+}
+
+.menu-drawer__nav-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-lg);
+  width: 100%;
+}
+
+.menu-drawer__link {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 300; /* Thinner font weight */
+  color: var(--text-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  text-align: left;
+  padding: 4px 0;
+  width: 100%;
+}
+
+.menu-drawer__link:hover {
+  color: var(--green-primary);
+  transform: translateX(4px);
+}
+
+.menu-drawer__link--active {
+  color: var(--green-primary);
+  font-weight: 400;
+}
+
+/* Active element has NO underline/line on bottom */
+.menu-drawer__link::after,
+.menu-drawer__link--active::after {
+  display: none !important;
+}
+
+/* Logout link aligned to bottom, same size */
+.menu-drawer__link--logout {
+  color: #FF5252;
+  margin-top: auto; /* Pushes to bottom */
+  font-weight: 300;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: var(--space-md);
+}
+
+.menu-drawer__link--logout:hover {
+  color: #FF5252;
+}

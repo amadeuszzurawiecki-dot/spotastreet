@@ -1,0 +1,82 @@
+[
+  {
+    "id": "zamek-piastowski",
+    "name": "Zamek Piastowski",
+    "description": "Jeden z najstarszych zamków murowanych w Polsce z charakterystycznymi wieżami Św. Piotra i Św. Jadwigi.",
+    "lat": 51.21107,
+    "lng": 16.16181,
+    "icon": "🏰"
+  },
+  {
+    "id": "katedra-legnicka",
+    "name": "Katedra św. Apostołów Piotra i Pawła",
+    "description": "Gotycka katedra usytuowana przy pl. Katedralnym w centrum Legnicy.",
+    "lat": 51.20699,
+    "lng": 16.16171,
+    "icon": "⛪"
+  },
+  {
+    "id": "palmiarnia-parkowa",
+    "name": "Palmiarnia w Parku Miejskim",
+    "description": "Zabytkowa palmiarnia położona w sercu legnickiego Parku Miejskiego.",
+    "lat": 51.20330,
+    "lng": 16.16450,
+    "icon": "🌴"
+  },
+  {
+    "id": "stary-ratusz-rynek",
+    "name": "Stary Ratusz i Rynek",
+    "description": "Barokowy Stary Ratusz i zabytkowy Rynek legnicki z podcieniami Śledziówek.",
+    "lat": 51.20720,
+    "lng": 16.16090,
+    "icon": "🏛️"
+  },
+  {
+    "id": "galeria-gwarna",
+    "name": "Galeria Gwarna",
+    "description": "Popularne centrum handlowo-rozrywkowe przy ul. Gwarnej.",
+    "lat": 51.20580,
+    "lng": 16.15880,
+    "icon": "🛍️"
+  },
+  {
+    "id": "teatr-modrzejewskiej",
+    "name": "Teatr im. Heleny Modrzejewskiej",
+    "description": "Słynny legnicki teatr dramatyczny położony przy Rynku.",
+    "lat": 51.20739,
+    "lng": 16.16056,
+    "icon": "🎭"
+  },
+  {
+    "id": "kosciol-nmp",
+    "name": "Ewangelicki Kościół Mariacki (NMP)",
+    "description": "Najstarszy kościół w Legnicy z dwiema strzelistymi wieżami.",
+    "lat": 51.20960,
+    "lng": 16.16560,
+    "icon": "⛪"
+  },
+  {
+    "id": "stadion-miedzi",
+    "name": "Stadion Orła Białego (Miedź Legnica)",
+    "description": "Stadion piłkarski przy ul. Hetmańskiej, domowy obiekt Miedzi Legnica.",
+    "lat": 51.20660,
+    "lng": 16.14720,
+    "icon": "⚽"
+  },
+  {
+    "id": "kozi-staw",
+    "name": "Kozi Staw w Parku Miejskim",
+    "description": "Malowniczy staw z wyspą w legnickim Parku Miejskim.",
+    "lat": 51.20700,
+    "lng": 16.16650,
+    "icon": "🦆"
+  },
+  {
+    "id": "galeria-piastow",
+    "name": "Galeria Piastów",
+    "description": "Duże centrum handlowe położone w ścisłym centrum przy zamku.",
+    "lat": 51.21010,
+    "lng": 16.15900,
+    "icon": "🏢"
+  }
+]

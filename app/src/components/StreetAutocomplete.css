@@ -1,0 +1,124 @@
+.autocomplete {
+  position: absolute;
+  bottom: calc(var(--safe-bottom) + 80px);
+  left: 0;
+  right: 0;
+  z-index: var(--z-hud);
+  padding: 0 var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  pointer-events: none;
+}
+
+.autocomplete > * {
+  pointer-events: auto;
+}
+
+/* Dropdown */
+.autocomplete__dropdown {
+  max-height: 240px;
+  overflow-y: auto;
+  padding: var(--space-xs);
+  animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.autocomplete__option {
+  display: block;
+  width: 100%;
+  padding: 12px var(--space-md);
+  text-align: left;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+}
+
+.autocomplete__option:hover,
+.autocomplete__option--selected {
+  background: var(--green-subtle);
+}
+
+.autocomplete__option--selected {
+  color: var(--green-primary);
+  border-left: 3px solid var(--green-primary);
+}
+
+.autocomplete__highlight {
+  background: rgba(0, 230, 118, 0.2);
+  color: var(--green-primary);
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+/* Input row */
+.autocomplete__input-row {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.autocomplete__input-wrapper {
+  flex: 1;
+  padding: 0 var(--space-md);
+}
+
+.autocomplete__input {
+  width: 100%;
+  padding: 14px 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+  background: none;
+}
+
+.autocomplete__input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.autocomplete__submit {
+  padding: 14px 24px;
+  background: var(--green-gradient);
+  color: var(--text-on-green);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-green);
+  flex-shrink: 0;
+}
+
+.autocomplete__submit:hover:not(:disabled) {
+  transform: scale(1.02);
+}
+
+.autocomplete__submit:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.autocomplete__submit:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Overrides when nested inside bottom bar card info */
+.hud-bottom-bar__info .autocomplete {
+  position: relative;
+  bottom: 0;
+  padding: 0;
+  width: 100%;
+  margin-top: 8px;
+  z-index: 200;
+  pointer-events: auto;
+}
+
+.hud-bottom-bar__info .autocomplete__dropdown {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  margin-bottom: 8px;
+  z-index: 1000;
+  max-height: 180px;
+  background: var(--bg-card-solid);
+  border: 1px solid var(--bg-glass-border);
+}

@@ -1,0 +1,37 @@
+/* =============================================
+   GAME PAGE SHARED STYLES
+   ============================================= */
+
+.game-page {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-primary);
+  overflow: hidden;
+}
+
+/* === Loading Screen === */
+.game-loading {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-lg);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.game-loading__spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(255, 255, 255, 0.08);
+  border-top-color: var(--green-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

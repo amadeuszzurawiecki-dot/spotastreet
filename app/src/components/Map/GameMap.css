@@ -1,0 +1,192 @@
+.game-map {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-map);
+}
+
+.game-map__container {
+  width: 100%;
+  height: 100%;
+}
+
+.leaflet-tile {
+  filter: grayscale(1) brightness(0.6) contrast(8);
+}
+
+/* Custom Pin Marker */
+.custom-pin {
+  background: none !important;
+  border: none !important;
+}
+
+.pin-marker {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pin-marker__dot {
+  width: 14px;
+  height: 14px;
+  background: var(--green-primary);
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  z-index: 2;
+  animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.pin-marker__ring {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--green-primary);
+  opacity: 0;
+  animation: pulseRing 1.5s ease-out infinite;
+}
+
+/* Target Point (closest point on street) */
+.target-point {
+  background: none !important;
+  border: none !important;
+}
+
+.target-marker {
+  width: 12px;
+  height: 12px;
+  background: #ffffff;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), 0 0 12px rgba(255, 255, 255, 0.3);
+  animation: scaleIn 0.3s 0.15s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Distance tag */
+.distance-tag {
+  position: absolute;
+  z-index: 500;
+  background: var(--bg-card-solid);
+  color: var(--text-primary);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  white-space: nowrap;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--bg-glass-border);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+/* === Unified Result Markers (Figma) === */
+.custom-player-pin,
+.custom-bot-pin {
+  background: none !important;
+  border: none !important;
+}
+
+.player-map-marker,
+.bot-map-marker {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.player-map-marker {
+  animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.bot-map-marker {
+  background: #2a2a3e;
+  animation: scaleIn 0.3s 0.15s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.map-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.map-avatar-emoji {
+  font-size: 1.15rem;
+}
+
+.bot-map-marker span {
+  font-size: 1.15rem;
+}
+
+/* Pulse animation rings on round end markers */
+.player-map-marker__pulse,
+.bot-map-marker__pulse {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.player-map-marker__pulse {
+  border-color: var(--green-primary);
+  animation: pulseRing 2s ease-out infinite;
+}
+
+.bot-map-marker__pulse {
+  border-color: #ff9800;
+  animation: pulseRing 2s ease-out 0.5s infinite;
+}
+
+/* === Leaflet Tooltip Overrides === */
+.leaflet-tooltip.map-tooltip-unified {
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 10px !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4) !important;
+  font-family: 'Outfit', sans-serif !important;
+  padding: 6px 12px !important;
+  font-size: 0.72rem !important;
+  text-align: center !important;
+  line-height: 1.3 !important;
+  pointer-events: none !important;
+}
+
+.map-tooltip-unified .map-tooltip__score {
+  font-weight: 800;
+  color: var(--green-primary);
+}
+
+.map-tooltip-unified--bot .map-tooltip__score {
+  color: #ff9800;
+}
+
+.map-tooltip-unified .map-tooltip__distance {
+  font-weight: 500;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+/* Tooltip arrow overrides */
+.leaflet-tooltip-top.map-tooltip-unified::before {
+  border-top-color: rgba(15, 23, 42, 0.95) !important;
+}
+
+.leaflet-tooltip-bottom.map-tooltip-unified::before {
+  border-bottom-color: rgba(15, 23, 42, 0.95) !important;
+}
+

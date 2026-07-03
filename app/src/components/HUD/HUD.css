@@ -1,0 +1,550 @@
+/* =============================================
+   HUD STYLES — Game overlay UI
+   ============================================= */
+
+/* === Top Bar Layout === */
+.hud-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-hud);
+  padding: calc(var(--safe-top) + var(--space-sm)) var(--space-sm) 0;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  pointer-events: none;
+}
+
+.hud-top > * {
+  pointer-events: auto;
+}
+
+/* === Round Info === */
+.hud-round {
+  padding: var(--space-sm) var(--space-md);
+  flex: 1;
+  min-width: 0;
+}
+
+.hud-round__header {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hud-round__label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hud-round__street {
+  color: var(--green-primary);
+}
+
+/* === Timer === */
+.hud-timer {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.hud-timer__svg {
+  position: absolute;
+  inset: 0;
+}
+
+.hud-timer__value {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.2rem;
+  z-index: 1;
+}
+
+/* === Score Display === */
+.hud-score {
+  padding: var(--space-sm) var(--space-md);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.hud-score__label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  letter-spacing: 0.08em;
+}
+
+.hud-score__value {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: var(--green-primary);
+  line-height: 1;
+}
+
+/* === Bot Badge === */
+.hud-bot {
+  position: absolute;
+  top: calc(var(--safe-top) + 70px);
+  right: var(--space-sm);
+  z-index: var(--z-hud);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 6px 12px;
+  pointer-events: none;
+}
+
+.hud-bot__avatar {
+  font-size: 1.3rem;
+}
+
+.hud-bot__info {
+  display: flex;
+  flex-direction: column;
+}
+
+.hud-bot__name {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.hud-bot__score {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.hud-bot__round-score {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--color-good);
+  margin-left: 4px;
+}
+
+/* === Bottom Actions === */
+.hud-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-hud);
+  padding: 0 var(--space-md) calc(var(--safe-bottom) + var(--space-md));
+  pointer-events: none;
+}
+
+.hud-bottom > * {
+  pointer-events: auto;
+}
+
+/* Confirm button with pulse */
+.btn-confirm {
+  animation: fadeInUp 0.4s both;
+}
+
+.btn-confirm--pulse {
+  animation: fadeInUp 0.4s both, pulse 2s ease-in-out 0.5s infinite;
+}
+
+/* === Back Button === */
+.hud-back {
+  position: absolute;
+  top: calc(var(--safe-top) + var(--space-sm));
+  left: var(--space-sm);
+  z-index: var(--z-hud);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--bg-glass-border);
+  transition: all var(--transition-base);
+}
+
+.hud-back:hover {
+  background: rgba(30, 30, 45, 0.9);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === New Centered Top HUD === */
+.hud-top-center {
+  position: absolute;
+  top: calc(var(--safe-top) + var(--space-sm));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-hud);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: 8px var(--space-md);
+  width: calc(100% - var(--space-lg));
+  max-width: 480px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--bg-glass-border);
+  border-radius: var(--radius-lg);
+  pointer-events: auto;
+  box-shadow: var(--shadow-lg);
+  animation: slideDown 0.4s both;
+}
+
+.hud-score-player,
+.hud-score-opponent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.hud-score-player {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.hud-score-opponent {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.hud-score-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.hud-score-value {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  margin-top: 1px;
+}
+
+.hud-score-player .hud-score-value {
+  color: var(--green-primary);
+}
+
+.hud-score-opponent .hud-score-value {
+  color: #FF9800; /* Distinct orange color for opponent */
+}
+
+.hud-timer-placeholder {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+}
+
+/* === New Full-Width Bottom Bar (Figma-accurate) === */
+.hud-bottom-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-hud);
+  padding: 0 var(--space-lg) calc(var(--safe-bottom) + var(--space-sm));
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  pointer-events: auto;
+}
+
+.hud-bottom-bar__info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+  padding: var(--space-md) var(--space-lg);
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--bg-glass-border);
+  border-left: 1px solid var(--bg-glass-border);
+  border-right: 1px solid var(--bg-glass-border);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.4s both;
+}
+
+.hud-bottom-bar__round {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hud-bottom-bar__target {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  white-space: normal;
+  word-wrap: break-word;
+  overflow: visible;
+  color: var(--text-primary);
+}
+
+.hud-bottom-bar__target-highlight {
+  color: var(--green-primary);
+}
+
+/* Action button area - sits below the info card */
+.hud-bottom-action {
+  padding: 0;
+}
+
+.hud-bottom-action .btn-confirm,
+.hud-bottom-action .btn-next {
+  width: 100%;
+  margin: 0;
+  padding: 14px;
+  font-size: 1rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+/* Footer text */
+.hud-bottom-bar__footer {
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  padding: 6px 0 0;
+}
+
+/* === Unified Premium HUD Styles (Figma) === */
+.hud-unified-layout {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-hud);
+  padding: calc(var(--safe-top) + 12px) var(--space-md) 0;
+  pointer-events: none;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.hud-unified-layout > * {
+  pointer-events: auto;
+}
+
+/* Back button in top-left */
+.hud-unified-back {
+  position: absolute;
+  top: calc(var(--safe-top) + 16px);
+  left: var(--space-md);
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color var(--transition-base);
+}
+
+.hud-unified-back:hover {
+  color: #fff;
+}
+
+.hud-unified-back__arrow {
+  font-size: 1.4rem;
+  line-height: 1;
+  margin-top: -2px;
+}
+
+/* Round badge in top-right */
+.hud-unified-round-badge {
+  position: absolute;
+  top: calc(var(--safe-top) + 14px);
+  right: var(--space-md);
+  border: 1px solid var(--green-primary);
+  color: var(--green-primary);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+/* Center HUD unified card */
+.hud-unified-card {
+  width: 100%;
+  margin-top: 36px; /* give space for back button and round badge */
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  box-sizing: border-box;
+}
+
+.hud-unified-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.hud-unified-side--player {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.hud-unified-side--opponent,
+.hud-unified-side--training {
+  align-items: flex-end;
+  text-align: right;
+}
+
+/* grey pill container for user info */
+.hud-unified-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 4px 10px 4px 4px;
+  border-radius: 20px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.hud-unified-pill--training {
+  padding: 4px 10px;
+  background: rgba(255, 152, 0, 0.1);
+  border-color: rgba(255, 152, 0, 0.2);
+  color: #FF9800;
+  font-weight: 700;
+  font-size: 0.72rem;
+}
+
+.hud-unified-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  overflow: hidden;
+  flex-shrink: 0;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.hud-unified-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hud-unified-name {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* score displays below info pill */
+.hud-unified-score {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 0 4px;
+}
+
+.hud-unified-score-val {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.8rem;
+  color: #fff;
+  line-height: 1;
+}
+
+.hud-unified-pts-added {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.95rem;
+}
+
+.hud-unified-pts-added--green {
+  color: var(--green-primary);
+}
+
+/* center timer */
+.hud-unified-timer-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  flex-shrink: 0;
+}
+
+.hud-unified-timer {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hud-unified-timer__svg {
+  position: absolute;
+  inset: 0;
+}
+
+.hud-unified-timer__val {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.25rem;
+  z-index: 1;
+}
+
+

@@ -1,0 +1,388 @@
+/* =============================================
+   SPOTASTREET MULTIPLAYER — CSS Styles
+   ============================================= */
+
+/* Matchmaking Lobby */
+.lobby-container {
+  min-height: 100dvh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl) var(--space-md);
+  box-sizing: border-box;
+  background: var(--bg-primary);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.lobby-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(0, 230, 118, 0.04) 0%, transparent 70%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.lobby-header {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xl);
+}
+
+.lobby-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--green-primary);
+  background: var(--green-subtle);
+  border: 1px solid rgba(0, 230, 118, 0.2);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-sm);
+}
+
+.lobby-title {
+  font-size: 1.8rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.lobby-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  margin: var(--space-xs) 0 0;
+}
+
+.lobby-mode-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--green-primary);
+  margin-top: 4px;
+}
+
+/* Radar scanning element */
+.lobby-radar-wrapper {
+  z-index: 1;
+  margin: var(--space-xl) 0;
+}
+
+.radar-circle {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 230, 118, 0.15);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 230, 118, 0.01);
+  box-shadow: 0 0 30px rgba(0, 230, 118, 0.05);
+}
+
+.radar-circle::before {
+  content: '';
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 1px dashed rgba(0, 230, 118, 0.2);
+}
+
+.radar-circle::after {
+  content: '';
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px dashed rgba(0, 230, 118, 0.25);
+}
+
+.radar-sweep {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(0, 230, 118, 0.15) 0deg, transparent 90deg, transparent 360deg);
+  animation: radarScan 3s infinite linear;
+}
+
+@keyframes radarScan {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.radar-center-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--bg-secondary);
+  border: 2px solid rgba(255,255,255,0.15);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  z-index: 2;
+}
+
+.radar-center-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lobby-status {
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xl);
+}
+
+.lobby-status-text {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.lobby-timer {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+.lobby-actions {
+  z-index: 1;
+  width: 100%;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.cancel-lobby-btn {
+  padding: 10px 16px;
+  font-size: 0.9rem;
+}
+
+/* 1v1 Summary view styling */
+.mp-summary-page {
+  min-height: 100dvh;
+  width: 100%;
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-xl) var(--space-md);
+  box-sizing: border-box;
+  position: relative;
+  overflow-y: auto;
+}
+
+.mp-summary-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 400px;
+  background: linear-gradient(to bottom, rgba(0, 230, 118, 0.04) 0%, transparent 100%);
+  z-index: 0;
+}
+
+.mp-summary-content {
+  z-index: 1;
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.mp-summary-header {
+  text-align: center;
+  margin-bottom: var(--space-md);
+}
+
+.mp-verdict-title {
+  font-size: 2.2rem;
+  color: var(--green-primary);
+  margin: 0 0 var(--space-xs);
+  text-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
+}
+
+.mp-verdict-desc {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* VS Header Display */
+.mp-vs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: var(--space-lg) var(--space-md);
+  border-radius: var(--radius-lg);
+  background: rgba(255,255,255,0.01);
+}
+
+.mp-vs-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 110px;
+}
+
+.mp-vs-avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  border: 2px solid rgba(255,255,255,0.1);
+  box-shadow: var(--shadow-sm);
+  background-color: var(--bg-secondary);
+}
+
+.mp-vs-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mp-vs-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.mp-vs-score {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 1.8rem;
+  color: var(--text-primary);
+}
+
+.mp-vs-divider {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--text-tertiary);
+  background: rgba(255,255,255,0.04);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+}
+
+/* Rounds comparison breakdown */
+.mp-rounds-breakdown {
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.mp-breakdown-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--text-primary);
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding-bottom: var(--space-xs);
+  margin-bottom: var(--space-xs);
+}
+
+.mp-round-row {
+  display: flex;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--bg-glass-border);
+  border-radius: var(--radius-md);
+  gap: var(--space-sm);
+  text-align: left;
+}
+
+.mp-round-index {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+  width: 50px;
+}
+
+.mp-round-question-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.mp-round-scores-comparison {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.winner-text {
+  color: var(--green-primary) !important;
+}
+
+.scores-divider {
+  color: var(--text-tertiary);
+}
+
+.mp-round-p1-score {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.mp-round-p2-score {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.mp-summary-actions {
+  margin-top: var(--space-md);
+}
+
+/* Custom classes for leaflet pins styling compatibility */
+.custom-opponent-pin {
+  transition: transform 0.2s ease;
+}
+
+.player-map-marker--opponent {
+  box-shadow: 0 0 10px rgba(255, 152, 0, 0.4);
+}

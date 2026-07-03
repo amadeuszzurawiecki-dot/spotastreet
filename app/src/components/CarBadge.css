@@ -1,0 +1,57 @@
+.car-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  background: var(--bg-card);
+  border: 1px solid rgba(0, 230, 118, 0.25);
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  box-shadow: 0 0 12px rgba(0, 230, 118, 0.15);
+  transition: all var(--transition-base);
+  height: 40px; /* Matching height for topbar flex alignment */
+  box-sizing: border-box;
+}
+
+.car-badge:hover {
+  border-color: var(--green-primary);
+  box-shadow: 0 0 16px rgba(0, 230, 118, 0.3);
+}
+
+.car-badge__svg-logo {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  margin-right: 2px;
+}
+
+.car-badge__svg-logo svg {
+  width: 100%;
+  height: 100%;
+}
+
+.car-badge__name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--green-primary);
+}
+
+.car-badge__model {
+  color: var(--text-secondary);
+  font-weight: 500;
+  margin-right: 4px;
+}
+
+.car-badge__color-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 6px currentColor;
+  flex-shrink: 0;
+}

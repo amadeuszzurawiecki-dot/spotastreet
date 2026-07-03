@@ -1,0 +1,228 @@
+.variant-select-container {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl) var(--space-lg);
+  background: var(--bg-primary);
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.variant-select-glow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle at 100% 0%, rgba(0, 230, 118, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.variant-select-header {
+  position: relative;
+  z-index: 2;
+  margin-bottom: var(--space-xl);
+  max-width: 400px;
+}
+
+.variant-select-header__title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+
+.variant-select-header__game-title {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--green-primary);
+  background: var(--green-subtle);
+  border: 1px solid rgba(0, 230, 118, 0.2);
+  padding: 6px 16px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.05em;
+}
+
+.variant-select-header__badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: rgba(59, 130, 246, 0.15);
+  border: 1px solid rgba(96, 165, 250, 0.25);
+  color: #60a5fa;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+  letter-spacing: 0.08em;
+}
+
+.variant-select-header__subtitle {
+  font-size: 0.825rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* === Grid === */
+.variant-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  width: 100%;
+  max-width: 380px;
+  position: relative;
+  z-index: 2;
+  margin-bottom: var(--space-xl);
+}
+
+.variant-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg) var(--space-md);
+  background: var(--bg-card);
+  border: 1px solid var(--bg-glass-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.variant-card:not(.variant-card--locked):hover {
+  background: rgba(25, 25, 40, 0.9);
+  border-color: var(--green-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 230, 118, 0.12);
+}
+
+.variant-card:not(.variant-card--locked):active {
+  transform: translateY(0) scale(0.98);
+}
+
+.variant-card__icon {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.variant-card__title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.variant-card__desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Locked card */
+.variant-card--locked {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background: rgba(15, 15, 20, 0.4);
+}
+
+.variant-card__lock-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* === Configurator Form === */
+.config-form {
+  width: 100%;
+  max-width: 380px;
+  padding: var(--space-lg);
+  margin-bottom: var(--space-xl);
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.config-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.config-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.config-val {
+  color: var(--green-primary);
+  font-weight: 800;
+}
+
+.config-options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.config-opt-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  flex: 1;
+  min-width: 50px;
+  text-align: center;
+}
+
+.config-opt-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.config-opt-btn--active {
+  background: var(--green-primary);
+  border-color: var(--green-primary);
+  color: #000 !important;
+}
+
+.start-btn {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 12px;
+}
+
+.back-btn-variant {
+  position: relative;
+  z-index: 2;
+  padding: 8px 24px;
+  font-size: 0.85rem;
+}

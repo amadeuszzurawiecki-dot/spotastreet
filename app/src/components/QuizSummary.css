@@ -1,0 +1,234 @@
+.quiz-summary {
+  min-height: 100dvh;
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl) var(--space-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+.quiz-summary__content {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.quiz-summary__title {
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  text-align: center;
+  color: var(--text-primary);
+}
+
+/* Score Circle */
+.quiz-summary__score-circle {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quiz-summary__ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.quiz-summary__score-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+}
+
+.quiz-summary__score-value {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 2.8rem;
+  color: var(--green-primary);
+  line-height: 1;
+}
+
+.quiz-summary__score-max {
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+/* Verdict */
+.quiz-summary__verdict {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.quiz-summary__verdict-emoji {
+  font-size: 2rem;
+}
+
+.quiz-summary__verdict-text {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.3rem;
+}
+
+/* Comparison */
+.quiz-summary__comparison {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-md) var(--space-xl);
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--bg-glass-border);
+  width: 100%;
+  justify-content: center;
+}
+
+.quiz-summary__player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.quiz-summary__player--winner .quiz-summary__player-score {
+  color: var(--green-primary);
+}
+
+.quiz-summary__player-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.quiz-summary__player-score {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.8rem;
+  color: var(--text-primary);
+}
+
+.quiz-summary__vs {
+  font-size: 0.85rem;
+  color: var(--text-tertiary);
+  font-weight: 600;
+}
+
+/* Round Breakdown */
+.quiz-summary__rounds {
+  width: 100%;
+}
+
+.quiz-summary__rounds-title {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-sm);
+  text-align: center;
+}
+
+.quiz-summary__round-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 8px 0;
+  font-size: 0.82rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.quiz-summary__round-num {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-sm);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.quiz-summary__round-street-name {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-align: left;
+}
+
+.quiz-summary__round-player {
+  width: 65px;
+  text-align: right;
+  font-weight: 600;
+  color: var(--green-primary);
+  flex-shrink: 0;
+}
+
+.quiz-summary__round-player--error {
+  color: #F44336 !important;
+}
+
+.quiz-summary__round-vs {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.quiz-summary__round-bot {
+  width: 55px;
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+/* Actions */
+.quiz-summary__actions {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+/* Confetti */
+.confetti-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -20px;
+  border-radius: 2px;
+  animation: confettiDrop linear forwards;
+}
+
+@media (min-width: 480px) {
+  .quiz-summary__score-circle {
+    width: 180px;
+    height: 180px;
+  }
+  
+  .quiz-summary__score-value {
+    font-size: 3.2rem;
+  }
+}

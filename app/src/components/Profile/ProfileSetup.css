@@ -1,0 +1,263 @@
+.profile-setup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  overflow-y: auto;
+}
+
+.profile-setup-container {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  margin: auto 0;
+}
+
+/* Greeting above card */
+.setup-greeting {
+  font-size: clamp(1.8rem, 6vw, 2.2rem);
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.setup-greeting--accent {
+  background: var(--green-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Main setup modal card */
+.profile-setup-modal {
+  width: 100%;
+  padding: var(--space-xl) var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 230, 118, 0.25);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Sleek Progress Indicator */
+.setup-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-xl);
+  position: relative;
+  padding: 0 var(--space-xs);
+}
+
+.setup-progress-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 2;
+  background: var(--bg-card-solid);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--bg-glass-border);
+  transition: all var(--transition-base);
+}
+
+.setup-progress-item--active {
+  border-color: var(--green-primary);
+  background: var(--green-subtle);
+  box-shadow: 0 0 10px rgba(0, 230, 118, 0.2);
+}
+
+.setup-progress-num {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  color: var(--text-tertiary);
+  font-size: 0.7rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.setup-progress-item--active .setup-progress-num {
+  background: var(--green-primary);
+  color: var(--text-on-green);
+}
+
+.setup-progress-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-tertiary);
+}
+
+.setup-progress-item--active .setup-progress-label {
+  color: var(--green-primary);
+}
+
+.setup-progress-line {
+  height: 2px;
+  background: var(--green-primary);
+  transition: width var(--transition-base);
+}
+
+/* Step Content Header */
+.setup-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.setup-title {
+  font-size: 1.35rem;
+  margin-bottom: 2px;
+}
+
+.setup-desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-bottom: var(--space-md);
+}
+
+.setup-badge-header {
+  flex-shrink: 0;
+  padding-top: 4px;
+}
+
+/* Avatar Grid */
+.setup-avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xl);
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.setup-avatar-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 6px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--bg-glass-border);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+}
+
+.setup-avatar-card:hover {
+  background: rgba(30, 30, 45, 0.9);
+}
+
+.setup-avatar-card--selected {
+  border-color: var(--green-primary);
+  background: rgba(0, 230, 118, 0.12);
+}
+
+.setup-avatar-card__img-wrapper {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: transform var(--transition-fast);
+}
+
+.setup-avatar-card:hover .setup-avatar-card__img-wrapper {
+  transform: scale(1.08);
+}
+
+.setup-avatar-card--selected .setup-avatar-card__img-wrapper {
+  border-color: var(--green-primary);
+  box-shadow: 0 0 12px var(--green-primary);
+}
+
+.setup-avatar-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.setup-avatar-card__emoji {
+  font-size: 1.5rem;
+}
+
+.setup-avatar-card__name {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+/* Full Width Color Picker */
+.color-picker-full {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.color-dot-large {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: transform var(--transition-fast);
+  cursor: pointer;
+}
+
+.color-dot-large:hover {
+  transform: scale(1.2);
+}
+
+.color-dot-large--selected {
+  border-color: var(--green-primary);
+  box-shadow: 0 0 10px var(--green-primary);
+  transform: scale(1.2);
+}
+
+/* Action buttons & Spacing */
+.setup-actions {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.btn-with-gap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Abort Button below Card */
+.setup-abort-btn {
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 16px;
+  transition: color var(--transition-fast);
+  text-decoration: underline;
+}
+
+.setup-abort-btn:hover {
+  color: var(--color-bad);
+}
