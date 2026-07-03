@@ -305,6 +305,28 @@
   gap: var(--space-sm);
 }
 
+.mp-summary-map {
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.mp-summary-map__header .mp-breakdown-title {
+  margin: 0;
+}
+
+.mp-summary-map__canvas {
+  position: relative;
+  height: min(54vh, 360px);
+  min-height: 280px;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--bg-glass-border);
+  background: #07100d;
+}
+
 .mp-breakdown-title {
   font-family: var(--font-display);
   font-weight: 800;
@@ -385,4 +407,15 @@
 
 .player-map-marker--opponent {
   box-shadow: 0 0 10px rgba(255, 152, 0, 0.4);
+}
+
+@media (max-width: 520px) {
+  .mp-summary-map {
+    padding: var(--space-sm);
+  }
+
+  .mp-summary-map__canvas {
+    height: 320px;
+    min-height: 260px;
+  }
 }

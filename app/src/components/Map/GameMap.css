@@ -175,6 +175,10 @@
   color: #ff9800;
 }
 
+.map-tooltip-unified--round .map-tooltip__score {
+  color: var(--green-primary);
+}
+
 .map-tooltip-unified .map-tooltip__distance {
   font-weight: 500;
   color: #94a3b8;
@@ -190,3 +194,23 @@
   border-bottom-color: rgba(15, 23, 42, 0.95) !important;
 }
 
+.round-map-badge-icon {
+  background: none !important;
+  border: none !important;
+}
+
+.round-map-badge {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--green-primary);
+  color: #06110b;
+  border: 2px solid #ffffff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 900;
+}

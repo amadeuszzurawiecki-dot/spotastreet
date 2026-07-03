@@ -25,6 +25,13 @@ const createTargetIcon = () => L.divIcon({
   iconAnchor: [8, 8],
 });
 
+const createRoundBadgeIcon = (round) => L.divIcon({
+  className: 'round-map-badge-icon',
+  html: `<div class="round-map-badge">${round}</div>`,
+  iconSize: [34, 34],
+  iconAnchor: [17, 17],
+});
+
 // Create Player Avatar marker on round end
 const createPlayerPinIcon = (avatarChar, avatarImg, bg, isPremium) => {
   const htmlContent = avatarImg 
@@ -133,7 +140,8 @@ function GameMap({
   opponentAvatarImg,
   opponentBg = '#2A2A3E',
   opponentIsPremium = false,
-  showResultDetails = false
+  showResultDetails = false,
+  summaryRounds = []
 }) {
   const pinIcon = useMemo(() => createPinIcon(), []);
   const targetIcon = useMemo(() => createTargetIcon(), []);
@@ -171,6 +179,37 @@ function GameMap({
         <ResetView center={LEGNICA_CENTER} zoom={13} trigger={roundKey} />
         
         {fitBounds && <FitBounds bounds={fitBounds} paddingOptions={paddingOptions} />}
+
+        {summaryRounds.map((item) => (
+          item.segments?.map((segment, segmentIndex) => (
+            <Polyline
+              key={`summary-street-${item.round}-${segmentIndex}`}
+              positions={segment}
+              pathOptions={{
+                color: item.color || '#00E676',
+                weight: 5,
+                opacity: 0.86,
+                lineCap: 'round',
+                lineJoin: 'round',
+              }}
+            />
+          ))
+        ))}
+
+        {summaryRounds.map((item) => (
+          item.labelPosition && (
+            <Marker
+              key={`summary-label-${item.round}`}
+              position={item.labelPosition}
+              icon={createRoundBadgeIcon(item.round)}
+            >
+              <Tooltip permanent direction="top" className="map-tooltip-unified map-tooltip-unified--round">
+                <div className="map-tooltip__score">Runda {item.round}</div>
+                <div className="map-tooltip__distance">{item.name}</div>
+              </Tooltip>
+            </Marker>
+          )
+        ))}
         
         {/* Street highlight */}
         {showStreet && streetSegments && streetSegments.map((segment, i) => (

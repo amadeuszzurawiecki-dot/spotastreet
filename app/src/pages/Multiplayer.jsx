@@ -31,6 +31,39 @@ import './Multiplayer.css';
 
 const TOTAL_ROUNDS = 5;
 const ROUND_DURATION = 20; // 20 seconds for multiplayer to make it more tactical
+const SUMMARY_ROUTE_COLORS = ['#00E676', '#4FC3F7', '#FFD54F', '#FF8A65', '#CE93D8'];
+
+function getSummaryLabelPosition(segments) {
+  const longestSegment = (segments || [])
+    .filter(segment => Array.isArray(segment) && segment.length > 0)
+    .sort((a, b) => b.length - a.length)[0];
+
+  if (!longestSegment) return null;
+  return longestSegment[Math.floor(longestSegment.length / 2)];
+}
+
+function getSummaryMapBounds(items) {
+  let minLat = Infinity, minLng = Infinity;
+  let maxLat = -Infinity, maxLng = -Infinity;
+
+  const includePoint = (point) => {
+    if (!Array.isArray(point) || point.length < 2) return;
+    const [lat, lng] = point;
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+    minLat = Math.min(minLat, lat);
+    minLng = Math.min(minLng, lng);
+    maxLat = Math.max(maxLat, lat);
+    maxLng = Math.max(maxLng, lng);
+  };
+
+  items.forEach((item) => {
+    includePoint(item.labelPosition);
+    item.segments?.forEach(segment => segment.forEach(includePoint));
+  });
+
+  if (minLat === Infinity) return null;
+  return [[minLat, minLng], [maxLat, maxLng]];
+}
 
 export function Multiplayer() {
   const navigate = useNavigate();
@@ -743,6 +776,40 @@ export function Multiplayer() {
       ? { image: p2.customAvatar, bg: 'transparent' }
       : (AVATARS.find(a => a.id === p2.avatarId) || AVATARS[0]);
 
+    const summaryMapItems = matchData.questions
+      .map((quest, idx) => {
+        const questionName = typeof quest === 'string' ? quest : quest.name;
+        const color = SUMMARY_ROUTE_COLORS[idx % SUMMARY_ROUTE_COLORS.length];
+
+        if (gameMode === 'where-is-street') {
+          const street = allStreets.find(s => normalizeStreetName(s.name) === normalizeStreetName(questionName));
+          if (!street?.segments?.length) return null;
+          return {
+            round: idx + 1,
+            name: questionName,
+            color,
+            segments: street.segments,
+            labelPosition: getSummaryLabelPosition(street.segments)
+          };
+        }
+
+        if (gameMode === 'where-is-place' && Number.isFinite(quest.lat) && Number.isFinite(quest.lng)) {
+          const position = [quest.lat, quest.lng];
+          return {
+            round: idx + 1,
+            name: questionName,
+            color,
+            segments: [],
+            labelPosition: position
+          };
+        }
+
+        return null;
+      })
+      .filter(Boolean);
+    const summaryMapBounds = getSummaryMapBounds(summaryMapItems);
+    const showSummaryMap = (gameMode === 'where-is-street' || gameMode === 'where-is-place') && summaryMapItems.length > 0;
+
     return (
       <div className="mp-summary-page animate-fade-in">
         <div className="mp-summary-glow" />
@@ -795,6 +862,24 @@ export function Multiplayer() {
               <div className="mp-vs-score">{p2.score}</div>
             </div>
           </div>
+
+          {showSummaryMap && (
+            <div className="mp-summary-map glass-card">
+              <div className="mp-summary-map__header">
+                <h3 className="mp-breakdown-title">Mapa rozegranych rund</h3>
+              </div>
+              <div className="mp-summary-map__canvas">
+                <GameMap
+                  disabled
+                  enableZoom={false}
+                  summaryRounds={summaryMapItems}
+                  fitBounds={summaryMapBounds}
+                  paddingOptions={{ padding: [34, 34], maxZoom: 15, animate: false }}
+                  roundKey={`summary-${matchId}-${summaryMapItems.length}`}
+                />
+              </div>
+            </div>
+          )}
 
           {/* Round breakdown details */}
           <div className="mp-rounds-breakdown glass-card">
