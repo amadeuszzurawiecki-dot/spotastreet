@@ -94,6 +94,7 @@ function FitBounds({ bounds, paddingOptions }) {
   useEffect(() => {
     if (bounds) {
       const options = paddingOptions || { padding: [50, 50], maxZoom: 16, animate: true, duration: 0.8 };
+      map.invalidateSize();
       map.fitBounds(bounds, options);
     }
   }, [bounds, map]);
@@ -116,7 +117,12 @@ function FocusSummaryRound({ item }) {
 
   useEffect(() => {
     if (!item?.labelPosition) return;
-    map.flyTo(item.labelPosition, 17, { animate: true, duration: 0.55 });
+    map.invalidateSize();
+    map.stop();
+    map.setView(item.labelPosition, 17, { animate: false });
+    requestAnimationFrame(() => {
+      map.panTo(item.labelPosition, { animate: false });
+    });
   }, [item, map]);
 
   return null;
@@ -198,7 +204,7 @@ function GameMap({
         
         <ResetView center={LEGNICA_CENTER} zoom={13} trigger={roundKey} />
         
-        {fitBounds && <FitBounds bounds={fitBounds} paddingOptions={paddingOptions} />}
+        {fitBounds && !focusedSummaryItem && <FitBounds bounds={fitBounds} paddingOptions={paddingOptions} />}
         {focusedSummaryItem && <FocusSummaryRound item={focusedSummaryItem} />}
 
         {summaryRounds.map((item) => (

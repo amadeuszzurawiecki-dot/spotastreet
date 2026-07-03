@@ -2,7 +2,9 @@
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  background: var(--bg-primary);
+  background:
+    linear-gradient(140deg, rgba(0, 230, 118, 0.055), transparent 34%),
+    var(--bg-primary);
 }
 
 .profile-container {
@@ -24,8 +26,8 @@
   gap: var(--space-md);
   padding: var(--space-md) var(--space-lg);
   border-radius: var(--radius-lg);
-  background: rgba(0, 230, 118, 0.03);
-  border: 1px solid rgba(0, 230, 118, 0.15);
+  background: linear-gradient(135deg, rgba(0, 230, 118, 0.08), rgba(255, 255, 255, 0.018));
+  border: 1px solid rgba(0, 230, 118, 0.18);
 }
 
 .profile-card-header__avatar {
@@ -126,7 +128,7 @@
 .form-input {
   width: 100%;
   padding: 12px 14px;
-  background: var(--bg-secondary);
+  background: rgba(255, 255, 255, 0.035);
   border: 1px solid var(--bg-glass-border);
   border-radius: var(--radius-md);
   color: var(--text-primary);
@@ -137,6 +139,7 @@
 
 .form-input:focus {
   border-color: var(--green-primary);
+  background: rgba(255, 255, 255, 0.055);
 }
 
 /* Clean circular avatar picker */
@@ -472,5 +475,59 @@
 @media (max-width: 520px) {
   .map-style-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 960px) {
+  .profile-container {
+    max-width: 1120px;
+    display: grid;
+    grid-template-columns: 360px minmax(0, 1fr);
+    grid-template-areas:
+      "header settings"
+      "premium settings"
+      "stats settings";
+    align-items: start;
+    gap: 22px;
+    padding: 36px var(--space-2xl) var(--space-2xl);
+  }
+
+  .profile-card-header {
+    grid-area: header;
+    min-height: 164px;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 24px;
+  }
+
+  .profile-card-header__avatar {
+    width: 82px;
+    height: 82px;
+  }
+
+  .profile-card-header__name {
+    font-size: 1.42rem;
+  }
+
+  .profile-premium-card {
+    grid-area: premium;
+  }
+
+  .profile-stats-section {
+    grid-area: stats;
+  }
+
+  .profile-settings {
+    grid-area: settings;
+    padding: 26px;
+  }
+
+  .clean-avatar-grid {
+    grid-template-columns: repeat(8, 1fr);
+    gap: 10px;
+  }
+
+  .map-style-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

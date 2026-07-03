@@ -434,3 +434,69 @@
     min-height: 260px;
   }
 }
+
+@media (min-width: 900px) {
+  .mp-summary-page {
+    padding: 40px var(--space-2xl);
+  }
+
+  .mp-summary-content {
+    max-width: 1180px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 420px;
+    grid-template-areas:
+      "header header"
+      "versus rounds"
+      "map rounds"
+      "actions actions";
+    gap: 22px;
+  }
+
+  .mp-summary-header {
+    grid-area: header;
+    max-width: 760px;
+    margin: 0 auto 6px;
+  }
+
+  .mp-verdict-title {
+    font-size: clamp(3rem, 6vw, 5.4rem);
+    line-height: 0.92;
+  }
+
+  .mp-verdict-desc {
+    font-size: 1rem;
+  }
+
+  .mp-vs-header {
+    grid-area: versus;
+    min-height: 150px;
+  }
+
+  .mp-summary-map {
+    grid-area: map;
+    position: sticky;
+    top: 92px;
+  }
+
+  .mp-summary-map__canvas {
+    height: min(62vh, 560px);
+    min-height: 430px;
+  }
+
+  .mp-rounds-breakdown {
+    grid-area: rounds;
+    align-self: start;
+    position: sticky;
+    top: 92px;
+  }
+
+  .mp-round-row {
+    min-height: 54px;
+  }
+
+  .mp-summary-actions {
+    grid-area: actions;
+    width: min(420px, 100%);
+    justify-self: center;
+  }
+}

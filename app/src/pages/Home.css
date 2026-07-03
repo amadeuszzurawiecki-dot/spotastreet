@@ -6,7 +6,9 @@
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  background: var(--bg-primary);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 220px),
+    var(--bg-primary);
   overflow-x: hidden;
   position: relative;
 }
@@ -18,7 +20,7 @@
   right: 0;
   width: 350px;
   height: 350px;
-  background: radial-gradient(circle at 100% 0%, rgba(0, 230, 118, 0.22) 0%, transparent 70%);
+  background: radial-gradient(circle at 100% 0%, rgba(0, 230, 118, 0.24) 0%, transparent 68%);
   pointer-events: none;
   z-index: 1;
 }
@@ -113,7 +115,7 @@
 /* === Hero === */
 .home-hero {
   position: relative;
-  padding: 32px var(--space-lg) calc(var(--space-xl) * 2);
+  padding: 28px var(--space-lg) var(--space-xl);
   text-align: center;
 }
 
@@ -136,8 +138,9 @@
 }
 
 .home-hero__title {
-  font-size: clamp(2.2rem, 8vw, 3.5rem);
-  line-height: 0.95;
+  font-size: clamp(2.35rem, 8vw, 4.6rem);
+  line-height: 0.92;
+  text-wrap: balance;
 }
 
 .home-hero__title--accent {
@@ -181,7 +184,7 @@
   gap: var(--space-md);
   width: 100%;
   padding: var(--space-md);
-  background: var(--bg-card);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012)), var(--bg-card);
   border: 1px solid var(--bg-glass-border);
   border-radius: var(--radius-lg);
   text-align: left;
@@ -204,9 +207,10 @@
 }
 
 .mode-card:not(.mode-card--locked):hover {
-  background: rgba(25, 25, 40, 0.9);
-  border-color: rgba(0, 230, 118, 0.15);
-  transform: translateX(4px);
+  background: rgba(22, 27, 34, 0.96);
+  border-color: rgba(0, 230, 118, 0.28);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .mode-card:not(.mode-card--locked):hover::before {
@@ -408,7 +412,7 @@
   max-width: 290px;
   display: flex;
   flex-direction: column;
-  background: var(--bg-card);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.012)), var(--bg-card);
   border: 1px solid var(--bg-glass-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -421,8 +425,8 @@
 
 .challenge-card:hover {
   border-color: var(--green-primary);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 230, 118, 0.12);
+  transform: translateY(-5px);
+  box-shadow: 0 18px 48px rgba(0, 230, 118, 0.14);
 }
 
 .challenge-card--played {
@@ -673,3 +677,121 @@
   font-size: 0.85rem;
 }
 
+@media (min-width: 900px) {
+  .home {
+    min-height: 100dvh;
+  }
+
+  .home-top-glow {
+    width: 720px;
+    height: 620px;
+  }
+
+  .home-hero {
+    padding: 48px var(--space-2xl) 36px;
+  }
+
+  .home-hero__content {
+    max-width: 1180px;
+    margin: 0 auto;
+  }
+
+  .home-hero__title {
+    max-width: 980px;
+    margin: 0 auto;
+  }
+
+  .home-modes {
+    max-width: 1180px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.75fr);
+    align-items: start;
+    gap: 28px;
+    padding-inline: var(--space-2xl);
+  }
+
+  .home-modes__section {
+    margin-bottom: 0;
+  }
+
+  .home-modes__section:first-child {
+    min-width: 0;
+  }
+
+  .home-modes__section:last-child {
+    position: sticky;
+    top: 88px;
+  }
+
+  .home-modes__title {
+    font-size: 1.28rem;
+    letter-spacing: 0;
+  }
+
+  .home-modes__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .mode-card {
+    min-height: 104px;
+    padding: 18px;
+  }
+
+  .mode-card__icon {
+    width: 58px;
+    height: 58px;
+    font-size: 2.2rem;
+  }
+
+  .mode-card__title {
+    font-size: 1.04rem;
+  }
+
+  .mode-card__desc {
+    font-size: 0.84rem;
+  }
+
+  .challenges-carousel {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(280px, 340px);
+    gap: 18px;
+    overflow-x: auto;
+    padding-bottom: 20px;
+  }
+
+  .challenge-card {
+    flex-basis: auto;
+    width: 100%;
+    max-width: none;
+  }
+
+  .challenge-card__bottom {
+    padding: 16px;
+  }
+
+  .challenge-card__title,
+  .marquee-text {
+    font-size: 1rem;
+  }
+
+  .challenge-card__desc {
+    font-size: 0.78rem;
+  }
+
+  .home-footer {
+    padding-bottom: 28px;
+  }
+}
+
+@media (min-width: 1260px) {
+  .home-modes {
+    grid-template-columns: minmax(0, 1.5fr) 380px;
+  }
+
+  .challenges-carousel {
+    grid-auto-columns: minmax(300px, 360px);
+  }
+}
