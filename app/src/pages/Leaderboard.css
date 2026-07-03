@@ -2,7 +2,7 @@
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  background: var(--bg-primary);
+  background: var(--units-paper);
 }
 
 .leaderboard-container {
@@ -23,7 +23,7 @@
 }
 
 .leaderboard-title {
-  font-size: 1.4rem;
+  font-size: 1.8rem;
   font-weight: 900;
   margin-bottom: 2px;
 }
@@ -51,7 +51,7 @@
   font-size: 0.72rem;
   font-weight: 700;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.68);
   border: 1px solid var(--bg-glass-border);
   color: var(--text-secondary);
   transition: all var(--transition-base);
@@ -78,6 +78,8 @@
   border-radius: var(--radius-lg);
   box-sizing: border-box;
   width: 100%;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(5, 5, 5, 0.12);
 }
 
 .clean-leaderboard-table {
@@ -101,7 +103,7 @@
 
 .clean-leaderboard-table td {
   padding: 10px 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(5, 5, 5, 0.06);
   vertical-align: middle;
   overflow: hidden;
 }
@@ -122,7 +124,7 @@
 
 /* Row states */
 .leaderboard-row:hover {
-  background: rgba(255, 255, 255, 0.015);
+  background: rgba(35, 119, 230, 0.06);
 }
 
 .leaderboard-row--current-user {
@@ -243,11 +245,11 @@
 }
 
 .leaderboard-menu-card {
-  background: var(--bg-glass);
-  border: 1px solid var(--bg-glass-border);
+  background: var(--units-blue);
+  border: 1px solid transparent;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-radius: 4px;
+  border-radius: var(--radius-lg);
   padding: 24px;
   text-align: center;
   cursor: pointer;
@@ -261,8 +263,19 @@
 
 .leaderboard-menu-card:hover {
   transform: translateY(-2px);
-  border-color: var(--green-primary);
-  background: rgba(0, 230, 118, 0.05);
+  border-color: var(--units-ink);
+}
+
+.leaderboard-menu-card:nth-child(2) {
+  background: var(--units-yellow);
+}
+
+.leaderboard-menu-card:nth-child(3) {
+  background: var(--units-orange);
+}
+
+.leaderboard-menu-card:nth-child(4) {
+  background: var(--units-green);
 }
 
 .leaderboard-menu-card__icon {
@@ -293,4 +306,36 @@
 .challenge-rank-card {
   border: 1px solid var(--bg-glass-border);
   background: var(--bg-glass);
+}
+
+@media (min-width: 960px) {
+  .leaderboard-page {
+    padding-left: 164px;
+  }
+
+  .leaderboard-container {
+    max-width: 1180px;
+    padding: 42px 28px var(--space-2xl);
+  }
+
+  .leaderboard-header {
+    margin-bottom: 24px;
+  }
+
+  .leaderboard-title {
+    font-size: clamp(2.4rem, 5vw, 4.6rem);
+    line-height: 0.92;
+  }
+
+  .leaderboard-menu-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .leaderboard-menu-card {
+    min-height: 220px;
+    align-items: flex-start;
+    justify-content: space-between;
+    text-align: left;
+  }
 }

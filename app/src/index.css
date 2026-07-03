@@ -4,21 +4,31 @@
 
 /* === CSS Custom Properties === */
 :root {
+  --units-paper: #efe5dc;
+  --units-cream: #f7efe7;
+  --units-ink: #050505;
+  --units-blue: #2377e6;
+  --units-yellow: #ffb400;
+  --units-orange: #ff5a14;
+  --units-red: #f23535;
+  --units-green: #2caf3c;
+  --units-purple: #ad52f2;
+
   /* Colors — Dark Theme */
-  --bg-primary: #07080c;
-  --bg-secondary: #11131a;
-  --bg-card: rgba(17, 19, 26, 0.9);
-  --bg-card-solid: #11131a;
-  --bg-glass: rgba(16, 18, 25, 0.82);
-  --bg-glass-border: rgba(255, 255, 255, 0.09);
+  --bg-primary: var(--units-paper);
+  --bg-secondary: var(--units-cream);
+  --bg-card: rgba(255, 255, 255, 0.72);
+  --bg-card-solid: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.68);
+  --bg-glass-border: rgba(5, 5, 5, 0.14);
   --bg-overlay: rgba(0, 0, 0, 0.6);
   
   /* Accent — Bolt Green */
-  --green-primary: #00E676;
-  --green-dark: #00c853;
-  --green-glow: rgba(0, 230, 118, 0.3);
-  --green-subtle: rgba(0, 230, 118, 0.1);
-  --green-gradient: linear-gradient(135deg, #00E676 0%, #00c853 100%);
+  --green-primary: #19e64f;
+  --green-dark: #12bd3e;
+  --green-glow: rgba(25, 230, 79, 0.3);
+  --green-subtle: rgba(25, 230, 79, 0.12);
+  --green-gradient: linear-gradient(135deg, #35f04a 0%, #19d847 100%);
   
   /* Feedback Colors */
   --color-perfect: #00E676;
@@ -28,10 +38,10 @@
   --color-info: #42A5F5;
   
   /* Text */
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --text-tertiary: rgba(255, 255, 255, 0.4);
-  --text-on-green: #0a0a0f;
+  --text-primary: var(--units-ink);
+  --text-secondary: rgba(5, 5, 5, 0.72);
+  --text-tertiary: rgba(5, 5, 5, 0.48);
+  --text-on-green: var(--units-ink);
   
   /* Typography */
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -46,10 +56,10 @@
   --space-2xl: 48px;
   
   /* Radius */
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 8px;
-  --radius-xl: 8px;
+  --radius-sm: 14px;
+  --radius-md: 22px;
+  --radius-lg: 30px;
+  --radius-xl: 36px;
   --radius-full: 999px;
   
   /* Shadows */
@@ -93,10 +103,7 @@ html {
 
 body {
   font-family: var(--font-body);
-  background:
-    linear-gradient(135deg, rgba(0, 230, 118, 0.045), transparent 32%),
-    radial-gradient(circle at 85% 0%, rgba(0, 114, 227, 0.11), transparent 32%),
-    var(--bg-primary);
+  background: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100dvh;
   overflow-x: hidden;
@@ -154,9 +161,9 @@ img {
 
 /* === Glass Card === */
 .glass-card {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018)), var(--bg-glass);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
+  background: var(--bg-glass);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border: 1px solid var(--bg-glass-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
@@ -218,7 +225,7 @@ img {
   gap: var(--space-sm);
   width: 100%;
   padding: 14px 24px;
-  background: rgba(255, 255, 255, 0.035);
+  background: rgba(255, 255, 255, 0.62);
   border: 1px solid var(--bg-glass-border);
   color: var(--text-primary);
   font-family: var(--font-display);
@@ -356,7 +363,7 @@ img {
 }
 
 .leaflet-control-attribution {
-  background: var(--bg-glass) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
   color: var(--text-tertiary) !important;
   font-size: 10px !important;
   backdrop-filter: blur(8px) !important;
