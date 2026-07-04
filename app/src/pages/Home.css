@@ -374,15 +374,15 @@
 }
 
 .mode-card:nth-child(1) {
-  background: var(--text-tertiary);
+  background: var(--bg-primary);
 }
 
 .mode-card:nth-child(2) {
-  background: var(--text-primary);
+  background: var(--bg-primary);
 }
 
 .mode-card:nth-child(3) {
-  background: var(--main-color);
+  background: var(--bg-primary);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -412,7 +412,7 @@
   height: 52px;
   display: grid;
   place-items: start;
-  color: #fff;
+  color: var(--main-color);
 }
 
 .mode-card__svg {
@@ -427,31 +427,19 @@
 
 .mode-card__title {
   margin-bottom: 6px;
-  color: #fff;
+  color: var(--text-primary);
   font-family: var(--font-display);
   font-size: 17px;
   font-weight: 700;
 }
 
 .mode-card__desc {
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--text-secondary);
   font-size: 13px;
   font-weight: 400;
   line-height: 1.4;
 }
 
-:root[data-theme="dark"] .mode-card:nth-child(2) {
-  background: var(--surface);
-}
-
-:root[data-theme="dark"] .mode-card:nth-child(2) .mode-card__icon-wrap,
-:root[data-theme="dark"] .mode-card:nth-child(2) .mode-card__title {
-  color: var(--text-primary);
-}
-
-:root[data-theme="dark"] .mode-card:nth-child(2) .mode-card__desc {
-  color: var(--text-secondary);
-}
 
 .home-footer {
   display: none;

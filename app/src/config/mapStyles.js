@@ -5,7 +5,7 @@ export const MAP_STYLES = [
     id: 'mono-dark',
     name: 'Mono Dark',
     description: 'Czarna mapa z białymi konturami ulic',
-    url: 'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
+    url: 'https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
     subdomains: 'abcd',
   },
