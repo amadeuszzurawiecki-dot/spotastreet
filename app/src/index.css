@@ -24,6 +24,8 @@
   --layout-width-current: 960px;
   --content-width: min(100% - calc(var(--page-gutter) * 2), var(--layout-width-current));
   --section-padding: 16px;
+  --cursor-color: #fff;
+  --cursor-border: #fff;
   --grid-unit: 16px;
   --grid-major: 160px;
   --grid-origin-x: calc((100vw - var(--layout-width-current)) / 2);
@@ -68,6 +70,8 @@
   --text-secondary: #cbd5e1;
   --text-tertiary: #94a3b8;
   --text-on-green: #03120a;
+  --cursor-color: #fff;
+  --cursor-border: #fff;
 
   --green-primary: #16a34a;
   --main-color: #16a34a;
@@ -125,6 +129,8 @@
   --text-secondary: #475569;
   --text-tertiary: #64748b;
   --text-on-green: #04130b;
+  --cursor-color: #000;
+  --cursor-border: #000;
 
   --green-primary: #16a34a;
   --main-color: #16a34a;
@@ -203,10 +209,10 @@ body::before {
   width: var(--grid-unit);
   height: var(--grid-unit);
   pointer-events: none;
-  background: #000;
-  border: 1px solid #000;
-  border-radius: 0;
-  opacity: 0.72;
+  background: var(--cursor-color);
+  border: 1px solid var(--cursor-border);
+  border-radius: 4px;
+  opacity: 0.86;
   transform: translate3d(0, 0, 0);
   transition: width 160ms ease, height 160ms ease, margin 160ms ease, background 160ms ease, border-radius 160ms ease, opacity 160ms ease;
 }
@@ -216,8 +222,8 @@ body::before {
   height: calc(var(--grid-unit) * 1.5);
   margin-left: calc(var(--grid-unit) * -0.25);
   margin-top: calc(var(--grid-unit) * -0.25);
-  background: #fff;
-  border-color: #000;
+  background: transparent;
+  border-color: var(--cursor-border);
   border-radius: 4px;
   opacity: 1;
 }
@@ -679,18 +685,54 @@ footer {
 }
 
 .app-info-bar {
+  width: 100%;
+  margin-top: auto;
+  padding: 0;
+  background: #000;
+  color: #fff;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.app-info-bar__inner {
   display: flex;
   justify-content: space-between;
   gap: 16px;
   width: var(--content-width);
-  margin: auto auto 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border);
-  color: var(--text-tertiary);
+  min-height: 56px;
+  align-items: center;
+  margin: 0 auto;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 650;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+.app-info-bar__inner span:last-child {
+  white-space: nowrap;
+}
+
+@media (max-width: 719px) {
+  :root {
+    --page-gutter: 16px;
+    --section-padding: 16px;
+  }
+
+  html,
+  body,
+  * {
+    cursor: auto !important;
+  }
+
+  body::before {
+    display: none;
+  }
+
+  .app-info-bar__inner {
+    min-height: 72px;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+  }
 }
 
 @media (min-width: 720px) {

@@ -31,7 +31,7 @@
   align-items: end;
   margin: 0 auto;
   padding: var(--section-padding);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border);
   background: color-mix(in srgb, var(--surface) 80%, transparent);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -83,7 +83,7 @@
 .home-modes__section {
   margin-top: 32px;
   border: 1px solid var(--border);
-  border-radius: 8px !important;
+  border-radius: 0 !important;
   background: color-mix(in srgb, var(--surface) 72%, transparent);
 }
 

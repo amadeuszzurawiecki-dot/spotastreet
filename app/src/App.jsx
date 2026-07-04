@@ -91,8 +91,10 @@ function App() {
   const AppInfoBar = () => {
     return (
       <footer className="app-info-bar">
-        <span>Stworzono dla Legnickich Bolciarzy</span>
-        <span>{buildInfo?.version ? `wersja ${buildInfo.version}` : 'wersja lokalna'}</span>
+        <div className="app-info-bar__inner">
+          <span>Copyright © 2026 by Amadeusz Żurawiecki. All rights reserved.</span>
+          <span>{buildInfo?.version ? `wersja ${buildInfo.version}` : 'wersja lokalna'}</span>
+        </div>
       </footer>
     );
   };
