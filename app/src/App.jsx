@@ -34,8 +34,11 @@ function App() {
       const moduleWidth = 160;
       const maxWidth = 960;
       const snappedWidth = Math.max(moduleWidth, Math.min(maxWidth, Math.floor(availableWidth / moduleWidth) * moduleWidth));
+      const layoutWidth = Math.min(snappedWidth, availableWidth);
+      const gridOriginX = Math.max(0, (viewportWidth - layoutWidth) / 2);
 
-      document.documentElement.style.setProperty('--layout-width-current', `${Math.min(snappedWidth, availableWidth)}px`);
+      document.documentElement.style.setProperty('--layout-width-current', `${layoutWidth}px`);
+      document.documentElement.style.setProperty('--grid-origin-x', `${gridOriginX}px`);
     };
     const updatePointer = (event) => {
       document.documentElement.style.setProperty('--cursor-x', `${event.clientX}px`);

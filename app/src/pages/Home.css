@@ -215,7 +215,7 @@
 }
 
 .challenge-card {
-  flex: 0 0 calc((100% - 16px) / 2);
+  flex: 0 0 calc((100% - 32px) / 3);
   display: grid;
   grid-template-rows: 144px auto;
   border: 1px solid var(--border);
@@ -345,7 +345,8 @@
   pointer-events: none;
 }
 
-.challenge-card__image-pills .challenge-pill--dark {
+.challenge-card__image-pills .challenge-pill--dark,
+.challenge-card__image-pills .challenge-pill--score {
   margin-left: auto;
 }
 

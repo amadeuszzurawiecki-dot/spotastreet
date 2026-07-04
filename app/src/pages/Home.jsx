@@ -146,10 +146,10 @@ function Home() {
       if (!viewport) return;
 
       const cardGap = 16;
-      const visibleCards = window.innerWidth <= 620 ? 1 : 2;
+      const visibleCards = window.innerWidth <= 620 ? 1 : 3;
       const cardWidth = visibleCards === 1
         ? viewport.clientWidth
-        : (viewport.clientWidth - cardGap) / 2;
+        : (viewport.clientWidth - cardGap * (visibleCards - 1)) / visibleCards;
 
       setChallengeSlideDistance(cardWidth + cardGap);
     };
@@ -161,7 +161,7 @@ function Home() {
   }, [dailyChallenges.length]);
 
   const visibleChallenges = dailyChallenges.length > 1
-    ? [0, 1, 2].map((offset) => dailyChallenges[(challengeIndex + offset) % dailyChallenges.length])
+    ? [0, 1, 2, 3].map((offset) => dailyChallenges[(challengeIndex + offset) % dailyChallenges.length])
     : dailyChallenges.length === 1
       ? [dailyChallenges[0]]
     : [];
