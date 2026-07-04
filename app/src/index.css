@@ -178,19 +178,7 @@ html {
 body {
   min-height: 100dvh;
   overflow-x: hidden;
-  background:
-    linear-gradient(var(--grid-small) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-small) 1px, transparent 1px),
-    linear-gradient(var(--grid-large) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-large) 1px, transparent 1px),
-    var(--bg-primary);
-  background-size: var(--grid-unit) var(--grid-unit), var(--grid-unit) var(--grid-unit), var(--grid-major) var(--grid-major), var(--grid-major) var(--grid-major), auto;
-  background-position:
-    var(--grid-origin-x) 0,
-    var(--grid-origin-x) 0,
-    var(--grid-origin-x) 0,
-    var(--grid-origin-x) 0,
-    0 0;
+  background: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-body);
   line-height: 1.5;
@@ -227,28 +215,6 @@ body::before {
   border-color: #000;
   border-radius: 4px;
   opacity: 1;
-}
-
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(var(--grid-hover-small) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-hover-small) 1px, transparent 1px),
-    linear-gradient(var(--grid-hover-large) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-hover-large) 1px, transparent 1px);
-  background-size: var(--grid-unit) var(--grid-unit), var(--grid-unit) var(--grid-unit), var(--grid-major) var(--grid-major), var(--grid-major) var(--grid-major);
-  background-position:
-    var(--grid-origin-x) 0,
-    var(--grid-origin-x) 0,
-    var(--grid-origin-x) 0,
-    var(--grid-origin-x) 0;
-  -webkit-mask: radial-gradient(136px circle at var(--cursor-x, -200px) var(--cursor-y, -200px), #000 0, transparent 74%);
-  mask: radial-gradient(136px circle at var(--cursor-x, -200px) var(--cursor-y, -200px), #000 0, transparent 74%);
-  opacity: 0.95;
 }
 
 #root {

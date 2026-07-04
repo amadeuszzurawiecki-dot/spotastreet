@@ -14,6 +14,7 @@ import GameWhatStreet from './pages/GameWhatStreet';
 import GameWhereIsPlace from './pages/GameWhereIsPlace';
 import Multiplayer from './pages/Multiplayer';
 import AdminPage from './pages/AdminPage';
+import LegnicaBackgroundMap from './components/LegnicaBackgroundMap';
 
 function App() {
   const user = useUserProfile();
@@ -93,6 +94,14 @@ function App() {
     );
   };
 
+  const AppChrome = ({ children }) => (
+    <>
+      <LegnicaBackgroundMap theme={theme} />
+      {children}
+      <AppInfoBar />
+    </>
+  );
+
   // Sync user profile from Firestore when logged in with Firebase Auth
   useEffect(() => {
     if (!user.authReady) {
@@ -146,58 +155,53 @@ function App() {
   // Special route: Admin panel handles its own login and authorization
   if (location.pathname === '/admin') {
     return (
-      <>
+      <AppChrome>
         <AdminPage />
-        <AppInfoBar />
-      </>
+      </AppChrome>
     );
   }
 
   if (!user.authReady || !profileHydrated) {
     return (
-      <>
+      <AppChrome>
         <div className="game-loading">
           <div className="game-loading__spinner" />
           <p>Sprawdzanie sesji...</p>
         </div>
-        <AppInfoBar />
-      </>
+      </AppChrome>
     );
   }
 
   // 1. Mandatory Auth Gatekeeper: must be logged in via Google
   if (!user.isLoggedIn) {
     return (
-      <>
+      <AppChrome>
         <Welcome />
-        <AppInfoBar />
-      </>
+      </AppChrome>
     );
   }
 
   // 2. Mandatory Onboarding Slides Gatekeeper: must read introductory slides
   if (!user.hasCompletedOnboarding) {
     return (
-      <>
+      <AppChrome>
         <OnboardingModal />
-        <AppInfoBar />
-      </>
+      </AppChrome>
     );
   }
 
   // 3. Mandatory Profile Gatekeeper: must complete driver profile setup
   if (!user.hasCompletedProfile) {
     return (
-      <>
+      <AppChrome>
         <ProfileSetup />
-        <AppInfoBar />
-      </>
+      </AppChrome>
     );
   }
 
   // 3. Main App Routes
   return (
-    <>
+    <AppChrome>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
@@ -209,8 +213,7 @@ function App() {
         <Route path="/admin" element={<AdminPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      <AppInfoBar />
-    </>
+    </AppChrome>
   );
 }
 

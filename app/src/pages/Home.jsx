@@ -272,6 +272,7 @@ function Home() {
                 {visibleChallenges.map((challenge, visibleIndex) => {
                   const score = userAttempts[challenge.id];
                   const hasPlayed = score !== undefined;
+                  const maxScore = (challenge.rounds || 15) * 100;
                   return (
                     <div
                       key={`${challenge.id}-${visibleIndex}`}
@@ -285,13 +286,10 @@ function Home() {
                             <span className="svg-icon" style={{ '--icon': 'url(/icons/flag.svg)' }} aria-hidden="true" />
                             {challenge.rounds} rund
                           </span>
-                          <span className="challenge-pill challenge-pill--light">
-                            {challenge.timeLimit || 15}s
-                          </span>
                           {hasPlayed ? (
                             <span className="challenge-pill challenge-pill--score">
                               <span className="svg-icon" style={{ '--icon': 'url(/icons/star.svg)' }} aria-hidden="true" />
-                              Zdobyto <span className="challenge-pill__score">{score || 0}</span><span>/1000 pkt</span>
+                              <span className="challenge-pill__score">{score || 0}</span><span>/{maxScore} pkt</span>
                             </span>
                           ) : (
                             <span className="challenge-pill challenge-pill--dark">
