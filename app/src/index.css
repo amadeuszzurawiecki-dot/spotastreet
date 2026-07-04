@@ -20,6 +20,9 @@
   --radius-full: 0;
   --radius-control: 4px;
   --page-gutter: 16px;
+  --layout-width: 960px;
+  --grid-unit: 16px;
+  --grid-major: 160px;
 
   --transition-fast: 140ms ease;
   --transition-base: 220ms ease;
@@ -164,6 +167,7 @@
 
 html {
   font-size: 16px;
+  cursor: none;
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -178,10 +182,16 @@ body {
     linear-gradient(var(--grid-large) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-large) 1px, transparent 1px),
     var(--bg-primary);
-  background-size: 16px 16px, 16px 16px, 160px 160px, 160px 160px, auto;
+  background-size: var(--grid-unit) var(--grid-unit), var(--grid-unit) var(--grid-unit), var(--grid-major) var(--grid-major), var(--grid-major) var(--grid-major), auto;
+  background-position: center top;
   color: var(--text-primary);
   font-family: var(--font-body);
   line-height: 1.5;
+  cursor: none;
+}
+
+* {
+  cursor: none !important;
 }
 
 body::before {
@@ -190,12 +200,26 @@ body::before {
   left: calc(var(--cursor-x, -32px) - 8px);
   top: calc(var(--cursor-y, -32px) - 8px);
   z-index: 2;
-  width: 16px;
-  height: 16px;
+  width: var(--grid-unit);
+  height: var(--grid-unit);
   pointer-events: none;
   background: #000;
+  border: 1px solid #000;
+  border-radius: 0;
   opacity: 0.72;
   transform: translate3d(0, 0, 0);
+  transition: width 160ms ease, height 160ms ease, margin 160ms ease, background 160ms ease, border-radius 160ms ease, opacity 160ms ease;
+}
+
+:root[data-cursor="interactive"] body::before {
+  width: calc(var(--grid-unit) * 1.5);
+  height: calc(var(--grid-unit) * 1.5);
+  margin-left: calc(var(--grid-unit) * -0.25);
+  margin-top: calc(var(--grid-unit) * -0.25);
+  background: #fff;
+  border-color: #000;
+  border-radius: 4px;
+  opacity: 1;
 }
 
 body::after {
@@ -209,7 +233,8 @@ body::after {
     linear-gradient(90deg, var(--grid-hover-small) 1px, transparent 1px),
     linear-gradient(var(--grid-hover-large) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-hover-large) 1px, transparent 1px);
-  background-size: 16px 16px, 16px 16px, 160px 160px, 160px 160px;
+  background-size: var(--grid-unit) var(--grid-unit), var(--grid-unit) var(--grid-unit), var(--grid-major) var(--grid-major), var(--grid-major) var(--grid-major);
+  background-position: center top;
   -webkit-mask: radial-gradient(136px circle at var(--cursor-x, -200px) var(--cursor-y, -200px), #000 0, transparent 74%);
   mask: radial-gradient(136px circle at var(--cursor-x, -200px) var(--cursor-y, -200px), #000 0, transparent 74%);
   opacity: 0.95;
@@ -678,7 +703,7 @@ footer,
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  width: min(100% - calc(var(--page-gutter) * 2), 1184px);
+  width: min(100% - calc(var(--page-gutter) * 2), var(--layout-width));
   margin: auto auto 16px;
   padding-top: 16px;
   border-top: 1px solid var(--border);

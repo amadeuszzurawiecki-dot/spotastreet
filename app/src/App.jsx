@@ -30,17 +30,24 @@ function App() {
     const updatePointer = (event) => {
       document.documentElement.style.setProperty('--cursor-x', `${event.clientX}px`);
       document.documentElement.style.setProperty('--cursor-y', `${event.clientY}px`);
+      const interactiveTarget = event.target?.closest?.('a, button, input, textarea, select, [role="button"], [tabindex]:not([tabindex="-1"])');
+      document.documentElement.dataset.cursor = interactiveTarget ? 'interactive' : 'default';
     };
     const updateScroll = () => {
       document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}`);
     };
+    const resetPointer = () => {
+      document.documentElement.dataset.cursor = 'default';
+    };
 
     window.addEventListener('pointermove', updatePointer, { passive: true });
+    window.addEventListener('pointerleave', resetPointer, { passive: true });
     window.addEventListener('scroll', updateScroll, { passive: true });
     updateScroll();
 
     return () => {
       window.removeEventListener('pointermove', updatePointer);
+      window.removeEventListener('pointerleave', resetPointer);
       window.removeEventListener('scroll', updateScroll);
     };
   }, []);

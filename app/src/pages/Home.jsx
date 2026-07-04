@@ -288,9 +288,11 @@ function Home() {
                       </div>
 
                       <div className="challenge-card__footer">
-                        <button className={`challenge-card__btn ${hasPlayed ? 'challenge-card__btn--done' : ''}`}>
+                        <button className={`challenge-card__btn ${hasPlayed ? 'challenge-card__btn--done' : ''}`} disabled={hasPlayed}>
                           {hasPlayed ? (
-                            <>Zdobyto <span>{score || 0}/1000 pkt</span></>
+                            <>
+                              Zdobyto <span className="challenge-card__score">{score || 0}</span><span className="challenge-card__score-limit">/1000 pkt</span>
+                            </>
                           ) : 'Rozpocznij'}
                         </button>
                       </div>
