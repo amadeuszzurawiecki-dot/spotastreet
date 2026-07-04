@@ -27,6 +27,16 @@ function App() {
   }, [theme, applyStoredTheme]);
 
   useEffect(() => {
+    const updateLayoutWidth = () => {
+      const viewportWidth = window.innerWidth || 0;
+      const gutter = viewportWidth >= 960 ? 32 : viewportWidth >= 720 ? 24 : 16;
+      const availableWidth = Math.max(0, viewportWidth - gutter * 2);
+      const moduleWidth = 320;
+      const maxWidth = 960;
+      const snappedWidth = Math.max(moduleWidth, Math.min(maxWidth, Math.floor(availableWidth / moduleWidth) * moduleWidth));
+
+      document.documentElement.style.setProperty('--layout-width-current', `${Math.min(snappedWidth, availableWidth)}px`);
+    };
     const updatePointer = (event) => {
       document.documentElement.style.setProperty('--cursor-x', `${event.clientX}px`);
       document.documentElement.style.setProperty('--cursor-y', `${event.clientY}px`);
@@ -42,12 +52,15 @@ function App() {
 
     window.addEventListener('pointermove', updatePointer, { passive: true });
     window.addEventListener('pointerleave', resetPointer, { passive: true });
+    window.addEventListener('resize', updateLayoutWidth, { passive: true });
     window.addEventListener('scroll', updateScroll, { passive: true });
+    updateLayoutWidth();
     updateScroll();
 
     return () => {
       window.removeEventListener('pointermove', updatePointer);
       window.removeEventListener('pointerleave', resetPointer);
+      window.removeEventListener('resize', updateLayoutWidth);
       window.removeEventListener('scroll', updateScroll);
     };
   }, []);

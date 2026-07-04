@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useUserProfile from '../hooks/useUserProfile';
 import TopNav from '../components/Navigation/TopNav';
@@ -43,7 +43,8 @@ function Home() {
   const [loadingChallenges, setLoadingChallenges] = useState(true);
   const [isOffline, setIsOffline] = useState(false);
   const [timeUntilMidnight, setTimeUntilMidnight] = useState('00:00:00');
-  const carouselRef = useRef(null);
+  const [challengeIndex, setChallengeIndex] = useState(0);
+  const [challengeCycle, setChallengeCycle] = useState(0);
 
   const avatar = AVATARS.find(a => a.id === user.avatarId) || AVATARS[0];
   const userAttempts = user.challengeAttempts || {};
@@ -123,12 +124,22 @@ function Home() {
     load();
   }, []);
 
-  const scrollCarousel = (direction) => {
-    if (carouselRef.current) {
-      const scrollAmount = direction === 'left' ? -250 : 250;
-      carouselRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  };
+  useEffect(() => {
+    if (dailyChallenges.length <= 1) return undefined;
+
+    const interval = setInterval(() => {
+      setChallengeIndex((currentIndex) => (currentIndex + 1) % dailyChallenges.length);
+      setChallengeCycle((currentCycle) => currentCycle + 1);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [dailyChallenges.length]);
+
+  const visibleChallenges = dailyChallenges.length > 1
+    ? [0, 1].map((offset) => dailyChallenges[(challengeIndex + offset) % dailyChallenges.length])
+    : dailyChallenges.length === 1
+      ? [dailyChallenges[0]]
+    : [];
 
   const handleChallengeClick = (challenge) => {
     const attemptScore = userAttempts[challenge.id];
@@ -201,7 +212,7 @@ function Home() {
               <p>Rozpoznawaj ulice, wskazuj miejsca i sprawdzaj, kto naprawdę zna układ miasta.</p>
             </div>
           </section>
-          <div className="home-hero__scroll">TRYBY GRY PONIŻEJ ↓</div>
+          <div className="home-hero__scroll">PODEJMIJ CODZIENNE WYZWANIE!</div>
         </div>
       </header>
 
@@ -220,37 +231,21 @@ function Home() {
 
           <div className="challenges-header-container">
             <div className="home-section-heading">
-              <h2 className="home-modes__title text-heading">CODZIENNE WYZWANIA</h2>
+              <h2 className="home-modes__title text-heading">Codzienne wyzwania</h2>
               <p>Ukończono {completedChallenges} z {dailyChallenges.length || 0} dzisiejszych wyzwań</p>
-            </div>
-            <div className="challenges-nav-arrows">
-              <button 
-                className="challenges-nav-arrow" 
-                onClick={() => scrollCarousel('left')}
-                aria-label="Wstecz"
-              >
-                <span className="svg-icon" style={{ '--icon': 'url(/icons/arrows/left.svg)' }} aria-hidden="true" />
-              </button>
-              <button 
-                className="challenges-nav-arrow" 
-                onClick={() => scrollCarousel('right')}
-                aria-label="Dalej"
-              >
-                <span className="svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
-              </button>
             </div>
           </div>
 
-          <div className="challenges-carousel" ref={carouselRef}>
+          <div className="challenges-carousel" key={challengeCycle}>
             {loadingChallenges ? (
               <div className="home-loading-challenges">Wczytywanie wyzwań...</div>
             ) : (
-              dailyChallenges.map((challenge, idx) => {
+              visibleChallenges.map((challenge, visibleIndex) => {
                 const score = userAttempts[challenge.id];
                 const hasPlayed = score !== undefined;
                 return (
                   <div
-                    key={challenge.id}
+                    key={`${challenge.id}-${challengeCycle}-${visibleIndex}`}
                     className={`challenge-card ${hasPlayed ? 'challenge-card--played' : ''}`}
                     onClick={() => handleChallengeClick(challenge)}
                   >
@@ -269,6 +264,13 @@ function Home() {
                           {timeUntilMidnight}
                         </span>
                       </div>
+                      <button className={`challenge-card__btn ${hasPlayed ? 'challenge-card__btn--done' : ''}`} disabled={hasPlayed}>
+                        {hasPlayed ? (
+                          <>
+                            Zdobyto <span className="challenge-card__score">{score || 0}</span><span className="challenge-card__score-limit">/1000 pkt</span>
+                          </>
+                        ) : 'Rozpocznij'}
+                      </button>
                     </div>
 
                     <div className="challenge-card__bottom">
@@ -286,16 +288,6 @@ function Home() {
                         </div>
                         <p className="challenge-card__desc">{challenge.description}</p>
                       </div>
-
-                      <div className="challenge-card__footer">
-                        <button className={`challenge-card__btn ${hasPlayed ? 'challenge-card__btn--done' : ''}`} disabled={hasPlayed}>
-                          {hasPlayed ? (
-                            <>
-                              Zdobyto <span className="challenge-card__score">{score || 0}</span><span className="challenge-card__score-limit">/1000 pkt</span>
-                            </>
-                          ) : 'Rozpocznij'}
-                        </button>
-                      </div>
                       <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
                     </div>
                   </div>
@@ -308,7 +300,7 @@ function Home() {
         {/* Section: Tryby gry */}
         <div className="home-modes__section">
           <div className="home-section-heading">
-            <h2 className="home-modes__title text-heading">TRYBY GRY</h2>
+            <h2 className="home-modes__title text-heading">Tryby gry</h2>
             <p>Wybierz tryb i sprawdź znajomość Legnicy</p>
           </div>
           <div className="home-modes__grid">
