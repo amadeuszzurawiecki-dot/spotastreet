@@ -5,6 +5,7 @@ import {
   deleteUserProfile,
   logoutUser,
   observeFirebaseAuth,
+  refreshCurrentUserClaims,
   signInWithGoogleIdToken,
   signInWithGooglePopup,
 } from '../config/firebase';
@@ -154,6 +155,13 @@ const useUserProfile = create(
 
       loginWithGooglePopup: async () => {
         await signInWithGooglePopup();
+      },
+
+      refreshAdminClaim: async () => {
+        const claims = await refreshCurrentUserClaims();
+        const isAdmin = claims.admin === true;
+        set({ isAdmin });
+        return isAdmin;
       },
 
       setGoogleUser: (userPayload, authMeta = {}) => {

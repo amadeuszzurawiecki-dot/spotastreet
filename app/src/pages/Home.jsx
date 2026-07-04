@@ -10,7 +10,7 @@ const PIN_MODES = [
   {
     id: 'where-is-street',
     path: '/game/where-is-street',
-    icon: 'pin',
+    icon: '/icons/pin.svg',
     title: 'Gdzie jest ta ulica?',
     description: 'Upuść pinezkę jak najbliżej wylosowanej ulicy',
     available: true,
@@ -18,7 +18,7 @@ const PIN_MODES = [
   {
     id: 'where-is-place',
     path: '/game/where-is-place',
-    icon: 'target',
+    icon: '/icons/flag.svg',
     title: 'Gdzie jest to miejsce?',
     description: 'Zaznacz popularne miejsce w Legnicy',
     available: true,
@@ -29,7 +29,7 @@ const ADDRESS_MODES = [
   {
     id: 'what-street',
     path: '/game/what-street',
-    icon: 'scan',
+    icon: '/icons/keyboard.svg',
     title: 'Co to za ulica?',
     description: 'Rozpoznaj ulicę podświetloną na mapie',
     available: true,
@@ -47,6 +47,7 @@ function Home() {
 
   const avatar = AVATARS.find(a => a.id === user.avatarId) || AVATARS[0];
   const userAttempts = user.challengeAttempts || {};
+  const completedChallenges = dailyChallenges.filter(ch => userAttempts[ch.id] !== undefined).length;
 
   // Countdown timer to midnight (HH:MM:SS)
   useEffect(() => {
@@ -158,11 +159,14 @@ function Home() {
         disabled={!mode.available}
         style={{ animationDelay: `${index * 80}ms` }}
       >
-        <span className={`mode-card__icon line-icon line-icon--${mode.icon}`} aria-hidden="true" />
+        <span className="mode-card__icon-wrap" aria-hidden="true">
+          <span className="svg-icon mode-card__svg" style={{ '--icon': `url(${mode.icon})` }} />
+        </span>
         <div className="mode-card__content">
           <h3 className="mode-card__title">{mode.title}</h3>
           <p className="mode-card__desc">{mode.description}</p>
         </div>
+        <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
       </button>
     );
   };
@@ -180,15 +184,27 @@ function Home() {
           <path d="M10,80 L90,80" stroke="rgba(255,255,255,0.05)" strokeWidth="2" />
           <circle cx="50" cy="50" r="4" fill="var(--green-primary)" />
         </svg>
-        <span className={`challenge-card__fallback-icon line-icon line-icon--${challenge.icon || 'target'}`} aria-hidden="true" />
+        <span className="challenge-card__fallback-icon svg-icon" style={{ '--icon': 'url(/icons/flag.svg)' }} aria-hidden="true" />
       </div>
     );
   };
 
   return (
     <div className="home">
-      {/* Background Glow extending to top right edge */}
-      <div className="home-top-glow" />
+      <div className="home-map-layer" aria-hidden="true">
+        <svg viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid slice">
+          <path d="M-40 410 C180 360 260 440 430 385 S720 260 980 330 1240 250 1300 290" />
+          <path d="M60 610 C180 500 310 520 460 470 S710 380 900 455 1110 560 1260 470" />
+          <path d="M120 90 C260 180 300 280 420 340 S650 420 720 610" />
+          <path d="M500 -20 C560 150 560 290 650 390 S790 520 820 780" />
+          <path d="M820 30 C760 190 810 310 960 420 S1110 560 1080 760" />
+          <path d="M210 120 L340 210 L300 330 L420 430 L370 570" />
+          <path d="M650 95 L770 175 L720 290 L840 365 L790 520" />
+          <path d="M940 130 L1030 230 L990 345 L1100 420 L1060 575" />
+          <circle cx="540" cy="390" r="76" />
+          <circle cx="540" cy="390" r="152" />
+        </svg>
+      </div>
 
       {/* Redesigned top navbar */}
       <TopNav />
@@ -196,10 +212,8 @@ function Home() {
       {/* Hero Section */}
       <header className="home-hero">
         <div className="home-hero__content">
-          <div className="home-hero__node" aria-hidden="true" />
           <section className="home-hero__panel">
             <div>
-              <span className="home-hero__eyebrow">LEGNICA / SILNIK ROZGRYWKI</span>
               <h1 className="home-hero__title text-display">
                 Precyzja miasta.
                 <span> Rywalizacja na mapie.</span>
@@ -207,9 +221,6 @@ function Home() {
             </div>
             <div className="home-hero__side">
               <p>Rozpoznawaj ulice, wskazuj miejsca i sprawdzaj, kto naprawdę zna układ miasta.</p>
-              <button className="home-hero__action" onClick={() => navigate('/game/what-street')}>
-                Zacznij grę
-              </button>
             </div>
           </section>
           <div className="home-hero__scroll">TRYBY GRY PONIŻEJ ↓</div>
@@ -230,21 +241,24 @@ function Home() {
           )}
 
           <div className="challenges-header-container">
-            <h2 className="home-modes__title text-heading">CODZIENNE WYZWANIA</h2>
+            <div className="home-section-heading">
+              <h2 className="home-modes__title text-heading">CODZIENNE WYZWANIA</h2>
+              <p>Ukończono {completedChallenges} z {dailyChallenges.length || 0} dzisiejszych wyzwań</p>
+            </div>
             <div className="challenges-nav-arrows">
               <button 
                 className="challenges-nav-arrow" 
                 onClick={() => scrollCarousel('left')}
                 aria-label="Wstecz"
               >
-                <span className="line-icon line-icon--arrow-left" aria-hidden="true" />
+                <span className="svg-icon" style={{ '--icon': 'url(/icons/arrows/left.svg)' }} aria-hidden="true" />
               </button>
               <button 
                 className="challenges-nav-arrow" 
                 onClick={() => scrollCarousel('right')}
                 aria-label="Dalej"
               >
-                <span className="line-icon line-icon--arrow-right" aria-hidden="true" />
+                <span className="svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -262,25 +276,10 @@ function Home() {
                     className={`challenge-card ${hasPlayed ? 'challenge-card--played' : ''}`}
                     onClick={() => handleChallengeClick(challenge)}
                   >
-                    {/* Top half: Image & Floating Pills overlay */}
                     <div className="challenge-card__top">
                       {renderChallengeImage(challenge)}
-                      <div className="challenge-card__image-pills">
-                        <span className={`challenge-pill ${hasPlayed ? 'challenge-pill--points-green' : 'challenge-pill--points-gray'}`}>
-                          {hasPlayed ? `${score} pkt` : '- pkt'}
-                        </span>
-                        <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-                          <span className="challenge-pill challenge-pill--meta">
-                            {challenge.rounds} rund • {challenge.timeLimit || 15}s
-                          </span>
-                          <span className="challenge-pill challenge-pill--time">
-                            {timeUntilMidnight}
-                          </span>
-                        </div>
-                      </div>
                     </div>
 
-                    {/* Bottom half: Title (with Marquee if long), Subtitle, Button */}
                     <div className="challenge-card__bottom">
                       <div className="challenge-card__details">
                         <div className="challenge-card__title-container">
@@ -296,10 +295,26 @@ function Home() {
                         </div>
                         <p className="challenge-card__desc">{challenge.description}</p>
                       </div>
-                      
-                      <button className="challenge-card__btn">
-                        {hasPlayed ? 'Ukończono' : 'Rozpocznij wyzwanie'}
-                      </button>
+
+                      <div className="challenge-card__footer">
+                        <button className={`challenge-card__btn ${hasPlayed ? 'challenge-card__btn--done' : ''}`}>
+                          {hasPlayed ? (
+                            <>Zdobyto <span>{score || 0}/1000 pkt</span></>
+                          ) : 'Rozpocznij'}
+                        </button>
+                        <div className="challenge-card__meta">
+                          <span className="challenge-pill">
+                            <span className="svg-icon" style={{ '--icon': 'url(/icons/flag.svg)' }} aria-hidden="true" />
+                            {challenge.rounds} rund
+                          </span>
+                          <span className="challenge-pill">{challenge.timeLimit || 15}s</span>
+                          <span className="challenge-pill">
+                            <span className="svg-icon" style={{ '--icon': 'url(/icons/alarm.svg)' }} aria-hidden="true" />
+                            {timeUntilMidnight.slice(0, 5)} do końca
+                          </span>
+                        </div>
+                      </div>
+                      <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
                     </div>
                   </div>
                 );
@@ -310,18 +325,16 @@ function Home() {
 
         {/* Section: Tryby gry */}
         <div className="home-modes__section">
-          <h2 className="home-modes__title text-heading">TRYBY GRY</h2>
+          <div className="home-section-heading">
+            <h2 className="home-modes__title text-heading">TRYBY GRY</h2>
+            <p>Wybierz tryb i sprawdź znajomość Legnicy</p>
+          </div>
           <div className="home-modes__grid">
             {PIN_MODES.map((mode, idx) => renderModeCard(mode, idx))}
             {ADDRESS_MODES.map((mode, idx) => renderModeCard(mode, idx))}
           </div>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="home-footer">
-        <p>Stworzono dla Legnickich Bolciarzy</p>
-      </footer>
     </div>
   );
 }

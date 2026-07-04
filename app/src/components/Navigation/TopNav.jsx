@@ -54,18 +54,24 @@ export function TopNav() {
               key={item.path}
               className={`topnav-link ${location.pathname === item.path ? 'topnav-link--active' : ''}`}
               onClick={() => handleNavigate(item.path)}
+              data-label={item.label}
             >
-              {item.label}
+              <span>{item.label}</span>
             </button>
           ))}
         </nav>
 
-        <button className="topnav-cta" onClick={() => handleNavigate('/')}>
-          Graj teraz
+        <button className="topnav-cta" onClick={() => handleNavigate('/')} data-label="Graj teraz">
+          <span className="svg-icon topnav-cta__icon" style={{ '--icon': 'url(/icons/play.svg)' }} aria-hidden="true" />
+          <span>Graj teraz</span>
         </button>
 
         <button className="theme-toggle" onClick={toggleTheme} aria-label="Przełącz motyw">
-          <span className={`line-icon line-icon--${theme === 'dark' ? 'moon' : 'sun'}`} aria-hidden="true" />
+          <span
+            className="svg-icon theme-toggle__icon"
+            style={{ '--icon': `url(/icons/${theme === 'dark' ? 'dark' : 'light'}.svg)` }}
+            aria-hidden="true"
+          />
         </button>
 
         {/* Right Side: Hamburger Button */}
@@ -103,7 +109,11 @@ export function TopNav() {
         </nav>
 
         <button className="desktop-rail__theme" onClick={toggleTheme}>
-          <span className={`line-icon line-icon--${theme === 'dark' ? 'moon' : 'sun'}`} aria-hidden="true" />
+          <span
+            className="svg-icon"
+            style={{ '--icon': `url(/icons/${theme === 'dark' ? 'dark' : 'light'}.svg)` }}
+            aria-hidden="true"
+          />
           <span>{theme === 'dark' ? 'Tryb ciemny' : 'Tryb jasny'}</span>
         </button>
 
@@ -139,7 +149,11 @@ export function TopNav() {
           </div>
 
           <button className="menu-drawer__theme" onClick={toggleTheme}>
-            <span className={`line-icon line-icon--${theme === 'dark' ? 'moon' : 'sun'}`} aria-hidden="true" />
+            <span
+              className="svg-icon"
+              style={{ '--icon': `url(/icons/${theme === 'dark' ? 'dark' : 'light'}.svg)` }}
+              aria-hidden="true"
+            />
             <span>{theme === 'dark' ? 'Tryb ciemny' : 'Tryb jasny'}</span>
           </button>
           

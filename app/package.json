@@ -6,12 +6,14 @@
   "scripts": {
     "dev": "node scripts/generate_build_info.js; cp -r ../images/* public/images/ 2>/dev/null || true; vite",
     "build": "node scripts/generate_build_info.js; cp -r ../images/* public/images/ 2>/dev/null || true; vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "admin:grant": "node scripts/grant_admin_claim.js"
   },
   "devDependencies": {
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
+    "firebase-admin": "^14.1.0",
     "typescript": "~6.0.2",
     "vite": "^8.1.0"
   },

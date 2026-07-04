@@ -62,6 +62,12 @@ export async function getCurrentUserClaims(forceRefresh = false) {
   return token.claims || {};
 }
 
+export async function refreshCurrentUserClaims() {
+  if (!auth.currentUser) return {};
+  const token = await auth.currentUser.getIdTokenResult(true);
+  return token.claims || {};
+}
+
 async function currentUserIsAdmin() {
   const claims = await getCurrentUserClaims(false);
   return claims.admin === true;

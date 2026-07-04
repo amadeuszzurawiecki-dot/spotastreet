@@ -29,7 +29,7 @@
 
 .topnav-logo__sygnet {
   flex: 0 0 auto;
-  color: var(--green-primary);
+  color: var(--main-color);
   transition: transform var(--transition-base);
 }
 
@@ -40,7 +40,7 @@
 .topnav-logo__text {
   font-family: var(--font-display);
   font-size: 0.98rem;
-  font-weight: 900;
+  font-weight: 400;
   letter-spacing: 0.03em;
   white-space: nowrap;
 }
@@ -51,19 +51,31 @@
   flex: 0 0 auto;
   min-height: 42px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-control);
   transition: transform var(--transition-base), border-color var(--transition-base), background var(--transition-base);
 }
 
 .topnav-cta {
+  position: relative;
+  overflow: hidden;
   margin-left: auto;
   padding: 0 14px;
-  background: var(--green-gradient);
+  background: var(--main-color);
   color: var(--text-on-green);
   font-family: var(--font-display);
   font-size: 0.84rem;
-  font-weight: 850;
+  font-weight: 200;
   box-shadow: var(--shadow-green);
+}
+
+.svg-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  flex: 0 0 auto;
+  background: currentColor;
+  -webkit-mask: var(--icon) center / contain no-repeat;
+  mask: var(--icon) center / contain no-repeat;
 }
 
 .theme-toggle {
@@ -261,7 +273,7 @@
   .topnav-logo__sygnet {
     width: 34px;
     height: 31px;
-    color: var(--text-primary);
+    color: var(--main-color);
   }
 
   .topnav-logo__text {
@@ -273,7 +285,7 @@
     display: grid;
     grid-auto-flow: column;
     border: 1px solid var(--border-strong);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-control);
     overflow: hidden;
     background: color-mix(in srgb, var(--surface) 72%, transparent);
     backdrop-filter: blur(14px);
@@ -281,14 +293,47 @@
   }
 
   .topnav-link {
+    position: relative;
     min-width: 104px;
     min-height: 46px;
     padding: 0 20px;
+    overflow: hidden;
     border-right: 1px solid var(--border);
     color: var(--text-secondary);
     font-family: var(--font-display);
-    font-weight: 750;
+    font-size: 14px;
+    font-weight: 200;
     transition: background var(--transition-base), color var(--transition-base);
+  }
+
+  .topnav-link span,
+  .topnav-cta span:not(.svg-icon) {
+    display: inline-block;
+    transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease;
+  }
+
+  .topnav-link::after,
+  .topnav-cta::after {
+    content: attr(data-label);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -140%);
+    opacity: 0;
+    white-space: nowrap;
+    transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), opacity 180ms ease;
+  }
+
+  .topnav-link:hover span,
+  .topnav-cta:hover span:not(.svg-icon) {
+    transform: translateY(140%);
+    opacity: 0;
+  }
+
+  .topnav-link:hover::after,
+  .topnav-cta:hover::after {
+    transform: translate(-50%, -50%);
+    opacity: 1;
   }
 
   .topnav-link:last-child {
@@ -302,6 +347,8 @@
   }
 
   .topnav-cta {
+    position: relative;
+    overflow: hidden;
     min-height: 46px;
     margin-left: 0;
     padding: 0 22px;
@@ -311,14 +358,8 @@
     box-shadow: none;
   }
 
-  .topnav-cta::before {
-    content: '';
-    width: 9px;
-    height: 9px;
-    border-top: 1.5px solid currentColor;
-    border-right: 1.5px solid currentColor;
+  .topnav-cta__icon {
     margin-right: 8px;
-    transform: rotate(45deg);
   }
 
   .theme-toggle {

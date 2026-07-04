@@ -390,6 +390,22 @@ export function AdminPage() {
     }
   };
 
+  const handleRefreshAdminClaim = async () => {
+    setActionStatus({ type: 'info', message: 'Odświeżanie uprawnień administratora...' });
+    try {
+      const hasAdmin = await user.refreshAdminClaim();
+      setActionStatus({
+        type: hasAdmin ? 'success' : 'error',
+        message: hasAdmin
+          ? 'Uprawnienia administratora są aktywne.'
+          : 'Token odświeżony, ale konto nadal nie ma claim admin=true.',
+      });
+    } catch (e) {
+      console.error('Admin claim refresh error:', e);
+      setActionStatus({ type: 'error', message: 'Nie udało się odświeżyć tokena uprawnień.' });
+    }
+  };
+
   useEffect(() => {
     if (user.isLoggedIn) return;
 
@@ -637,6 +653,9 @@ export function AdminPage() {
 
 
           <div className="admin-actions-row" style={{ marginTop: '1.5rem', justifyContent: 'center', gap: '1rem' }}>
+            <button className="btn-secondary" onClick={handleRefreshAdminClaim}>
+              Odśwież uprawnienia
+            </button>
             <button className="btn-primary" onClick={() => user.logout()}>
               Zaloguj na inne konto
             </button>

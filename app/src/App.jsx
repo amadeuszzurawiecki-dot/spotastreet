@@ -21,11 +21,29 @@ function App() {
   const location = useLocation();
   const [buildInfo, setBuildInfo] = useState(null);
   const [profileHydrated, setProfileHydrated] = useState(false);
-  const isLocalTestMode = import.meta.env.DEV || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
   useEffect(() => {
     applyStoredTheme();
   }, [theme, applyStoredTheme]);
+
+  useEffect(() => {
+    const updatePointer = (event) => {
+      document.documentElement.style.setProperty('--cursor-x', `${event.clientX}px`);
+      document.documentElement.style.setProperty('--cursor-y', `${event.clientY}px`);
+    };
+    const updateScroll = () => {
+      document.documentElement.style.setProperty('--scroll-y', `${window.scrollY}`);
+    };
+
+    window.addEventListener('pointermove', updatePointer, { passive: true });
+    window.addEventListener('scroll', updateScroll, { passive: true });
+    updateScroll();
+
+    return () => {
+      window.removeEventListener('pointermove', updatePointer);
+      window.removeEventListener('scroll', updateScroll);
+    };
+  }, []);
 
   useEffect(() => {
     localStorage.removeItem('bolters-persistent-user-database');
@@ -43,34 +61,12 @@ function App() {
       .catch(() => setBuildInfo(null));
   }, []);
 
-  const BuildVersionBadge = () => {
-    if (!buildInfo?.version) return null;
+  const AppInfoBar = () => {
     return (
-      <div
-        title={`${buildInfo.commitMessage || buildInfo.version}${buildInfo.shortSha ? ` (${buildInfo.shortSha})` : ''}`}
-        style={{
-          position: 'fixed',
-          right: 12,
-          bottom: isLocalTestMode ? 60 : 12,
-          zIndex: 4999,
-          maxWidth: 'min(320px, calc(100vw - 24px))',
-          padding: '7px 10px',
-          background: 'rgba(10, 10, 15, 0.82)',
-          border: '1px solid rgba(255, 255, 255, 0.12)',
-          color: 'rgba(255, 255, 255, 0.72)',
-          fontSize: '0.72rem',
-          fontWeight: 700,
-          backdropFilter: 'blur(12px)',
-          boxShadow: '0 8px 24px rgba(0,0,0,0.28)',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          pointerEvents: 'none',
-        }}
-      >
-        wersja: <span style={{ color: 'var(--green-primary)' }}>{buildInfo.version}</span>
-        {buildInfo.shortSha && <span style={{ color: 'rgba(255,255,255,0.42)' }}> · {buildInfo.shortSha}</span>}
-      </div>
+      <footer className="app-info-bar">
+        <span>Stworzono dla Legnickich Bolciarzy</span>
+        <span>{buildInfo?.version ? `wersja ${buildInfo.version}` : 'wersja lokalna'}</span>
+      </footer>
     );
   };
 
@@ -129,7 +125,7 @@ function App() {
     return (
       <>
         <AdminPage />
-        <BuildVersionBadge />
+        <AppInfoBar />
       </>
     );
   }
@@ -141,7 +137,7 @@ function App() {
           <div className="game-loading__spinner" />
           <p>Sprawdzanie sesji...</p>
         </div>
-        <BuildVersionBadge />
+        <AppInfoBar />
       </>
     );
   }
@@ -151,7 +147,7 @@ function App() {
     return (
       <>
         <Welcome />
-        <BuildVersionBadge />
+        <AppInfoBar />
       </>
     );
   }
@@ -161,7 +157,7 @@ function App() {
     return (
       <>
         <OnboardingModal />
-        <BuildVersionBadge />
+        <AppInfoBar />
       </>
     );
   }
@@ -171,7 +167,7 @@ function App() {
     return (
       <>
         <ProfileSetup />
-        <BuildVersionBadge />
+        <AppInfoBar />
       </>
     );
   }
@@ -190,7 +186,7 @@ function App() {
         <Route path="/admin" element={<AdminPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      <BuildVersionBadge />
+      <AppInfoBar />
     </>
   );
 }
