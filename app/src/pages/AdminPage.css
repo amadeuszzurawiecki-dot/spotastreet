@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
-  background: radial-gradient(circle at top left, rgba(0, 230, 118, 0.14) 0%, #0a0a0f 48%, #06070b 100%);
+  background: radial-gradient(circle at top left, rgba(22, 163, 74, 0.14) 0%, #0a0a0f 48%, #06070b 100%);
   color: #f1f5f9;
 }
 
@@ -29,9 +29,9 @@
   letter-spacing: 1px;
   padding: 0.35rem 0.85rem;
   border-radius: 12px;
-  background: rgba(0, 230, 118, 0.12);
+  background: rgba(22, 163, 74, 0.12);
   color: var(--green-primary);
-  border: 1px solid rgba(0, 230, 118, 0.28);
+  border: 1px solid rgba(22, 163, 74, 0.28);
   margin-bottom: 1.25rem;
 }
 
@@ -89,7 +89,7 @@
   padding: 2rem;
   background: #0a0a0f;
   background-image: 
-    radial-gradient(at 0% 0%, rgba(0, 230, 118, 0.14) 0px, transparent 45%),
+    radial-gradient(at 0% 0%, rgba(22, 163, 74, 0.14) 0px, transparent 45%),
     radial-gradient(at 100% 0%, rgba(255, 235, 59, 0.05) 0px, transparent 40%);
   color: #f8fafc;
 }
@@ -275,7 +275,7 @@
 }
 
 .admin-users-table tr.row-highlight {
-  background: rgba(0, 230, 118, 0.05);
+  background: rgba(22, 163, 74, 0.05);
 }
 
 .table-user-info {
@@ -292,7 +292,7 @@
 .tag-self {
   font-size: 0.75rem;
   color: var(--green-primary);
-  background: rgba(0, 230, 118, 0.15);
+  background: rgba(22, 163, 74, 0.15);
   padding: 0.15rem 0.5rem;
   border-radius: 6px;
   margin-left: 0.3rem;
@@ -374,8 +374,8 @@
 }
 
 .admin-alert--info {
-  background: rgba(0, 230, 118, 0.12);
-  border: 1px solid rgba(0, 230, 118, 0.28);
+  background: rgba(22, 163, 74, 0.12);
+  border: 1px solid rgba(22, 163, 74, 0.28);
   color: var(--green-primary);
 }
 
@@ -521,8 +521,8 @@
 
 .admin-tab-btn--active {
   color: #fff;
-  background: rgba(0, 230, 118, 0.13) !important;
-  box-shadow: inset 0 0 10px rgba(0, 230, 118, 0.12);
+  background: rgba(22, 163, 74, 0.13) !important;
+  box-shadow: inset 0 0 10px rgba(22, 163, 74, 0.12);
 }
 
 /* === App Settings === */
@@ -556,8 +556,8 @@
   display: grid;
   place-items: center;
   flex-shrink: 0;
-  background: rgba(0, 230, 118, 0.08);
-  border: 1px solid rgba(0, 230, 118, 0.18);
+  background: rgba(22, 163, 74, 0.08);
+  border: 1px solid rgba(22, 163, 74, 0.18);
   border-radius: 12px;
   font-size: 1.35rem;
 }
@@ -593,9 +593,9 @@
 .admin-switch--on {
   justify-content: flex-end;
   padding: 4px 4px 4px 10px;
-  background: rgba(0, 230, 118, 0.12);
+  background: rgba(22, 163, 74, 0.12);
   color: var(--green-primary);
-  border-color: rgba(0, 230, 118, 0.28);
+  border-color: rgba(22, 163, 74, 0.28);
 }
 
 .admin-switch__thumb {
@@ -754,7 +754,7 @@
   font-size: 0.7rem;
   font-weight: 700;
   color: var(--green-primary);
-  background: rgba(0, 230, 118, 0.1);
+  background: rgba(22, 163, 74, 0.1);
   padding: 0.15rem 0.5rem;
   border-radius: 6px;
 }
@@ -791,16 +791,16 @@
 
 .btn-green-soft {
   color: var(--green-primary);
-  border-color: rgba(0, 230, 118, 0.25);
-  background: rgba(0, 230, 118, 0.1);
+  border-color: rgba(22, 163, 74, 0.25);
+  background: rgba(22, 163, 74, 0.1);
 }
 
 .badge-premium-pill {
-  background: rgba(0, 230, 118, 0.14);
+  background: rgba(22, 163, 74, 0.14);
   color: var(--green-primary);
   font-size: 0.64rem;
   padding: 3px 7px;
-  border: 1px solid rgba(0, 230, 118, 0.25);
+  border: 1px solid rgba(22, 163, 74, 0.25);
   font-weight: 900;
   letter-spacing: 0.04em;
 }
@@ -821,8 +821,8 @@
 }
 
 .admin-user-card--self {
-  border-color: rgba(0, 230, 118, 0.35);
-  background: linear-gradient(135deg, rgba(0, 230, 118, 0.08), rgba(10, 10, 15, 0.72));
+  border-color: rgba(22, 163, 74, 0.35);
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.08), rgba(10, 10, 15, 0.72));
 }
 
 .admin-user-card__top {
@@ -1004,8 +1004,8 @@
 
 .admin-avatar-option--active {
   border-color: var(--green-primary);
-  box-shadow: 0 0 0 1px rgba(0, 230, 118, 0.4);
-  background: rgba(0, 230, 118, 0.1);
+  box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.4);
+  background: rgba(22, 163, 74, 0.1);
 }
 
 .admin-editor-toggles {

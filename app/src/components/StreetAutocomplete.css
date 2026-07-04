@@ -45,7 +45,7 @@
 }
 
 .autocomplete__highlight {
-  background: rgba(0, 230, 118, 0.2);
+  background: rgba(22, 163, 74, 0.2);
   color: var(--green-primary);
   border-radius: 2px;
   padding: 0 1px;

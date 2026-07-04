@@ -42,48 +42,50 @@ export function TopNav() {
   return (
     <>
       <header className="topnav">
-        {/* Left Side: Logo (Sygnet + Text) */}
-        <div className="topnav-logo" onClick={() => handleNavigate('/')}>
-          <LogoSygnet />
-          <span className="topnav-logo__text">SPOTASTREET</span>
+        <div className="topnav__inner">
+          {/* Left Side: Logo (Sygnet + Text) */}
+          <div className="topnav-logo" onClick={() => handleNavigate('/')}>
+            <LogoSygnet />
+            <span className="topnav-logo__text">SPOTASTREET</span>
+          </div>
+
+          <nav className="topnav-links" aria-label="Nawigacja">
+            {navItems.map(item => (
+              <button
+                key={item.path}
+                className={`topnav-link ${location.pathname === item.path ? 'topnav-link--active' : ''}`}
+                onClick={() => handleNavigate(item.path)}
+                data-label={item.label}
+              >
+                <span>{item.label}</span>
+              </button>
+            ))}
+          </nav>
+
+          <button className="topnav-cta" onClick={() => handleNavigate('/')} data-label="Graj teraz">
+            <span className="svg-icon topnav-cta__icon" style={{ '--icon': 'url(/icons/play.svg)' }} aria-hidden="true" />
+            <span>Graj teraz</span>
+          </button>
+
+          <button className="theme-toggle" onClick={toggleTheme} aria-label="Przełącz motyw">
+            <span
+              className="svg-icon theme-toggle__icon"
+              style={{ '--icon': `url(/icons/${theme === 'dark' ? 'dark' : 'light'}.svg)` }}
+              aria-hidden="true"
+            />
+          </button>
+
+          {/* Right Side: Hamburger Button */}
+          <button
+            className={`topnav-hamburger ${isOpen ? 'topnav-hamburger--open' : ''}`}
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
         </div>
-
-        <nav className="topnav-links" aria-label="Nawigacja">
-          {navItems.map(item => (
-            <button
-              key={item.path}
-              className={`topnav-link ${location.pathname === item.path ? 'topnav-link--active' : ''}`}
-              onClick={() => handleNavigate(item.path)}
-              data-label={item.label}
-            >
-              <span>{item.label}</span>
-            </button>
-          ))}
-        </nav>
-
-        <button className="topnav-cta" onClick={() => handleNavigate('/')} data-label="Graj teraz">
-          <span className="svg-icon topnav-cta__icon" style={{ '--icon': 'url(/icons/play.svg)' }} aria-hidden="true" />
-          <span>Graj teraz</span>
-        </button>
-
-        <button className="theme-toggle" onClick={toggleTheme} aria-label="Przełącz motyw">
-          <span
-            className="svg-icon theme-toggle__icon"
-            style={{ '--icon': `url(/icons/${theme === 'dark' ? 'dark' : 'light'}.svg)` }}
-            aria-hidden="true"
-          />
-        </button>
-
-        {/* Right Side: Hamburger Button */}
-        <button 
-          className={`topnav-hamburger ${isOpen ? 'topnav-hamburger--open' : ''}`}
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Menu"
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
       </header>
 
       <aside className="desktop-rail" aria-label="Nawigacja aplikacji">

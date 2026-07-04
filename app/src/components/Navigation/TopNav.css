@@ -3,16 +3,24 @@
   top: 0;
   z-index: 1000;
   height: calc(64px + var(--safe-top));
-  width: min(100% - calc(var(--page-gutter) * 2), var(--layout-width-current));
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin: 0 auto;
+  margin: 0;
   padding: var(--safe-top) 0 0;
   background: color-mix(in srgb, var(--surface) 88%, transparent);
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
+}
+
+.topnav__inner {
+  width: var(--content-width);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 auto;
 }
 
 .topnav-links {
@@ -258,14 +266,17 @@
   .topnav {
     position: sticky;
     top: 0;
-    display: grid;
-    grid-template-columns: minmax(220px, 1fr) auto auto auto;
-    height: 96px;
-    padding: 24px 0;
-    background: transparent;
-    border-bottom: 0;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+    display: flex;
+    height: calc(72px + var(--safe-top));
+    padding: var(--safe-top) 0 0;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+
+  .topnav__inner {
+    height: 100%;
   }
 
   .desktop-rail {
@@ -287,15 +298,7 @@
   }
 
   .topnav-links {
-    justify-self: end;
-    display: grid;
-    grid-auto-flow: column;
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-control);
-    overflow: hidden;
-    background: color-mix(in srgb, var(--surface) 72%, transparent);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    display: none;
   }
 
   .topnav-link {
@@ -353,7 +356,7 @@
     position: relative;
     overflow: hidden;
     min-height: 46px;
-    margin-left: 0;
+    margin-left: auto;
     padding: 0 22px;
     border-color: var(--border-strong);
     background: var(--main-color);
@@ -373,7 +376,15 @@
   }
 
   .topnav-hamburger {
-    display: none;
+    width: 46px;
+    min-height: 46px;
+    display: flex;
+    background: var(--surface);
+    border-color: var(--border-strong);
+  }
+
+  .menu-drawer {
+    width: min(420px, calc(100vw - 32px));
   }
 }
 

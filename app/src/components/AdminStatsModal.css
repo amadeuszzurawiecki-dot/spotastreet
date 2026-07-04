@@ -17,7 +17,7 @@
   padding: var(--space-xl);
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(0, 230, 118, 0.3);
+  border: 1px solid rgba(22, 163, 74, 0.3);
   box-shadow: var(--shadow-lg);
   overflow-y: auto;
 }

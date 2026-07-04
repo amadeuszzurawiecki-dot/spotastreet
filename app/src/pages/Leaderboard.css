@@ -7,14 +7,14 @@
 
 .leaderboard-container {
   flex: 1;
-  width: 100%;
-  max-width: 480px;
+  width: var(--content-width);
+  max-width: none;
   margin: 0 auto;
-  padding: var(--space-md) var(--space-md) var(--space-xl);
+  padding: 0 0 64px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: 32px;
 }
 
 .leaderboard-header {
@@ -68,7 +68,7 @@
   background: var(--green-subtle);
   border-color: var(--green-primary);
   color: var(--green-primary);
-  box-shadow: 0 0 10px rgba(0, 230, 118, 0.15);
+  box-shadow: 0 0 10px rgba(22, 163, 74, 0.15);
 }
 
 /* Pure Table */
@@ -128,11 +128,11 @@
 }
 
 .leaderboard-row--current-user {
-  background: rgba(0, 230, 118, 0.04);
+  background: rgba(22, 163, 74, 0.04);
 }
 
 .leaderboard-row--current-user:hover {
-  background: rgba(0, 230, 118, 0.06);
+  background: rgba(22, 163, 74, 0.06);
 }
 
 /* Columns formatting */
@@ -234,9 +234,11 @@
 .leaderboard-menu-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0;
-  margin-top: 24px;
+  gap: 16px;
+  margin-top: 32px;
+  padding: 16px;
   border: 1px solid var(--border);
+  border-radius: 8px;
   background: color-mix(in srgb, var(--surface) 82%, transparent);
 }
 
@@ -247,42 +249,49 @@
 }
 
 .leaderboard-menu-card {
-  min-height: 84px;
+  position: relative;
+  min-height: 190px;
   display: grid;
-  grid-template-columns: 48px minmax(0, 1fr);
-  align-items: center;
-  gap: 12px;
-  padding: 14px;
-  border: 0;
-  border-bottom: 1px solid var(--border);
-  border-radius: 0;
+  grid-template-columns: 1fr;
+  align-content: space-between;
+  align-items: start;
+  gap: 20px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
   background: transparent;
   color: var(--text-primary);
   text-align: left;
   cursor: pointer;
   box-shadow: none;
-  transition: border-color var(--transition-base), background var(--transition-base);
+  transition: border-color var(--transition-base), background var(--transition-base), transform var(--transition-base);
 }
 
 .leaderboard-menu-card:hover {
-  border-color: var(--green-primary);
-  background: var(--green-subtle);
+  border-color: color-mix(in srgb, var(--text-primary) 20%, var(--border));
+  background: color-mix(in srgb, var(--surface) 88%, var(--green-primary));
+  transform: translateY(-2px);
 }
 
 .leaderboard-menu-card__icon {
-  background: var(--surface-muted);
+  width: 42px;
+  height: 42px;
+  background: transparent;
   color: var(--green-primary);
 }
 
 .leaderboard-menu-card__title {
   font-family: var(--font-display);
-  font-weight: 750;
-  font-size: 0.98rem;
+  font-weight: 700;
+  font-size: 1.02rem;
+  line-height: 1.1;
   color: var(--text-primary);
 }
 
 .leaderboard-menu-card__subtitle {
-  font-size: 0.78rem;
+  align-self: end;
+  font-size: 0.82rem;
+  line-height: 1.35;
   color: var(--text-tertiary);
 }
 
@@ -306,8 +315,8 @@
   }
 
   .leaderboard-container {
-    max-width: 1180px;
-    padding: 42px 28px var(--space-2xl);
+    max-width: none;
+    padding: 0 0 64px;
   }
 
   .leaderboard-header {
@@ -321,7 +330,7 @@
 
   .leaderboard-menu-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0;
+    gap: 16px;
   }
 
   .leaderboard-menu-card {
@@ -329,11 +338,6 @@
     grid-template-columns: 1fr;
     align-content: space-between;
     align-items: start;
-    border-right: 1px solid var(--border);
-  }
-
-  .leaderboard-menu-card:last-child {
-    border-right: 0;
   }
 }
 
@@ -343,7 +347,7 @@
 }
 
 .leaderboard-container {
-  max-width: 1120px;
+  max-width: none;
 }
 
 .leaderboard-title {

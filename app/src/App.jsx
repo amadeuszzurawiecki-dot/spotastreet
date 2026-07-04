@@ -14,7 +14,7 @@ import GameWhatStreet from './pages/GameWhatStreet';
 import GameWhereIsPlace from './pages/GameWhereIsPlace';
 import Multiplayer from './pages/Multiplayer';
 import AdminPage from './pages/AdminPage';
-import LegnicaBackgroundMap from './components/LegnicaBackgroundMap';
+import BackgroundLines from './components/BackgroundLines';
 
 function App() {
   const user = useUserProfile();
@@ -40,6 +40,9 @@ function App() {
 
       document.documentElement.style.setProperty('--layout-width-current', `${layoutWidth}px`);
       document.documentElement.style.setProperty('--grid-origin-x', `${gridOriginX}px`);
+      document.documentElement.style.setProperty('--layout-quarter', `${layoutWidth / 4}px`);
+      document.documentElement.style.setProperty('--layout-half', `${layoutWidth / 2}px`);
+      document.documentElement.style.setProperty('--layout-three-quarter', `${(layoutWidth / 4) * 3}px`);
     };
     const updatePointer = (event) => {
       document.documentElement.style.setProperty('--cursor-x', `${event.clientX}px`);
@@ -96,7 +99,7 @@ function App() {
 
   const AppChrome = ({ children }) => (
     <>
-      <LegnicaBackgroundMap theme={theme} />
+      <BackgroundLines />
       {children}
       <AppInfoBar />
     </>

@@ -97,8 +97,8 @@
 
 .profile-settings__message {
   padding: 10px;
-  background: rgba(0, 230, 118, 0.08);
-  border: 1px solid rgba(0, 230, 118, 0.2);
+  background: rgba(22, 163, 74, 0.08);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   border-radius: var(--radius-md);
   color: var(--green-primary);
   font-size: 0.8rem;
@@ -215,8 +215,8 @@
 .map-style-card:hover,
 .map-style-card:focus-visible,
 .map-style-card--selected {
-  border-color: rgba(0, 230, 118, 0.42);
-  background: rgba(0, 230, 118, 0.06);
+  border-color: rgba(22, 163, 74, 0.42);
+  background: rgba(22, 163, 74, 0.06);
   outline: none;
   transform: translateY(-1px);
 }
@@ -228,7 +228,7 @@
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background:
-    linear-gradient(140deg, transparent 42%, rgba(0, 230, 118, 0.55) 43%, rgba(0, 230, 118, 0.55) 49%, transparent 50%),
+    linear-gradient(140deg, transparent 42%, rgba(22, 163, 74, 0.55) 43%, rgba(22, 163, 74, 0.55) 49%, transparent 50%),
     linear-gradient(35deg, transparent 36%, rgba(255, 255, 255, 0.16) 37%, rgba(255, 255, 255, 0.16) 43%, transparent 44%);
 }
 
@@ -256,7 +256,7 @@
   height: 4px;
   background: var(--green-primary);
   transform: rotate(-14deg);
-  box-shadow: 0 0 10px rgba(0, 230, 118, 0.34);
+  box-shadow: 0 0 10px rgba(22, 163, 74, 0.34);
 }
 
 .map-style-card__pin {

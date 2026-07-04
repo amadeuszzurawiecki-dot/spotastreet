@@ -676,9 +676,9 @@ export function Multiplayer() {
                 <span 
                   className="lobby-badge"
                   style={{ 
-                    background: amIReady ? 'rgba(0, 230, 118, 0.1)' : 'rgba(255, 152, 0, 0.1)',
+                    background: amIReady ? 'rgba(22, 163, 74, 0.1)' : 'rgba(255, 152, 0, 0.1)',
                     color: amIReady ? 'var(--green-primary)' : '#FF9800',
-                    border: amIReady ? '1px solid rgba(0, 230, 118, 0.2)' : '1px solid rgba(255, 152, 0, 0.2)'
+                    border: amIReady ? '1px solid rgba(22, 163, 74, 0.2)' : '1px solid rgba(255, 152, 0, 0.2)'
                   }}
                 >
                   {amIReady ? 'GOTÓW' : 'OCZEKIWANIE'}
@@ -705,9 +705,9 @@ export function Multiplayer() {
                 <span 
                   className="lobby-badge"
                   style={{ 
-                    background: isOpponentReady ? 'rgba(0, 230, 118, 0.1)' : 'rgba(255, 152, 0, 0.1)',
+                    background: isOpponentReady ? 'rgba(22, 163, 74, 0.1)' : 'rgba(255, 152, 0, 0.1)',
                     color: isOpponentReady ? 'var(--green-primary)' : '#FF9800',
-                    border: isOpponentReady ? '1px solid rgba(0, 230, 118, 0.2)' : '1px solid rgba(255, 152, 0, 0.2)'
+                    border: isOpponentReady ? '1px solid rgba(22, 163, 74, 0.2)' : '1px solid rgba(255, 152, 0, 0.2)'
                   }}
                 >
                   {isOpponentReady ? 'GOTÓW' : 'OCZEKIWANIE'}

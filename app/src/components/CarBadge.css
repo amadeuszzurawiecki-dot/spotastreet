@@ -4,12 +4,12 @@
   gap: 5px;
   padding: 6px 14px;
   background: var(--bg-card);
-  border: 1px solid rgba(0, 230, 118, 0.25);
+  border: 1px solid rgba(22, 163, 74, 0.25);
   border-radius: var(--radius-full);
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-primary);
-  box-shadow: 0 0 12px rgba(0, 230, 118, 0.15);
+  box-shadow: 0 0 12px rgba(22, 163, 74, 0.15);
   transition: all var(--transition-base);
   height: 40px; /* Matching height for topbar flex alignment */
   box-sizing: border-box;
@@ -17,7 +17,7 @@
 
 .car-badge:hover {
   border-color: var(--green-primary);
-  box-shadow: 0 0 16px rgba(0, 230, 118, 0.3);
+  box-shadow: 0 0 16px rgba(22, 163, 74, 0.3);
 }
 
 .car-badge__svg-logo {

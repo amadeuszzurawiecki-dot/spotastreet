@@ -1025,7 +1025,7 @@ export function AdminPage() {
                   type="button" 
                   className="btn-secondary btn-sm"
                   onClick={handleLoadDefaultChallenges}
-                  style={{ background: 'rgba(0, 230, 118, 0.1)', border: '1px solid rgba(0, 230, 118, 0.25)', color: 'var(--green-primary)' }}
+                  style={{ background: 'rgba(22, 163, 74, 0.1)', border: '1px solid rgba(22, 163, 74, 0.25)', color: 'var(--green-primary)' }}
                 >
                   Wczytaj Wyzwania Domyślne
                 </button>

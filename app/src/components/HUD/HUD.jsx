@@ -184,7 +184,7 @@ export function GameHUD({
           <div className="hud-unified-side hud-unified-side--training">
             <div 
               className="hud-unified-pill hud-unified-pill--training" 
-              style={isChallenge ? { background: 'rgba(0, 230, 118, 0.1)', border: '1px solid rgba(0, 230, 118, 0.25)', color: 'var(--green-primary)' } : {}}
+              style={isChallenge ? { background: 'rgba(22, 163, 74, 0.1)', border: '1px solid rgba(22, 163, 74, 0.25)', color: 'var(--green-primary)' } : {}}
             >
               <span>{isChallenge ? 'Wyzwanie' : 'Trening'}</span>
             </div>

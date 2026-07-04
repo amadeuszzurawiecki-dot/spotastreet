@@ -25,7 +25,7 @@
   transform: translate(-50%, -50%);
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(0, 230, 118, 0.04) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(22, 163, 74, 0.04) 0%, transparent 70%);
   z-index: 0;
   pointer-events: none;
 }
@@ -44,7 +44,7 @@
   font-weight: 800;
   color: var(--green-primary);
   background: var(--green-subtle);
-  border: 1px solid rgba(0, 230, 118, 0.2);
+  border: 1px solid rgba(22, 163, 74, 0.2);
   padding: 4px 10px;
   border-radius: var(--radius-sm);
   letter-spacing: 0.05em;
@@ -81,13 +81,13 @@
   width: 180px;
   height: 180px;
   border-radius: 50%;
-  border: 2px solid rgba(0, 230, 118, 0.15);
+  border: 2px solid rgba(22, 163, 74, 0.15);
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 230, 118, 0.01);
-  box-shadow: 0 0 30px rgba(0, 230, 118, 0.05);
+  background: rgba(22, 163, 74, 0.01);
+  box-shadow: 0 0 30px rgba(22, 163, 74, 0.05);
 }
 
 .radar-circle::before {
@@ -96,7 +96,7 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  border: 1px dashed rgba(0, 230, 118, 0.2);
+  border: 1px dashed rgba(22, 163, 74, 0.2);
 }
 
 .radar-circle::after {
@@ -105,7 +105,7 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  border: 1px dashed rgba(0, 230, 118, 0.25);
+  border: 1px dashed rgba(22, 163, 74, 0.25);
 }
 
 .radar-sweep {
@@ -115,7 +115,7 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: conic-gradient(from 0deg, rgba(0, 230, 118, 0.15) 0deg, transparent 90deg, transparent 360deg);
+  background: conic-gradient(from 0deg, rgba(22, 163, 74, 0.15) 0deg, transparent 90deg, transparent 360deg);
   animation: radarScan 3s infinite linear;
 }
 

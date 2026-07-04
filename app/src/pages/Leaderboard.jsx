@@ -189,7 +189,7 @@ export function Leaderboard() {
                         const isCustom = row.avatarId === 'custom' && row.customAvatar;
                         const avatarImg = isCustom ? row.customAvatar : (AVATARS.find(a => a.id === row.avatarId)?.image);
                         return (
-                          <tr key={idx} className={isSelf ? 'leaderboard-row--current-user' : ''} style={{ background: isSelf ? 'rgba(0, 230, 118, 0.08)' : 'transparent' }}>
+                          <tr key={idx} className={isSelf ? 'leaderboard-row--current-user' : ''} style={{ background: isSelf ? 'rgba(22, 163, 74, 0.08)' : 'transparent' }}>
                             <td style={{ fontWeight: '700' }}>
                               {idx + 1}
                             </td>

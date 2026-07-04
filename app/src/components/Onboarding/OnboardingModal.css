@@ -18,7 +18,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid rgba(0, 230, 118, 0.2);
+  border: 1px solid rgba(22, 163, 74, 0.2);
 }
 
 .onboarding-modal__icon {
