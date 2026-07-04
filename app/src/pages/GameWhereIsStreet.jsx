@@ -216,9 +216,6 @@ function GameWhereIsStreet() {
             navigate('/game/multiplayer?mode=where-is-street');
             return;
           }
-          if (config.variant !== 'training') {
-            user.incrementDailyGameCount();
-          }
           setGameVariant(config.variant);
           setTotalRounds(config.rounds);
           setRoundDuration(config.timeLimit);

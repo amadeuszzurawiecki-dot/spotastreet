@@ -220,9 +220,6 @@ function GameWhereIsPlace() {
             navigate('/game/multiplayer?mode=where-is-place');
             return;
           }
-          if (config.variant !== 'training') {
-            user.incrementDailyGameCount();
-          }
           setGameVariant(config.variant);
           setTotalRounds(config.rounds);
           setRoundDuration(config.timeLimit);

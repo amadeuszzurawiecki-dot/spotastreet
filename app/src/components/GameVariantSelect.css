@@ -94,10 +94,24 @@
 }
 
 .variant-card:not(.variant-card--locked):hover {
-  transform: translateY(-3px);
-  border-color: var(--green-primary);
-  background: color-mix(in srgb, var(--surface) 90%, var(--green-primary));
-  box-shadow: var(--shadow-md);
+  background: var(--surface);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .variant-card:not(.variant-card--locked):hover {
+    transform: translateY(-3px);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  .variant-card:not(.variant-card--locked):hover {
+    transform: none;
+    border-color: var(--border);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+  }
 }
 
 .variant-card__icon {

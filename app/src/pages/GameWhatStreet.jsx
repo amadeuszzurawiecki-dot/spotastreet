@@ -194,9 +194,6 @@ function GameWhatStreet() {
             navigate('/game/multiplayer?mode=what-street');
             return;
           }
-          if (config.variant !== 'training') {
-            user.incrementDailyGameCount();
-          }
           setGameVariant(config.variant);
           setTotalRounds(config.rounds);
           setRoundDuration(config.timeLimit);
