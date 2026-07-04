@@ -18,6 +18,7 @@
   min-height: 256px;
   display: grid;
   align-items: center;
+  padding-bottom: 26px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -63,7 +64,7 @@
 
 .home-hero__scroll {
   position: absolute;
-  bottom: 26px;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   color: var(--text-tertiary);
@@ -80,7 +81,7 @@
 }
 
 .home-modes__section {
-  margin-top: 0;
+  margin-top: 32px;
   border: 1px solid var(--border);
   border-radius: var(--radius-control) !important;
   background: color-mix(in srgb, var(--surface) 72%, transparent);
@@ -144,12 +145,19 @@
 }
 
 .challenges-carousel {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
   padding: 16px;
   overflow: hidden;
-  animation: challengeCarouselStep 620ms ease both;
+}
+
+.challenges-carousel__track {
+  display: flex;
+  gap: 16px;
+  transform: translate3d(0, 0, 0);
+}
+
+.challenges-carousel__track--sliding {
+  transform: translate3d(calc(var(--challenge-slide-distance) * -1), 0, 0);
+  transition: transform 640ms cubic-bezier(0.76, 0, 0.24, 1);
 }
 
 .home-loading-challenges {
@@ -184,16 +192,16 @@
 
 .challenge-card:hover::after,
 .mode-card:not(.mode-card--locked):hover::after {
-  border-color: color-mix(in srgb, var(--text-primary) 54%, var(--main-color));
+  border-color: color-mix(in srgb, var(--text-primary) 24%, transparent);
 }
 
 .card-arrow {
   position: absolute;
   right: 18px;
   bottom: 18px;
-  width: 20px;
-  height: 20px;
-  color: #000;
+  width: 15px;
+  height: 15px;
+  color: var(--text-tertiary);
   opacity: 0;
   transform: translateX(-12px);
   transition: opacity 260ms ease, transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -207,8 +215,9 @@
 }
 
 .challenge-card {
+  flex: 0 0 calc((100% - 16px) / 2);
   display: grid;
-  grid-template-rows: 176px auto;
+  grid-template-rows: 156px auto;
   border: 1px solid var(--border);
   border-radius: var(--radius-control) !important;
 }
@@ -249,9 +258,9 @@
 }
 
 .challenge-card__bottom {
-  min-height: 112px;
+  min-height: 84px;
   display: block;
-  padding: 16px 16px 18px;
+  padding: 12px 16px 14px;
 }
 
 .challenge-card__details {
@@ -298,7 +307,7 @@
 .challenge-card__desc {
   display: -webkit-box;
   overflow: hidden;
-  color: var(--text-secondary);
+  color: color-mix(in srgb, var(--text-primary) 78%, var(--text-secondary));
   font-size: 13px;
   font-weight: 400;
   line-height: 1.4;
@@ -339,7 +348,7 @@
 }
 
 .challenge-card__score-limit {
-  color: #000;
+  color: #6b7280;
 }
 
 .challenge-pill {
@@ -409,16 +418,16 @@
 }
 
 .mode-card__icon-wrap {
-  width: 52px;
-  height: 52px;
+  width: 78px;
+  height: 78px;
   display: grid;
-  place-items: center;
+  place-items: start;
   color: var(--main-color);
 }
 
 .mode-card__svg {
-  width: 36px;
-  height: 36px;
+  width: 54px;
+  height: 54px;
 }
 
 .mode-card__content {
@@ -453,6 +462,7 @@
 
   .home-hero__content {
     min-height: 384px;
+    padding-bottom: 26px;
   }
 
   .home-hero__panel {
@@ -488,7 +498,7 @@
   }
 
   .home-modes__section {
-    margin-top: 0;
+    margin-top: 32px;
   }
 
   .challenge-card:last-child {
@@ -511,17 +521,10 @@
   }
 
   .challenges-carousel {
-    grid-template-columns: 1fr;
+    display: block;
   }
-}
 
-@keyframes challengeCarouselStep {
-  from {
-    opacity: 0;
-    transform: translateX(18px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
+  .challenge-card {
+    flex-basis: 100%;
   }
 }

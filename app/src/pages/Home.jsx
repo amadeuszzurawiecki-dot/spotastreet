@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useUserProfile from '../hooks/useUserProfile';
 import TopNav from '../components/Navigation/TopNav';
@@ -11,7 +11,7 @@ const PIN_MODES = [
     id: 'where-is-street',
     path: '/game/where-is-street',
     icon: '/icons/pin.svg',
-    title: 'Gdzie jest ta ulica?',
+    title: 'Wskaż ulicę',
     description: 'Upuść pinezkę na wylosowanej ulicy',
     available: true,
   },
@@ -44,7 +44,9 @@ function Home() {
   const [isOffline, setIsOffline] = useState(false);
   const [timeUntilMidnight, setTimeUntilMidnight] = useState('00:00:00');
   const [challengeIndex, setChallengeIndex] = useState(0);
-  const [challengeCycle, setChallengeCycle] = useState(0);
+  const [isChallengeSliding, setIsChallengeSliding] = useState(false);
+  const [challengeSlideDistance, setChallengeSlideDistance] = useState(0);
+  const challengeViewportRef = useRef(null);
 
   const avatar = AVATARS.find(a => a.id === user.avatarId) || AVATARS[0];
   const userAttempts = user.challengeAttempts || {};
@@ -128,15 +130,38 @@ function Home() {
     if (dailyChallenges.length <= 1) return undefined;
 
     const interval = setInterval(() => {
-      setChallengeIndex((currentIndex) => (currentIndex + 1) % dailyChallenges.length);
-      setChallengeCycle((currentCycle) => currentCycle + 1);
+      setIsChallengeSliding(true);
+      window.setTimeout(() => {
+        setChallengeIndex((currentIndex) => (currentIndex + 1) % dailyChallenges.length);
+        setIsChallengeSliding(false);
+      }, 640);
     }, 3000);
 
     return () => clearInterval(interval);
   }, [dailyChallenges.length]);
 
+  useEffect(() => {
+    const updateSlideDistance = () => {
+      const viewport = challengeViewportRef.current;
+      if (!viewport) return;
+
+      const cardGap = 16;
+      const visibleCards = window.innerWidth <= 620 ? 1 : 2;
+      const cardWidth = visibleCards === 1
+        ? viewport.clientWidth
+        : (viewport.clientWidth - cardGap) / 2;
+
+      setChallengeSlideDistance(cardWidth + cardGap);
+    };
+
+    updateSlideDistance();
+    window.addEventListener('resize', updateSlideDistance, { passive: true });
+
+    return () => window.removeEventListener('resize', updateSlideDistance);
+  }, [dailyChallenges.length]);
+
   const visibleChallenges = dailyChallenges.length > 1
-    ? [0, 1].map((offset) => dailyChallenges[(challengeIndex + offset) % dailyChallenges.length])
+    ? [0, 1, 2].map((offset) => dailyChallenges[(challengeIndex + offset) % dailyChallenges.length])
     : dailyChallenges.length === 1
       ? [dailyChallenges[0]]
     : [];
@@ -236,63 +261,68 @@ function Home() {
             </div>
           </div>
 
-          <div className="challenges-carousel" key={challengeCycle}>
+          <div className="challenges-carousel" ref={challengeViewportRef}>
             {loadingChallenges ? (
               <div className="home-loading-challenges">Wczytywanie wyzwań...</div>
             ) : (
-              visibleChallenges.map((challenge, visibleIndex) => {
-                const score = userAttempts[challenge.id];
-                const hasPlayed = score !== undefined;
-                return (
-                  <div
-                    key={`${challenge.id}-${challengeCycle}-${visibleIndex}`}
-                    className={`challenge-card ${hasPlayed ? 'challenge-card--played' : ''}`}
-                    onClick={() => handleChallengeClick(challenge)}
-                  >
-                    <div className="challenge-card__top">
-                      {renderChallengeImage(challenge)}
-                      <div className="challenge-card__image-pills">
-                        <span className="challenge-pill challenge-pill--light">
-                          <span className="svg-icon" style={{ '--icon': 'url(/icons/flag.svg)' }} aria-hidden="true" />
-                          {challenge.rounds} rund
-                        </span>
-                        <span className="challenge-pill challenge-pill--light">
-                          {challenge.timeLimit || 15}s
-                        </span>
-                        <span className="challenge-pill challenge-pill--dark">
-                          <span className="svg-icon" style={{ '--icon': 'url(/icons/alarm.svg)' }} aria-hidden="true" />
-                          {timeUntilMidnight}
-                        </span>
-                      </div>
-                      <button className={`challenge-card__btn ${hasPlayed ? 'challenge-card__btn--done' : ''}`} disabled={hasPlayed}>
-                        {hasPlayed ? (
-                          <>
-                            Zdobyto <span className="challenge-card__score">{score || 0}</span><span className="challenge-card__score-limit">/1000 pkt</span>
-                          </>
-                        ) : 'Rozpocznij'}
-                      </button>
-                    </div>
-
-                    <div className="challenge-card__bottom">
-                      <div className="challenge-card__details">
-                        <div className="challenge-card__title-container">
-                          {challenge.title.length > 22 ? (
-                            <div className="marquee-text-wrapper">
-                              <span className="marquee-text">
-                                {challenge.title} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {challenge.title} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                              </span>
-                            </div>
-                          ) : (
-                            <h3 className="challenge-card__title">{challenge.title}</h3>
-                          )}
+              <div
+                className={`challenges-carousel__track ${isChallengeSliding ? 'challenges-carousel__track--sliding' : ''}`}
+                style={{ '--challenge-slide-distance': `${challengeSlideDistance}px` }}
+              >
+                {visibleChallenges.map((challenge, visibleIndex) => {
+                  const score = userAttempts[challenge.id];
+                  const hasPlayed = score !== undefined;
+                  return (
+                    <div
+                      key={`${challenge.id}-${visibleIndex}`}
+                      className={`challenge-card ${hasPlayed ? 'challenge-card--played' : ''}`}
+                      onClick={() => handleChallengeClick(challenge)}
+                    >
+                      <div className="challenge-card__top">
+                        {renderChallengeImage(challenge)}
+                        <div className="challenge-card__image-pills">
+                          <span className="challenge-pill challenge-pill--light">
+                            <span className="svg-icon" style={{ '--icon': 'url(/icons/flag.svg)' }} aria-hidden="true" />
+                            {challenge.rounds} rund
+                          </span>
+                          <span className="challenge-pill challenge-pill--light">
+                            {challenge.timeLimit || 15}s
+                          </span>
+                          <span className="challenge-pill challenge-pill--dark">
+                            <span className="svg-icon" style={{ '--icon': 'url(/icons/alarm.svg)' }} aria-hidden="true" />
+                            {timeUntilMidnight}
+                          </span>
                         </div>
-                        <p className="challenge-card__desc">{challenge.description}</p>
+                        <button className={`challenge-card__btn ${hasPlayed ? 'challenge-card__btn--done' : ''}`} disabled={hasPlayed}>
+                          {hasPlayed ? (
+                            <>
+                              Zdobyto <span className="challenge-card__score">{score || 0}</span><span className="challenge-card__score-limit">/1000 pkt</span>
+                            </>
+                          ) : 'Rozpocznij'}
+                        </button>
                       </div>
-                      <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
+
+                      <div className="challenge-card__bottom">
+                        <div className="challenge-card__details">
+                          <div className="challenge-card__title-container">
+                            {challenge.title.length > 22 ? (
+                              <div className="marquee-text-wrapper">
+                                <span className="marquee-text">
+                                  {challenge.title} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {challenge.title} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                </span>
+                              </div>
+                            ) : (
+                              <h3 className="challenge-card__title">{challenge.title}</h3>
+                            )}
+                          </div>
+                          <p className="challenge-card__desc">{challenge.description}</p>
+                        </div>
+                        <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
+                      </div>
                     </div>
-                  </div>
-                );
-              })
+                  );
+                })}
+              </div>
             )}
           </div>
         </div>

@@ -185,7 +185,6 @@ body {
     var(--bg-primary);
   background-size: var(--grid-unit) var(--grid-unit), var(--grid-unit) var(--grid-unit), var(--grid-major) var(--grid-major), var(--grid-major) var(--grid-major), auto;
   background-position: center top;
-  background-attachment: fixed, fixed, fixed, fixed, scroll;
   color: var(--text-primary);
   font-family: var(--font-body);
   line-height: 1.5;
@@ -237,7 +236,6 @@ body::after {
     linear-gradient(90deg, var(--grid-hover-large) 1px, transparent 1px);
   background-size: var(--grid-unit) var(--grid-unit), var(--grid-unit) var(--grid-unit), var(--grid-major) var(--grid-major), var(--grid-major) var(--grid-major);
   background-position: center top;
-  background-attachment: fixed;
   -webkit-mask: radial-gradient(136px circle at var(--cursor-x, -200px) var(--cursor-y, -200px), #000 0, transparent 74%);
   mask: radial-gradient(136px circle at var(--cursor-x, -200px) var(--cursor-y, -200px), #000 0, transparent 74%);
   opacity: 0.95;
