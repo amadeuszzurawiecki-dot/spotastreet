@@ -339,33 +339,37 @@ export function Leaderboard() {
         {view === 'menu' && (
           <div className="leaderboard-menu-container animate-fade-in">
             <header className="leaderboard-header">
-          <h2 className="leaderboard-title text-display">Rankingi Legnicy</h2>
+              <h1 className="leaderboard-title hero__title text-display">Rankingi Legnicy</h1>
               <p className="leaderboard-subtitle">Wybierz kategorię, aby zobaczyć najlepszych kierowców</p>
             </header>
 
             <div className="leaderboard-menu-grid">
               <div className="leaderboard-menu-card" onClick={() => setView('challenges')}>
-                <span className="leaderboard-menu-card__icon line-icon line-icon--trophy" aria-hidden="true" />
+                <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/ribbon.svg)' }} aria-hidden="true" />
                 <span className="leaderboard-menu-card__title">Wyzwania codzienne</span>
                 <span className="leaderboard-menu-card__subtitle">Historia wyzwań i wyniki</span>
+                <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
               </div>
 
               <div className="leaderboard-menu-card" onClick={() => setView('where-is-street')}>
-                <span className="leaderboard-menu-card__icon line-icon line-icon--pin" aria-hidden="true" />
+                <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/ribbon.svg)' }} aria-hidden="true" />
                 <span className="leaderboard-menu-card__title">Gdzie jest ta ulica?</span>
                 <span className="leaderboard-menu-card__subtitle">Rozpoznawanie ulic na mapie</span>
+                <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
               </div>
 
               <div className="leaderboard-menu-card" onClick={() => setView('where-is-place')}>
-                <span className="leaderboard-menu-card__icon line-icon line-icon--target" aria-hidden="true" />
+                <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/ribbon.svg)' }} aria-hidden="true" />
                 <span className="leaderboard-menu-card__title">Gdzie jest to miejsce?</span>
                 <span className="leaderboard-menu-card__subtitle">Rozpoznawanie zabytków i punktów</span>
+                <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
               </div>
 
               <div className="leaderboard-menu-card" onClick={() => setView('what-street')}>
-                <span className="leaderboard-menu-card__icon line-icon line-icon--scan" aria-hidden="true" />
+                <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/ribbon.svg)' }} aria-hidden="true" />
                 <span className="leaderboard-menu-card__title">Co to za ulica?</span>
                 <span className="leaderboard-menu-card__subtitle">Nazywanie podświetlonych ulic</span>
+                <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
               </div>
             </div>
           </div>

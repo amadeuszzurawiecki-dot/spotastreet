@@ -20,12 +20,15 @@
 .leaderboard-header {
   text-align: center;
   margin-bottom: var(--space-xs);
+  padding: 56px 0 40px;
+  border-bottom: 1px solid var(--border);
 }
 
 .leaderboard-title {
-  font-size: 1.8rem;
-  font-weight: 900;
-  margin-bottom: 2px;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.04;
+  margin-bottom: 16px;
 }
 
 .leaderboard-subtitle {
@@ -250,12 +253,12 @@
 
 .leaderboard-menu-card {
   position: relative;
-  min-height: 190px;
+  min-height: 168px;
   display: grid;
   grid-template-columns: 1fr;
-  align-content: space-between;
+  align-content: start;
   align-items: start;
-  gap: 20px;
+  gap: 14px;
   padding: 18px;
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -268,9 +271,26 @@
 }
 
 .leaderboard-menu-card:hover {
-  border-color: color-mix(in srgb, var(--text-primary) 20%, var(--border));
-  background: color-mix(in srgb, var(--surface) 88%, var(--green-primary));
+  border-color: color-mix(in srgb, var(--text-primary) 24%, var(--border));
+  background: color-mix(in srgb, var(--surface) 92%, var(--text-primary));
   transform: translateY(-2px);
+}
+
+.leaderboard-menu-card .card-arrow {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  width: 15px;
+  height: 15px;
+  color: var(--text-tertiary);
+  opacity: 0;
+  transform: translateX(-12px);
+  transition: opacity 260ms ease, transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.leaderboard-menu-card:hover .card-arrow {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .leaderboard-menu-card__icon {
@@ -289,7 +309,6 @@
 }
 
 .leaderboard-menu-card__subtitle {
-  align-self: end;
   font-size: 0.82rem;
   line-height: 1.35;
   color: var(--text-tertiary);
@@ -320,12 +339,13 @@
   }
 
   .leaderboard-header {
-    margin-bottom: 24px;
+    margin-bottom: 32px;
+    padding: 72px 0 48px;
   }
 
   .leaderboard-title {
-    font-size: clamp(2.4rem, 5vw, 4.6rem);
-    line-height: 0.92;
+    font-size: 36px;
+    line-height: 1.04;
   }
 
   .leaderboard-menu-grid {
@@ -334,9 +354,9 @@
   }
 
   .leaderboard-menu-card {
-    min-height: 188px;
+    min-height: 168px;
     grid-template-columns: 1fr;
-    align-content: space-between;
+    align-content: start;
     align-items: start;
   }
 }

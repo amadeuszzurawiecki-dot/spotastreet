@@ -3,7 +3,7 @@
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
+  overflow-x: clip;
   background: transparent;
 }
 
@@ -166,7 +166,7 @@
   background: transparent;
   color: var(--text-primary);
   cursor: pointer;
-  transition: border-color var(--transition-base), background var(--transition-base);
+  transition: border-color var(--transition-base), background var(--transition-base), transform var(--transition-base);
 }
 
 .challenge-card::after,
@@ -363,7 +363,7 @@
 
 .mode-card {
   width: 100%;
-  min-height: 190px;
+  min-height: 168px;
   display: grid;
   align-content: space-between;
   gap: 18px;
@@ -374,11 +374,11 @@
 }
 
 .mode-card:nth-child(1) {
-  background: var(--text-primary);
+  background: var(--text-tertiary);
 }
 
 .mode-card:nth-child(2) {
-  background: var(--text-tertiary);
+  background: var(--text-primary);
 }
 
 .mode-card:nth-child(3) {
@@ -387,6 +387,7 @@
 
 .mode-card:not(.mode-card--locked):hover {
   background: inherit;
+  transform: translateY(-2px);
 }
 
 .mode-card--locked {

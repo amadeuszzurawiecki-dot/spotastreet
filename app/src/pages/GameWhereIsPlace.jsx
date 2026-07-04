@@ -220,13 +220,9 @@ function GameWhereIsPlace() {
             navigate('/game/multiplayer?mode=where-is-place');
             return;
           }
-          if (!user.canPlaySingleplayer()) {
-            if (window.confirm("Osiągnąłeś limit 3 darmowych gier jednoosobowych na dzień. Czy chcesz przejść do profilu, aby aktywować Premium?")) {
-              navigate('/profile');
-            }
-            return;
+          if (config.variant !== 'training') {
+            user.incrementDailyGameCount();
           }
-          user.incrementDailyGameCount();
           setGameVariant(config.variant);
           setTotalRounds(config.rounds);
           setRoundDuration(config.timeLimit);

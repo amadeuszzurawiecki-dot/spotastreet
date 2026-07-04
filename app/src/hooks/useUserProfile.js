@@ -333,11 +333,7 @@ const useUserProfile = create(
       },
 
       canPlaySingleplayer: () => {
-        if (get().isPremium) return true;
-        const todayStr = new Date().toLocaleDateString('sv').substring(0, 10);
-        const daily = get().dailyGamesPlayed || { date: '', count: 0 };
-        if (daily.date !== todayStr) return true;
-        return daily.count < 3;
+        return true;
       },
 
       updateProfile: (updatedFields) => {

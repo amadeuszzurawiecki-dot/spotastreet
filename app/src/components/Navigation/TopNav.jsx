@@ -152,22 +152,24 @@ export function TopNav() {
             ))}
           </div>
 
-          <button className="menu-drawer__theme" onClick={toggleTheme}>
-            <span
-              className="svg-icon"
-              style={{ '--icon': `url(/icons/${theme === 'dark' ? 'dark' : 'light'}.svg)` }}
-              aria-hidden="true"
-            />
-            <span>{theme === 'dark' ? 'Tryb ciemny' : 'Tryb jasny'}</span>
-          </button>
-          
-          <button 
-            className="menu-drawer__link menu-drawer__link--logout"
-            onClick={handleLogout}
-          >
-            <span className="svg-icon menu-drawer__icon" style={{ '--icon': 'url(/icons/logout.svg)' }} aria-hidden="true" />
-            Wyloguj się
-          </button>
+          <div className="menu-drawer__account-actions">
+            <button className="menu-drawer__theme" onClick={toggleTheme}>
+              <span
+                className="svg-icon menu-drawer__icon"
+                style={{ '--icon': `url(/icons/${theme === 'dark' ? 'dark' : 'light'}.svg)` }}
+                aria-hidden="true"
+              />
+              <span>{theme === 'dark' ? 'Tryb ciemny' : 'Tryb jasny'}</span>
+            </button>
+
+            <button
+              className="menu-drawer__link menu-drawer__link--logout"
+              onClick={handleLogout}
+            >
+              <span className="svg-icon menu-drawer__icon" style={{ '--icon': 'url(/icons/logout.svg)' }} aria-hidden="true" />
+              <span>Wyloguj się</span>
+            </button>
+          </div>
         </nav>
       </div>
     </>

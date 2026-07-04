@@ -4,7 +4,6 @@ import useUserProfile from '../hooks/useUserProfile';
 import TopNav from '../components/Navigation/TopNav';
 import { AVATARS } from '../data/avatars';
 import { TOWNS } from '../data/towns';
-import { DEFAULT_MAP_STYLE_ID, MAP_STYLES } from '../config/mapStyles';
 import './Profile.css';
 
 export function Profile() {
@@ -16,7 +15,6 @@ export function Profile() {
   const [town, setTown] = useState(user.town);
   const [avatarId, setAvatarId] = useState(user.avatarId);
   const [hideEmail, setHideEmail] = useState(user.hideEmail || false);
-  const [mapStyle, setMapStyle] = useState(user.mapStyle || DEFAULT_MAP_STYLE_ID);
   const [message, setMessage] = useState('');
 
   const selectedAvatar = avatarId === 'custom' 
@@ -29,7 +27,6 @@ export function Profile() {
       town: town || 'Legnica',
       avatarId,
       hideEmail,
-      mapStyle,
     });
     setMessage('Zmiany zostały zapisane! ✓');
     setTimeout(() => setMessage(''), 3000);
@@ -108,6 +105,7 @@ export function Profile() {
             <h2 className="profile-card-header__name" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
               {name || 'Kierowca'}
               {user.isPremium && <span className="premium-badge-text">PREMIUM</span>}
+              {!user.isPremium && <span className="free-badge-text">FREE</span>}
             </h2>
             <span className="profile-card-header__town" style={{ opacity: 0.7, wordBreak: 'break-all' }}>{user.email || 'kierowca@gmail.com'}</span>
             <label className="profile-hide-email-inline" htmlFor="profile-hide-email">
@@ -128,30 +126,32 @@ export function Profile() {
           
           {message && <div className="profile-settings__message">{message}</div>}
 
-          <div className="form-group">
-            <label className="form-label">Imię / Nick</label>
-            <input 
-              type="text" 
-              className="form-input" 
-              value={name} 
-              onChange={e => setName(e.target.value)}
-              placeholder="Twój nick..."
-            />
-          </div>
+          <div className="profile-form-row">
+            <div className="form-group">
+              <label className="form-label">Imię / Nick</label>
+              <input
+                type="text"
+                className="form-input"
+                value={name}
+                onChange={e => setName(e.target.value)}
+                placeholder="Twój nick..."
+              />
+            </div>
 
-          <div className="form-group">
-            <label className="form-label">Miejscowość</label>
-            <input 
-              type="text" 
-              list="towns-list"
-              className="form-input" 
-              value={town} 
-              onChange={e => setTown(e.target.value)}
-              placeholder="Legnica..."
-            />
-            <datalist id="towns-list">
-              {TOWNS.map(t => <option key={t} value={t} />)}
-            </datalist>
+            <div className="form-group">
+              <label className="form-label">Miejscowość</label>
+              <input
+                type="text"
+                list="towns-list"
+                className="form-input"
+                value={town}
+                onChange={e => setTown(e.target.value)}
+                placeholder="Legnica..."
+              />
+              <datalist id="towns-list">
+                {TOWNS.map(t => <option key={t} value={t} />)}
+              </datalist>
+            </div>
           </div>
 
           {/* Clean circle avatar selection */}
@@ -190,30 +190,6 @@ export function Profile() {
                   ) : (
                     <span className="line-icon line-icon--user" aria-hidden="true" />
                   )}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">Styl mapy</label>
-            <div className="map-style-grid">
-              {MAP_STYLES.map(style => (
-                <button
-                  key={style.id}
-                  type="button"
-                  className={`map-style-card map-style-card--${style.id} ${mapStyle === style.id ? 'map-style-card--selected' : ''}`}
-                  onClick={() => setMapStyle(style.id)}
-                  aria-pressed={mapStyle === style.id}
-                >
-                  <span className="map-style-card__preview">
-                    <span className="map-style-card__route" />
-                    <span className="map-style-card__pin" />
-                  </span>
-                  <span className="map-style-card__body">
-                    <span className="map-style-card__name">{style.name}</span>
-                    <span className="map-style-card__desc">{style.description}</span>
-                  </span>
                 </button>
               ))}
             </div>

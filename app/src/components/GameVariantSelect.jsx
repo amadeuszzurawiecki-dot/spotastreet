@@ -84,12 +84,12 @@ function GameVariantSelect({ gameTitle, gameIcon, onSelectVariant, onBack }) {
             </div>
           </div>
 
-          <button className="btn-primary start-btn" onClick={handleStartTraining} style={{ marginTop: '30px', width: '100%' }}>
-            Uruchom trening
-          </button>
+        <button type="button" className="btn-primary start-btn" onClick={handleStartTraining} style={{ marginTop: '30px', width: '100%' }}>
+          Uruchom trening
+        </button>
         </div>
 
-        <button className="btn-secondary back-btn-variant" onClick={() => setSelectedMainOption(null)}>
+        <button type="button" className="btn-secondary back-btn-variant" onClick={() => setSelectedMainOption(null)}>
           Wróć do wariantów
         </button>
       </div>
@@ -112,14 +112,14 @@ function GameVariantSelect({ gameTitle, gameIcon, onSelectVariant, onBack }) {
 
       <div className="variant-grid animate-scale-in">
         {/* Trening */}
-        <button className="variant-card" onClick={() => setSelectedMainOption('training')}>
+        <button type="button" className="variant-card" onClick={() => setSelectedMainOption('training')}>
           <span className="variant-card__icon line-icon line-icon--settings" aria-hidden="true" />
           <h3 className="variant-card__title">Trening</h3>
           <p className="variant-card__desc">Ustaw i ćwicz</p>
         </button>
 
         {/* Walka z AI */}
-        <button className="variant-card" onClick={handleStartAi}>
+        <button type="button" className="variant-card" onClick={handleStartAi}>
           <span className="variant-card__icon line-icon line-icon--target" aria-hidden="true" />
           <h3 className="variant-card__title">Walka z AI</h3>
           <p className="variant-card__desc">Pokonaj bota</p>
@@ -127,6 +127,7 @@ function GameVariantSelect({ gameTitle, gameIcon, onSelectVariant, onBack }) {
 
         {/* Pojedynek */}
         <button 
+          type="button"
           className="variant-card" 
           onClick={handleStartMultiplayer}
         >
@@ -137,7 +138,7 @@ function GameVariantSelect({ gameTitle, gameIcon, onSelectVariant, onBack }) {
         </button>
       </div>
 
-      <button className="btn-secondary back-btn-variant" onClick={onBack}>
+      <button type="button" className="btn-secondary back-btn-variant" onClick={onBack}>
         Wróć do menu
       </button>
     </div>
