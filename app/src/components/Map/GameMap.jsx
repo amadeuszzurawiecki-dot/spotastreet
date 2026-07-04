@@ -1,5 +1,5 @@
 import { MapContainer, TileLayer, useMapEvents, Polyline, Marker, Tooltip, useMap } from 'react-leaflet';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import L from 'leaflet';
 import { LEGNICA_CENTER } from '../../utils/geo';
 import { getMapStyle } from '../../config/mapStyles';
@@ -169,6 +169,13 @@ function GameMap({
   const user = useUserProfile();
   const { theme } = useTheme();
   const mapStyle = getMapStyle(theme === 'light' ? 'mono-light' : 'mono-dark');
+  const tileUrls = useMemo(() => [mapStyle.url, ...(mapStyle.fallbackUrls || [])], [mapStyle]);
+  const [tileUrlIndex, setTileUrlIndex] = useState(0);
+  const tileUrl = tileUrls[Math.min(tileUrlIndex, tileUrls.length - 1)];
+
+  useEffect(() => {
+    setTileUrlIndex(0);
+  }, [mapStyle.id]);
   
   const playerResultIcon = useMemo(() => {
     return createPlayerPinIcon(playerAvatar, playerAvatarImg, playerBg, playerIsPremium);
@@ -196,10 +203,18 @@ function GameMap({
         touchZoom={enableZoom}
       >
         <TileLayer
-          url={mapStyle.url}
+          key={`${mapStyle.id}-${tileUrlIndex}`}
+          url={tileUrl}
           attribution={mapStyle.attribution}
           maxZoom={19}
           subdomains={mapStyle.subdomains}
+          eventHandlers={{
+            tileerror: () => {
+              setTileUrlIndex((currentIndex) => (
+                currentIndex < tileUrls.length - 1 ? currentIndex + 1 : currentIndex
+              ));
+            },
+          }}
         />
         
         <MapClickHandler onMapClick={onMapClick} disabled={disabled} />

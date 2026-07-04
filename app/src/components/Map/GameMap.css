@@ -66,11 +66,11 @@
 }
 
 .game-map--mono-dark .leaflet-tile {
-  filter: grayscale(1) contrast(1.35) brightness(1.12);
+  filter: grayscale(1) invert(1) contrast(1.18) brightness(0.82);
 }
 
 .game-map--mono-light .leaflet-tile {
-  filter: grayscale(1) contrast(1.55) brightness(0.98);
+  filter: grayscale(1) contrast(1.24) brightness(1.04);
 }
 
 .game-map--dark .leaflet-tile {
