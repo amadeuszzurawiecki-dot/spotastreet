@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: var(--safe-top) 12px 0;
+  padding: var(--safe-top) var(--page-gutter) 0;
   background: color-mix(in srgb, var(--surface) 88%, transparent);
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(18px);
@@ -40,7 +40,7 @@
 .topnav-logo__text {
   font-family: var(--font-display);
   font-size: 0.98rem;
-  font-weight: 400;
+  font-weight: 700;
   letter-spacing: 0.03em;
   white-space: nowrap;
 }
@@ -58,13 +58,16 @@
 .topnav-cta {
   position: relative;
   overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin-left: auto;
   padding: 0 14px;
   background: var(--main-color);
-  color: var(--text-on-green);
+  color: #fff;
   font-family: var(--font-display);
   font-size: 0.84rem;
-  font-weight: 200;
+  font-weight: 500;
   box-shadow: var(--shadow-green);
 }
 
@@ -218,7 +221,7 @@
   text-align: left;
   font-family: var(--font-display);
   font-size: 1rem;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .menu-drawer__link--active {
@@ -233,7 +236,7 @@
   justify-content: space-between;
   padding: 0 14px;
   margin-top: auto;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .menu-drawer__link--logout {
@@ -255,7 +258,7 @@
     display: grid;
     grid-template-columns: minmax(220px, 1fr) auto auto auto;
     height: 96px;
-    padding: 24px 28px;
+    padding: 24px var(--page-gutter);
     background: transparent;
     border-bottom: 0;
     backdrop-filter: none;
@@ -302,7 +305,7 @@
     color: var(--text-secondary);
     font-family: var(--font-display);
     font-size: 14px;
-    font-weight: 200;
+    font-weight: 500;
     transition: background var(--transition-base), color var(--transition-base);
   }
 
@@ -353,13 +356,14 @@
     margin-left: 0;
     padding: 0 22px;
     border-color: var(--border-strong);
-    background: var(--surface);
-    color: var(--text-primary);
+    background: var(--main-color);
+    color: #fff;
     box-shadow: none;
   }
 
   .topnav-cta__icon {
     margin-right: 8px;
+    align-self: center;
   }
 
   .theme-toggle {

@@ -12,7 +12,7 @@ const PIN_MODES = [
     path: '/game/where-is-street',
     icon: '/icons/pin.svg',
     title: 'Gdzie jest ta ulica?',
-    description: 'Upuść pinezkę jak najbliżej wylosowanej ulicy',
+    description: 'Upuść pinezkę na wylosowanej ulicy',
     available: true,
   },
   {
@@ -177,13 +177,6 @@ function Home() {
     }
     return (
       <div className="challenge-card__fallback-img">
-        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="challenge-card__fallback-svg">
-          <path d="M0,50 Q25,20 50,50 T100,50" stroke="rgba(0, 230, 118, 0.4)" strokeWidth="3" fill="none" />
-          <path d="M20,10 L20,90" stroke="rgba(255,255,255,0.05)" strokeWidth="2" />
-          <path d="M80,10 L80,90" stroke="rgba(255,255,255,0.05)" strokeWidth="2" />
-          <path d="M10,80 L90,80" stroke="rgba(255,255,255,0.05)" strokeWidth="2" />
-          <circle cx="50" cy="50" r="4" fill="var(--green-primary)" />
-        </svg>
         <span className="challenge-card__fallback-icon svg-icon" style={{ '--icon': 'url(/icons/flag.svg)' }} aria-hidden="true" />
       </div>
     );
@@ -191,21 +184,6 @@ function Home() {
 
   return (
     <div className="home">
-      <div className="home-map-layer" aria-hidden="true">
-        <svg viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid slice">
-          <path d="M-40 410 C180 360 260 440 430 385 S720 260 980 330 1240 250 1300 290" />
-          <path d="M60 610 C180 500 310 520 460 470 S710 380 900 455 1110 560 1260 470" />
-          <path d="M120 90 C260 180 300 280 420 340 S650 420 720 610" />
-          <path d="M500 -20 C560 150 560 290 650 390 S790 520 820 780" />
-          <path d="M820 30 C760 190 810 310 960 420 S1110 560 1080 760" />
-          <path d="M210 120 L340 210 L300 330 L420 430 L370 570" />
-          <path d="M650 95 L770 175 L720 290 L840 365 L790 520" />
-          <path d="M940 130 L1030 230 L990 345 L1100 420 L1060 575" />
-          <circle cx="540" cy="390" r="76" />
-          <circle cx="540" cy="390" r="152" />
-        </svg>
-      </div>
-
       {/* Redesigned top navbar */}
       <TopNav />
 
@@ -278,6 +256,19 @@ function Home() {
                   >
                     <div className="challenge-card__top">
                       {renderChallengeImage(challenge)}
+                      <div className="challenge-card__image-pills">
+                        <span className="challenge-pill challenge-pill--light">
+                          <span className="svg-icon" style={{ '--icon': 'url(/icons/flag.svg)' }} aria-hidden="true" />
+                          {challenge.rounds} rund
+                        </span>
+                        <span className="challenge-pill challenge-pill--light">
+                          {challenge.timeLimit || 15}s
+                        </span>
+                        <span className="challenge-pill challenge-pill--dark">
+                          <span className="svg-icon" style={{ '--icon': 'url(/icons/alarm.svg)' }} aria-hidden="true" />
+                          {timeUntilMidnight}
+                        </span>
+                      </div>
                     </div>
 
                     <div className="challenge-card__bottom">
@@ -302,17 +293,6 @@ function Home() {
                             <>Zdobyto <span>{score || 0}/1000 pkt</span></>
                           ) : 'Rozpocznij'}
                         </button>
-                        <div className="challenge-card__meta">
-                          <span className="challenge-pill">
-                            <span className="svg-icon" style={{ '--icon': 'url(/icons/flag.svg)' }} aria-hidden="true" />
-                            {challenge.rounds} rund
-                          </span>
-                          <span className="challenge-pill">{challenge.timeLimit || 15}s</span>
-                          <span className="challenge-pill">
-                            <span className="svg-icon" style={{ '--icon': 'url(/icons/alarm.svg)' }} aria-hidden="true" />
-                            {timeUntilMidnight.slice(0, 5)} do końca
-                          </span>
-                        </div>
                       </div>
                       <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
                     </div>

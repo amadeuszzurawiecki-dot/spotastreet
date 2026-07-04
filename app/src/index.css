@@ -3,8 +3,8 @@
    ============================================= */
 
 :root {
-  --font-body: "Stack Sans Notch", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-display: "Stack Sans Notch", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Stack Sans Text", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: "Stack Sans Text", ui-sans-serif, system-ui, sans-serif;
 
   --space-xs: 4px;
   --space-sm: 8px;
@@ -19,6 +19,7 @@
   --radius-xl: 0;
   --radius-full: 0;
   --radius-control: 4px;
+  --page-gutter: 16px;
 
   --transition-fast: 140ms ease;
   --transition-base: 220ms ease;
@@ -70,7 +71,9 @@
   --border: rgba(148, 163, 184, 0.18);
   --border-strong: rgba(148, 163, 184, 0.32);
   --grid-small: rgba(148, 163, 184, 0.07);
-  --grid-large: rgba(148, 163, 184, 0.14);
+  --grid-large: rgba(148, 163, 184, 0.09);
+  --grid-hover-small: rgba(0, 0, 0, 0.16);
+  --grid-hover-large: rgba(0, 0, 0, 0.2);
 
   --color-perfect: #22c55e;
   --color-good: #facc15;
@@ -125,7 +128,9 @@
   --border: rgba(15, 23, 42, 0.12);
   --border-strong: rgba(15, 23, 42, 0.22);
   --grid-small: rgba(15, 23, 42, 0.045);
-  --grid-large: rgba(15, 23, 42, 0.11);
+  --grid-large: rgba(15, 23, 42, 0.075);
+  --grid-hover-small: rgba(0, 0, 0, 0.14);
+  --grid-hover-large: rgba(0, 0, 0, 0.18);
 
   --color-perfect: #16a34a;
   --color-good: #ca8a04;
@@ -172,9 +177,8 @@ body {
     linear-gradient(90deg, var(--grid-small) 1px, transparent 1px),
     linear-gradient(var(--grid-large) 1px, transparent 1px),
     linear-gradient(90deg, var(--grid-large) 1px, transparent 1px),
-    radial-gradient(circle at 28% 32%, var(--green-subtle) 0, transparent 260px),
     var(--bg-primary);
-  background-size: 16px 16px, 16px 16px, 96px 96px, 96px 96px, auto, auto;
+  background-size: 16px 16px, 16px 16px, 160px 160px, 160px 160px, auto;
   color: var(--text-primary);
   font-family: var(--font-body);
   line-height: 1.5;
@@ -183,16 +187,32 @@ body {
 body::before {
   content: '';
   position: fixed;
+  left: calc(var(--cursor-x, -32px) - 8px);
+  top: calc(var(--cursor-y, -32px) - 8px);
+  z-index: 2;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  background: #000;
+  opacity: 0.72;
+  transform: translate3d(0, 0, 0);
+}
+
+body::after {
+  content: '';
+  position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background: radial-gradient(
-    260px circle at var(--cursor-x, 50%) var(--cursor-y, 50%),
-    color-mix(in srgb, var(--text-primary) 7%, transparent),
-    transparent 72%
-  );
-  opacity: 0.55;
-  transition: opacity 180ms ease;
+  background:
+    linear-gradient(var(--grid-hover-small) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-hover-small) 1px, transparent 1px),
+    linear-gradient(var(--grid-hover-large) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-hover-large) 1px, transparent 1px);
+  background-size: 16px 16px, 16px 16px, 160px 160px, 160px 160px;
+  -webkit-mask: radial-gradient(136px circle at var(--cursor-x, -200px) var(--cursor-y, -200px), #000 0, transparent 74%);
+  mask: radial-gradient(136px circle at var(--cursor-x, -200px) var(--cursor-y, -200px), #000 0, transparent 74%);
+  opacity: 0.95;
 }
 
 #root {
@@ -257,11 +277,20 @@ img {
 }
 
 .text-display {
+  font-weight: 700;
+}
+
+p,
+small,
+button,
+input,
+select,
+textarea {
   font-weight: 400;
 }
 
 .text-heading {
-  font-weight: 400;
+  font-weight: 700;
 }
 
 .glass-card {
@@ -285,13 +314,13 @@ img {
   border-radius: var(--radius-control) !important;
   font-family: var(--font-display);
   font-size: 14px;
-  font-weight: 200;
+  font-weight: 500;
   transition: transform var(--transition-base), box-shadow var(--transition-base), background var(--transition-base), border-color var(--transition-base);
 }
 
 .btn-primary {
   background: var(--main-color);
-  color: var(--text-on-green);
+  color: #fff;
   box-shadow: var(--shadow-green);
 }
 
@@ -649,15 +678,27 @@ footer,
   display: flex;
   justify-content: space-between;
   gap: 16px;
-  width: min(100% - 28px, 1184px);
+  width: min(100% - calc(var(--page-gutter) * 2), 1184px);
   margin: auto auto 16px;
   padding-top: 16px;
   border-top: 1px solid var(--border);
   color: var(--text-tertiary);
   font-size: 11px;
-  font-weight: 200;
+  font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+@media (min-width: 720px) {
+  :root {
+    --page-gutter: 24px;
+  }
+}
+
+@media (min-width: 960px) {
+  :root {
+    --page-gutter: 32px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
