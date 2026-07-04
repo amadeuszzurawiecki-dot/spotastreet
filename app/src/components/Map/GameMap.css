@@ -13,6 +13,26 @@
   filter: none;
 }
 
+.game-map .leaflet-container {
+  background: #000;
+}
+
+.game-map--mono-dark .leaflet-container {
+  background: #000;
+}
+
+.game-map--mono-light .leaflet-container {
+  background: #fff;
+}
+
+.game-map--mono-dark .leaflet-tile {
+  filter: grayscale(1) invert(1) contrast(2.9) brightness(0.78);
+}
+
+.game-map--mono-light .leaflet-tile {
+  filter: grayscale(1) contrast(2.65) brightness(1.28);
+}
+
 .game-map--dark .leaflet-tile {
   filter: grayscale(1) brightness(0.72) contrast(1.18);
 }

@@ -4,6 +4,7 @@ import L from 'leaflet';
 import { LEGNICA_CENTER } from '../../utils/geo';
 import { getMapStyle } from '../../config/mapStyles';
 import useUserProfile from '../../hooks/useUserProfile';
+import useTheme from '../../hooks/useTheme';
 import './GameMap.css';
 
 // Default placement pin icon
@@ -166,7 +167,8 @@ function GameMap({
   const pinIcon = useMemo(() => createPinIcon(), []);
   const targetIcon = useMemo(() => createTargetIcon(), []);
   const user = useUserProfile();
-  const mapStyle = getMapStyle(user.mapStyle);
+  const { theme } = useTheme();
+  const mapStyle = getMapStyle(theme === 'light' ? 'mono-light' : 'mono-dark');
   
   const playerResultIcon = useMemo(() => {
     return createPlayerPinIcon(playerAvatar, playerAvatarImg, playerBg, playerIsPremium);
