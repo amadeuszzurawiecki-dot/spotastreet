@@ -156,10 +156,10 @@ export function TopNav() {
             <button className="menu-drawer__theme" onClick={toggleTheme}>
               <span
                 className="svg-icon menu-drawer__icon"
-                style={{ '--icon': `url(/icons/${theme === 'dark' ? 'dark' : 'light'}.svg)` }}
+                style={{ '--icon': `url(/icons/${theme === 'dark' ? 'light' : 'dark'}.svg)` }}
                 aria-hidden="true"
               />
-              <span>{theme === 'dark' ? 'Tryb ciemny' : 'Tryb jasny'}</span>
+              <span>{theme === 'dark' ? 'Tryb jasny' : 'Tryb ciemny'}</span>
             </button>
 
             <button

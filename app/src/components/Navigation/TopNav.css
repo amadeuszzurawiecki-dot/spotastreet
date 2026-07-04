@@ -300,6 +300,11 @@
   border-radius: 0 !important;
   background: transparent;
   font-weight: 500;
+  transform: none;
+}
+
+.menu-drawer__theme:hover {
+  transform: none;
 }
 
 .menu-drawer__link--logout {
