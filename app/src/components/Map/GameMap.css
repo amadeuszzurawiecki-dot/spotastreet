@@ -10,6 +10,10 @@
   height: 100%;
 }
 
+.game-map .maplibregl-canvas {
+  outline: none;
+}
+
 .game-map__container::before {
   content: '';
   position: absolute;
@@ -19,24 +23,6 @@
   background-repeat: repeat;
   background-size: 420px 420px;
   opacity: 0.9;
-}
-
-.game-map .leaflet-map-pane,
-.game-map .leaflet-control-container {
-  z-index: 2;
-}
-
-.game-map .leaflet-tile {
-  filter: none;
-  opacity: 1;
-}
-
-.game-map .leaflet-container img.leaflet-tile {
-  mix-blend-mode: normal !important;
-}
-
-.game-map .leaflet-container {
-  background: #000;
 }
 
 .game-map--mono-dark .game-map__container::before {
@@ -57,36 +43,20 @@
     linear-gradient(72deg, transparent 48%, rgba(0, 0, 0, 0.12) 49%, rgba(0, 0, 0, 0.12) 50%, transparent 51%);
 }
 
-.game-map--mono-dark .leaflet-container {
-  background: #000;
+.game-map__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
 }
 
-.game-map--mono-light .leaflet-container {
-  background: #fff;
-}
-
-.game-map--mono-dark .leaflet-tile {
-  filter: grayscale(1) invert(1) contrast(1.18) brightness(0.82);
-}
-
-.game-map--mono-light .leaflet-tile {
-  filter: grayscale(1) contrast(1.24) brightness(1.04);
-}
-
-.game-map--dark .leaflet-tile {
-  filter: grayscale(1) brightness(0.72) contrast(1.18);
-}
-
-.game-map--light .leaflet-tile {
-  filter: grayscale(0.45) brightness(0.98) contrast(1.08);
-}
-
-.game-map--voyager .leaflet-tile {
-  filter: saturate(0.72) brightness(0.9) contrast(1.08);
-}
-
-.game-map--midnight .leaflet-tile {
-  filter: grayscale(1) brightness(0.46) contrast(1.35);
+.maplibre-overlay-marker {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
 }
 
 /* Custom Pin Marker */
@@ -226,7 +196,11 @@
 }
 
 /* === Leaflet Tooltip Overrides === */
-.leaflet-tooltip.map-tooltip-unified {
+.map-tooltip-unified {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%);
   background: rgba(15, 23, 42, 0.95) !important;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -240,6 +214,27 @@
   text-align: center !important;
   line-height: 1.3 !important;
   pointer-events: none !important;
+}
+
+.map-tooltip-unified--bottom {
+  top: calc(100% + 10px);
+  bottom: auto;
+}
+
+.game-map__error {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 8;
+  transform: translate(-50%, -50%);
+  max-width: min(320px, calc(100% - 32px));
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-primary);
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
 .map-tooltip-unified .map-tooltip__score {
@@ -271,15 +266,6 @@
   font-weight: 500;
   color: #94a3b8;
   margin-top: 2px;
-}
-
-/* Tooltip arrow overrides */
-.leaflet-tooltip-top.map-tooltip-unified::before {
-  border-top-color: rgba(15, 23, 42, 0.95) !important;
-}
-
-.leaflet-tooltip-bottom.map-tooltip-unified::before {
-  border-bottom-color: rgba(15, 23, 42, 0.95) !important;
 }
 
 .round-map-badge-icon {

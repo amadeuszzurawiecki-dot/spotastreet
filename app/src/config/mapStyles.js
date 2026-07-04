@@ -1,23 +1,18 @@
+export const GEOAPIFY_API_KEY = '0ba696ac57a540998eaf45172d7c26f5';
 export const DEFAULT_MAP_STYLE_ID = 'mono-dark';
 
 export const MAP_STYLES = [
   {
     id: 'mono-dark',
     name: 'Mono Dark',
-    description: 'Czarna mapa oparta o kafelki OpenStreetMap',
-    url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-    fallbackUrls: ['https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'],
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    subdomains: 'abc',
+    description: 'Ciemna mapa Geoapify bez nazw ulic',
+    url: `https://maps.geoapify.com/v1/styles/dark-matter/style.json?apiKey=${GEOAPIFY_API_KEY}`,
   },
   {
     id: 'mono-light',
     name: 'Mono Light',
-    description: 'Biała mapa oparta o kafelki OpenStreetMap',
-    url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-    fallbackUrls: ['https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png'],
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    subdomains: 'abc',
+    description: 'Jasna mapa Geoapify bez nazw ulic',
+    url: `https://maps.geoapify.com/v1/styles/toner/style.json?apiKey=${GEOAPIFY_API_KEY}`,
   },
   {
     id: 'dark',
