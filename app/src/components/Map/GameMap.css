@@ -2,6 +2,7 @@
   position: absolute;
   inset: 0;
   z-index: var(--z-map);
+  overflow: hidden;
 }
 
 .game-map__container {
@@ -9,12 +10,51 @@
   height: 100%;
 }
 
+.game-map__container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-repeat: repeat;
+  background-size: 420px 420px;
+  opacity: 0.9;
+}
+
+.game-map .leaflet-map-pane,
+.game-map .leaflet-control-container {
+  z-index: 2;
+}
+
 .game-map .leaflet-tile {
   filter: none;
+  opacity: 1;
+}
+
+.game-map .leaflet-container img.leaflet-tile {
+  mix-blend-mode: normal !important;
 }
 
 .game-map .leaflet-container {
   background: #000;
+}
+
+.game-map--mono-dark .game-map__container::before {
+  background-color: #050505;
+  background-image:
+    linear-gradient(24deg, transparent 48%, rgba(255, 255, 255, 0.2) 49%, rgba(255, 255, 255, 0.2) 51%, transparent 52%),
+    linear-gradient(108deg, transparent 47%, rgba(255, 255, 255, 0.16) 48%, rgba(255, 255, 255, 0.16) 50%, transparent 51%),
+    linear-gradient(154deg, transparent 46%, rgba(255, 255, 255, 0.12) 47%, rgba(255, 255, 255, 0.12) 49%, transparent 50%),
+    linear-gradient(72deg, transparent 48%, rgba(255, 255, 255, 0.1) 49%, rgba(255, 255, 255, 0.1) 50%, transparent 51%);
+}
+
+.game-map--mono-light .game-map__container::before {
+  background-color: #ffffff;
+  background-image:
+    linear-gradient(24deg, transparent 48%, rgba(0, 0, 0, 0.24) 49%, rgba(0, 0, 0, 0.24) 51%, transparent 52%),
+    linear-gradient(108deg, transparent 47%, rgba(0, 0, 0, 0.18) 48%, rgba(0, 0, 0, 0.18) 50%, transparent 51%),
+    linear-gradient(154deg, transparent 46%, rgba(0, 0, 0, 0.14) 47%, rgba(0, 0, 0, 0.14) 49%, transparent 50%),
+    linear-gradient(72deg, transparent 48%, rgba(0, 0, 0, 0.12) 49%, rgba(0, 0, 0, 0.12) 50%, transparent 51%);
 }
 
 .game-map--mono-dark .leaflet-container {
@@ -26,11 +66,11 @@
 }
 
 .game-map--mono-dark .leaflet-tile {
-  filter: grayscale(1) contrast(2.15) brightness(1.28);
+  filter: grayscale(1) contrast(1.35) brightness(1.12);
 }
 
 .game-map--mono-light .leaflet-tile {
-  filter: grayscale(1) contrast(2.05) brightness(1.08);
+  filter: grayscale(1) contrast(1.55) brightness(0.98);
 }
 
 .game-map--dark .leaflet-tile {
