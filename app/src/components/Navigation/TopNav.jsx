@@ -25,9 +25,9 @@ export function TopNav() {
   };
 
   const navItems = [
-    { label: 'Profil', path: '/profile', icon: 'user', desc: 'Konto i mapa' },
-    { label: 'Ranking', path: '/leaderboard', icon: 'ranking', desc: 'Wyniki graczy' },
-    { label: 'Admin', path: '/admin', icon: 'settings', desc: 'Panel' },
+    { label: 'Profil', path: '/profile', icon: '/icons/user.svg', railIcon: 'user', desc: 'Konto i mapa' },
+    { label: 'Ranking', path: '/leaderboard', icon: '/icons/ribbon.svg', railIcon: 'ranking', desc: 'Wyniki graczy' },
+    { label: 'Admin', path: '/admin', icon: '/icons/admin.svg', railIcon: 'settings', desc: 'Panel' },
   ];
 
   const LogoSygnet = () => (
@@ -61,11 +61,6 @@ export function TopNav() {
               </button>
             ))}
           </nav>
-
-          <button className="topnav-cta" onClick={() => handleNavigate('/')} data-label="Graj teraz">
-            <span className="svg-icon topnav-cta__icon" style={{ '--icon': 'url(/icons/play.svg)' }} aria-hidden="true" />
-            <span>Graj teraz</span>
-          </button>
 
           <button className="theme-toggle" onClick={toggleTheme} aria-label="Przełącz motyw">
             <span
@@ -101,7 +96,7 @@ export function TopNav() {
               className={`desktop-rail__card ${location.pathname === item.path ? 'desktop-rail__card--active' : ''}`}
               onClick={() => handleNavigate(item.path)}
             >
-              <span className={`desktop-rail__icon line-icon line-icon--${item.icon}`} aria-hidden="true" />
+              <span className={`desktop-rail__icon line-icon line-icon--${item.railIcon}`} aria-hidden="true" />
               <span>
                 <span className="desktop-rail__label">{item.label}</span>
                 <span className="desktop-rail__desc">{item.desc}</span>
@@ -124,6 +119,13 @@ export function TopNav() {
         </button>
       </aside>
 
+      <button
+        className={`menu-drawer__backdrop ${isOpen ? 'menu-drawer__backdrop--open' : ''}`}
+        onClick={() => setIsOpen(false)}
+        aria-label="Zamknij menu"
+        tabIndex={isOpen ? 0 : -1}
+      />
+
       {/* Full-Screen Drawer Menu */}
       <div className={`menu-drawer ${isOpen ? 'menu-drawer--open' : ''}`}>
         <div className="menu-drawer__header">
@@ -144,7 +146,7 @@ export function TopNav() {
                 className={`menu-drawer__link ${location.pathname === item.path ? 'menu-drawer__link--active' : ''}`}
                 onClick={() => handleNavigate(item.path)}
               >
-                <span className={`line-icon line-icon--${item.icon}`} aria-hidden="true" />
+                <span className="svg-icon menu-drawer__icon" style={{ '--icon': `url(${item.icon})` }} aria-hidden="true" />
                 <span>{item.label}</span>
               </button>
             ))}
@@ -163,6 +165,7 @@ export function TopNav() {
             className="menu-drawer__link menu-drawer__link--logout"
             onClick={handleLogout}
           >
+            <span className="svg-icon menu-drawer__icon" style={{ '--icon': 'url(/icons/logout.svg)' }} aria-hidden="true" />
             Wyloguj się
           </button>
         </nav>

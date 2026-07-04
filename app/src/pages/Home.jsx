@@ -237,7 +237,6 @@ function Home() {
               <p>Rozpoznawaj ulice, wskazuj miejsca i sprawdzaj, kto naprawdę zna układ miasta.</p>
             </div>
           </section>
-          <div className="home-hero__scroll">PODEJMIJ CODZIENNE WYZWANIE!</div>
         </div>
       </header>
 
