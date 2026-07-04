@@ -31,7 +31,7 @@ function App() {
       const viewportWidth = window.innerWidth || 0;
       const gutter = viewportWidth >= 960 ? 32 : viewportWidth >= 720 ? 24 : 16;
       const availableWidth = Math.max(0, viewportWidth - gutter * 2);
-      const moduleWidth = 320;
+      const moduleWidth = 160;
       const maxWidth = 960;
       const snappedWidth = Math.max(moduleWidth, Math.min(maxWidth, Math.floor(availableWidth / moduleWidth) * moduleWidth));
 

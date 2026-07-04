@@ -19,8 +19,8 @@ const PIN_MODES = [
     id: 'where-is-place',
     path: '/game/where-is-place',
     icon: '/icons/flag.svg',
-    title: 'Gdzie jest to miejsce?',
-    description: 'Zaznacz popularne miejsce w Legnicy',
+    title: 'Jak tu trafić?',
+    description: 'Odnajdź najważniejsze obiekty.',
     available: true,
   },
 ];
@@ -31,7 +31,7 @@ const ADDRESS_MODES = [
     path: '/game/what-street',
     icon: '/icons/keyboard.svg',
     title: 'Co to za ulica?',
-    description: 'Rozpoznaj ulicę podświetloną na mapie',
+    description: 'Nazwij podświetloną ulicę.',
     available: true,
   },
 ];
@@ -288,18 +288,18 @@ function Home() {
                           <span className="challenge-pill challenge-pill--light">
                             {challenge.timeLimit || 15}s
                           </span>
-                          <span className="challenge-pill challenge-pill--dark">
-                            <span className="svg-icon" style={{ '--icon': 'url(/icons/alarm.svg)' }} aria-hidden="true" />
-                            {timeUntilMidnight}
-                          </span>
-                        </div>
-                        <button className={`challenge-card__btn ${hasPlayed ? 'challenge-card__btn--done' : ''}`} disabled={hasPlayed}>
                           {hasPlayed ? (
-                            <>
-                              Zdobyto <span className="challenge-card__score">{score || 0}</span><span className="challenge-card__score-limit">/1000 pkt</span>
-                            </>
-                          ) : 'Rozpocznij'}
-                        </button>
+                            <span className="challenge-pill challenge-pill--score">
+                              <span className="svg-icon" style={{ '--icon': 'url(/icons/star.svg)' }} aria-hidden="true" />
+                              Zdobyto <span className="challenge-pill__score">{score || 0}</span><span>/1000 pkt</span>
+                            </span>
+                          ) : (
+                            <span className="challenge-pill challenge-pill--dark">
+                              <span className="svg-icon" style={{ '--icon': 'url(/icons/alarm.svg)' }} aria-hidden="true" />
+                              {timeUntilMidnight}
+                            </span>
+                          )}
+                        </div>
                       </div>
 
                       <div className="challenge-card__bottom">
