@@ -171,6 +171,7 @@ function GameMap({
   const lastFitSignatureRef = useRef('');
   const disabledRef = useRef(disabled);
   const onMapClickRef = useRef(onMapClick);
+  const updateOverlayPointsRef = useRef(null);
   const [mapReady, setMapReady] = useState(false);
   const [mapError, setMapError] = useState('');
   const [overlayPoints, setOverlayPoints] = useState({});
@@ -211,6 +212,10 @@ function GameMap({
   }, [pinPosition, closestPoint, botPinPosition, summaryRounds]);
 
   useEffect(() => {
+    updateOverlayPointsRef.current = updateOverlayPoints;
+  }, [updateOverlayPoints]);
+
+  useEffect(() => {
     let cancelled = false;
     let map;
 
@@ -241,7 +246,7 @@ function GameMap({
         map.on('load', () => {
           applyGeoapifyOverrides(map);
           setMapReady(true);
-          updateOverlayPoints();
+          updateOverlayPointsRef.current?.();
         });
 
         map.on('styledata', () => {
@@ -279,12 +284,12 @@ function GameMap({
     if (!map) return;
     setMapReady(false);
     map.setStyle(mapStyle.url);
-    map.once('styledata', () => {
+    map.once('style.load', () => {
       applyGeoapifyOverrides(map);
       setMapReady(true);
-      updateOverlayPoints();
+      updateOverlayPointsRef.current?.();
     });
-  }, [mapStyle.url, updateOverlayPoints]);
+  }, [mapStyle.url]);
 
   useEffect(() => {
     const map = mapRef.current;

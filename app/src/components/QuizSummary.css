@@ -182,7 +182,7 @@
 }
 
 .quiz-summary__round-player {
-  width: 65px;
+  width: 112px;
   text-align: right;
   font-weight: 600;
   color: var(--green-primary);
@@ -200,7 +200,7 @@
 }
 
 .quiz-summary__round-bot {
-  width: 55px;
+  width: 112px;
   text-align: left;
   font-weight: 500;
   color: var(--text-secondary);

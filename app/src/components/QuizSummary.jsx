@@ -215,13 +215,15 @@ function QuizSummary({
                   <span className={`quiz-summary__round-player ${isError ? 'quiz-summary__round-player--error' : ''}`}>
                     {gameMode === 'what-street' 
                       ? (round.correct ? '✓ 100 pkt' : '✗ 0 pkt') 
-                      : `${pScore} pkt`}
+                      : `${pScore} pkt${typeof round.distance === 'number' ? ` (${Math.round(round.distance)}m)` : ''}`}
                   </span>
                   {!challengeId && (
                     <>
                       <span className="quiz-summary__round-vs">vs</span>
                       <span className="quiz-summary__round-bot">
-                        {botRounds[i] ? `${botRounds[i].score} pkt` : '-'}
+                        {botRounds[i]
+                          ? `${botRounds[i].score} pkt${typeof botRounds[i].distance === 'number' ? ` (${Math.round(botRounds[i].distance)}m)` : ''}`
+                          : '-'}
                       </span>
                     </>
                   )}
