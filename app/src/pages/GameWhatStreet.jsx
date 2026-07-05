@@ -8,8 +8,8 @@ import StreetAutocomplete from '../components/StreetAutocomplete';
 import GameVariantSelect from '../components/GameVariantSelect';
 import { useTimer } from '../hooks/useTimer';
 import useUserProfile from '../hooks/useUserProfile';
-import { selectRandomStreets, loadStreetNames, loadStreets } from '../utils/streets';
-import { getStreetBounds } from '../utils/geo';
+import { selectRandomStreets, loadStreetNames, loadStreets, normalizeStreetName } from '../utils/streets';
+import { distanceToStreet, getCombinedBounds, getStreetBounds, haversineDistance } from '../utils/geo';
 import { generateBotStreetGuess } from '../utils/bot';
 import { AVATARS } from '../data/avatars';
 import './GamePage.css';
@@ -28,6 +28,7 @@ function GameWhatStreet() {
 
   const [loading, setLoading] = useState(true);
   const [streets, setStreets] = useState([]);
+  const [allStreets, setAllStreets] = useState([]);
   const [streetNames, setStreetNames] = useState([]);
   const [currentRound, setCurrentRound] = useState(0);
   const [playerScore, setPlayerScore] = useState(0);
@@ -40,7 +41,32 @@ function GameWhatStreet() {
   const [roundResult, setRoundResult] = useState(null);
   const [currentBotResult, setCurrentBotResult] = useState(null);
   const [streetBounds, setStreetBounds] = useState(null);
+  const [playerGuessPosition, setPlayerGuessPosition] = useState(null);
+  const [botGuessPosition, setBotGuessPosition] = useState(null);
+  const [answerTargetPoint, setAnswerTargetPoint] = useState(null);
   const hasSubmittedRef = useRef(false);
+
+  const getStreetAnchorPoint = useCallback((street) => {
+    const segments = street?.segments || [];
+    const longestSegment = segments.reduce((best, segment) => (
+      segment.length > best.length ? segment : best
+    ), []);
+
+    if (longestSegment.length === 0) return null;
+    return longestSegment[Math.floor(longestSegment.length / 2)];
+  }, []);
+
+  const findStreetByName = useCallback((name) => {
+    const normalized = normalizeStreetName(name || '');
+    return allStreets.find(street => normalizeStreetName(street.name) === normalized) || null;
+  }, [allStreets]);
+
+  const getGuessPosition = useCallback((guessedName, targetPoint) => {
+    const guessedStreet = findStreetByName(guessedName);
+    if (!guessedStreet || !targetPoint) return null;
+    const result = distanceToStreet(targetPoint, guessedStreet.segments);
+    return result.closestPoint || getStreetAnchorPoint(guessedStreet);
+  }, [findStreetByName, getStreetAnchorPoint]);
 
   // Load data based on selected variant
   useEffect(() => {
@@ -49,11 +75,12 @@ function GameWhatStreet() {
     async function load() {
       setLoading(true);
       const names = await loadStreetNames();
+      const all = await loadStreets();
       setStreetNames(names);
+      setAllStreets(all);
 
       let selected = [];
       if (gameVariant === 'challenge' && challenge && challenge.streets && challenge.streets.length > 0) {
-        const all = await loadStreets();
         challenge.streets.forEach(streetName => {
           const found = all.find(s => s.name.toLowerCase().trim() === streetName.toLowerCase().trim());
           if (found) selected.push(found);
@@ -85,6 +112,14 @@ function GameWhatStreet() {
 
     const currentStreet = streets[currentRound];
     const botResult = generateBotStreetGuess(currentStreet?.name, streetNames);
+    const targetPoint = getStreetAnchorPoint(currentStreet);
+    const botPosition = gameVariant !== 'training'
+      ? getGuessPosition(botResult.guess, targetPoint)
+      : null;
+
+    setAnswerTargetPoint(targetPoint);
+    setPlayerGuessPosition(null);
+    setBotGuessPosition(botPosition);
     setCurrentBotResult(botResult);
     
     if (gameVariant !== 'training') {
@@ -102,9 +137,11 @@ function GameWhatStreet() {
       type: 'street-guess',
       playerScore: 0,
       playerCorrect: false,
+      playerDistance: undefined,
       timedOut: true,
       botScore: gameVariant !== 'training' ? botResult.score : 0,
       botCorrect: gameVariant !== 'training' ? botResult.correct : false,
+      botDistance: targetPoint && botPosition ? haversineDistance(targetPoint, botPosition) : undefined,
     });
     setIsRoundActive(false);
     setShowResult(true);
@@ -124,6 +161,9 @@ function GameWhatStreet() {
     setShowResult(false);
     setRoundResult(null);
     setCurrentBotResult(null);
+    setPlayerGuessPosition(null);
+    setBotGuessPosition(null);
+    setAnswerTargetPoint(null);
     setIsRoundActive(true);
 
     // Calculate bounds for the street to fit it on screen
@@ -146,10 +186,26 @@ function GameWhatStreet() {
     const isCorrect = guessedName === currentStreet.name;
     const score = isCorrect ? 100 : 0;
     const botResult = generateBotStreetGuess(currentStreet.name, streetNames);
+    const targetPoint = getStreetAnchorPoint(currentStreet);
+    const guessPosition = isCorrect
+      ? targetPoint
+      : getGuessPosition(guessedName, targetPoint);
+    const botPosition = gameVariant !== 'training'
+      ? getGuessPosition(botResult.guess, targetPoint)
+      : null;
+    const playerDistance = targetPoint && guessPosition
+      ? haversineDistance(targetPoint, guessPosition)
+      : undefined;
+    const botDistance = targetPoint && botPosition
+      ? haversineDistance(targetPoint, botPosition)
+      : undefined;
 
+    setAnswerTargetPoint(targetPoint);
+    setPlayerGuessPosition(guessPosition);
+    setBotGuessPosition(botPosition);
     setCurrentBotResult(botResult);
     setPlayerScore(prev => prev + score);
-    setPlayerRounds(prev => [...prev, { score, correct: isCorrect, guess: guessedName }]);
+    setPlayerRounds(prev => [...prev, { score, correct: isCorrect, guess: guessedName, distance: playerDistance }]);
 
     if (gameVariant !== 'training') {
       setBotScore(prev => prev + botResult.score);
@@ -163,9 +219,11 @@ function GameWhatStreet() {
       type: 'street-guess',
       playerScore: score,
       playerCorrect: isCorrect,
+      playerDistance,
       timedOut: false,
       botScore: gameVariant !== 'training' ? botResult.score : 0,
       botCorrect: gameVariant !== 'training' ? botResult.correct : false,
+      botDistance,
     });
     setIsRoundActive(false);
     setShowResult(true);
@@ -245,25 +303,34 @@ function GameWhatStreet() {
   }
 
   const currentStreet = streets[currentRound];
+  const resultBounds = showResult
+    ? getCombinedBounds(currentStreet?.segments, playerGuessPosition, answerTargetPoint)
+    : streetBounds;
 
   return (
     <div className="game-page">
       {/* Map showing the street */}
       <GameMap
         onMapClick={() => {}} // No pin placement in this mode
-        pinPosition={null}
+        pinPosition={playerGuessPosition}
         streetSegments={currentStreet?.segments}
         showStreet={true} // Always show the street in this mode
-        closestPoint={null}
+        closestPoint={showResult ? answerTargetPoint : null}
         disabled={true}
         roundKey={currentRound}
-        fitBounds={streetBounds}
+        fitBounds={resultBounds}
         paddingOptions={{ padding: [40, 40], maxZoom: 18, animate: true, duration: 0.8 }}
         enableZoom={true}
         playerAvatar={avatar.emoji}
         playerAvatarImg={avatar.image}
         playerBg={avatar.bg}
+        playerRoundScore={roundResult?.playerScore}
+        playerRoundDistance={roundResult?.playerDistance}
         playerIsPremium={user.isPremium}
+        botPinPosition={gameVariant !== 'training' ? botGuessPosition : null}
+        botRoundScore={gameVariant !== 'training' ? roundResult?.botScore : undefined}
+        botRoundDistance={gameVariant !== 'training' ? roundResult?.botDistance : undefined}
+        showResultDetails={showResult}
       />
 
       {/* Unified HUD */}
@@ -333,9 +400,15 @@ function GameWhatStreet() {
                 To ulica: <span className="hud-bottom-bar__target-highlight">{(currentStreet?.name || '').toUpperCase()}</span>
               </div>
               <div className="hud-bottom-bar__details" style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '4px', display: 'flex', gap: '16px' }}>
-                <span>Ty: <strong style={{ color: 'var(--green-primary)' }}>+{roundResult?.playerScore} pkt</strong></span>
+                <span>
+                  Ty: <strong style={{ color: 'var(--green-primary)' }}>+{roundResult?.playerScore} pkt</strong>
+                  {typeof roundResult?.playerDistance === 'number' && ` (${Math.round(roundResult.playerDistance)}m)`}
+                </span>
                 {gameVariant !== 'training' && (
-                  <span>Bot: <strong style={{ color: '#FF9800' }}>+{roundResult?.botScore} pkt</strong></span>
+                  <span>
+                    Bot: <strong style={{ color: '#FF9800' }}>+{roundResult?.botScore} pkt</strong>
+                    {typeof roundResult?.botDistance === 'number' && ` (${Math.round(roundResult.botDistance)}m)`}
+                  </span>
                 )}
               </div>
             </>

@@ -168,6 +168,7 @@ function GameMap({
 }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
+  const lastFitSignatureRef = useRef('');
   const disabledRef = useRef(disabled);
   const onMapClickRef = useRef(onMapClick);
   const [mapReady, setMapReady] = useState(false);
@@ -227,7 +228,11 @@ function GameMap({
 
         mapRef.current = map;
 
-        if (!enableZoom) {
+        if (enableZoom) {
+          map.scrollZoom.enable();
+          map.doubleClickZoom.enable();
+          map.touchZoomRotate.enable();
+        } else {
           map.scrollZoom.disable();
           map.doubleClickZoom.disable();
           map.touchZoomRotate.disable();
@@ -294,12 +299,21 @@ function GameMap({
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !mapReady || !fitBounds || focusedSummaryItem) return;
+    const fitSignature = JSON.stringify({
+      fitBounds,
+      padding: normalizePadding(paddingOptions),
+      maxZoom: paddingOptions?.maxZoom || 16,
+      roundKey,
+    });
+    if (lastFitSignatureRef.current === fitSignature) return;
+    lastFitSignatureRef.current = fitSignature;
+
     map.fitBounds(makeBounds(fitBounds), {
       padding: normalizePadding(paddingOptions),
       maxZoom: paddingOptions?.maxZoom || 16,
       duration: (paddingOptions?.duration || 0.8) * 1000,
     });
-  }, [fitBounds, paddingOptions, focusedSummaryItem, mapReady]);
+  }, [fitBounds, paddingOptions, focusedSummaryItem, mapReady, roundKey]);
 
   useEffect(() => {
     const map = mapRef.current;
