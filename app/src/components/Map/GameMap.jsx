@@ -120,6 +120,10 @@ function upsertLineLayer(map, sourceId, layerId, data, paint) {
       },
       paint,
     });
+  } else {
+    Object.entries(paint).forEach(([property, value]) => {
+      map.setPaintProperty(layerId, property, value);
+    });
   }
 }
 
@@ -128,7 +132,7 @@ function MapOverlayMarker({ point, className, children }) {
   return (
     <div
       className={`maplibre-overlay-marker ${className || ''}`}
-      style={{ transform: `translate3d(${point.x}px, ${point.y}px, 0)` }}
+      style={{ transform: `translate3d(${point.x}px, ${point.y}px, 0) translate(-50%, -50%)` }}
     >
       {children}
     </div>
@@ -374,18 +378,34 @@ function GameMap({
       helperFeatures.push(lineFeature('player-distance', [toLngLat(pinPosition), toLngLat(closestPoint)], { opacity: 0.75, width: 2.5 }));
     }
     if (showResultDetails && botPinPosition && closestPoint) {
-      helperFeatures.push(lineFeature('bot-distance', [toLngLat(botPinPosition), toLngLat(closestPoint)], { opacity: 0.45, width: 1.5 }));
+      helperFeatures.push(lineFeature('bot-distance', [toLngLat(botPinPosition), toLngLat(closestPoint)], { opacity: 0.75, width: 2.5 }));
     }
+
+    const distanceData = makeLineCollection(helperFeatures);
+    const isLightMap = mapStyle.id === 'mono-light';
+
+    upsertLineLayer(
+      map,
+      'distance-lines',
+      'distance-lines-glow-layer',
+      distanceData,
+      {
+        'line-color': isLightMap ? '#ffffff' : '#000000',
+        'line-width': ['+', ['coalesce', ['get', 'width'], 2.5], 4],
+        'line-opacity': isLightMap ? 0.95 : 0.35,
+        'line-dasharray': [2, 2],
+      }
+    );
 
     upsertLineLayer(
       map,
       'distance-lines',
       'distance-lines-layer',
-      makeLineCollection(helperFeatures),
+      distanceData,
       {
-        'line-color': '#ffffff',
+        'line-color': isLightMap ? '#000000' : '#ffffff',
         'line-width': ['coalesce', ['get', 'width'], 2],
-        'line-opacity': ['coalesce', ['get', 'opacity'], 0.6],
+        'line-opacity': ['coalesce', ['get', 'opacity'], 0.75],
         'line-dasharray': [2, 2],
       }
     );
@@ -447,10 +467,10 @@ function GameMap({
                   <div className="player-map-marker__pulse" />
                 </div>
                 {playerRoundScore !== undefined && (
-                  <div className="map-tooltip-unified">
-                    <div className="map-tooltip__score">Zdobywasz {playerRoundScore} pkt</div>
+                  <div className="map-result-pill">
+                    <div className="map-result-pill__score">{playerRoundScore} pkt</div>
                     {playerRoundDistance !== undefined && (
-                      <div className="map-tooltip__distance">Pudło o {Math.round(playerRoundDistance)} metry</div>
+                      <div className="map-result-pill__miss">Pudło o {Math.round(playerRoundDistance)} m</div>
                     )}
                   </div>
                 )}

@@ -129,7 +129,15 @@ export function GameHUD({
   return (
     <div className="hud-unified-layout animate-slide-down">
       {/* Top Left: Back button */}
-      <button className="hud-unified-back" onClick={onBackClick}>
+      <button
+        type="button"
+        className="hud-unified-back"
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          onBackClick?.();
+        }}
+      >
         <span className="hud-unified-back__arrow">‹</span> Zakończ grę
       </button>
 

@@ -149,6 +149,12 @@ function GameWhatStreet() {
 
   const { timeLeft, progress, isRunning, start: startTimer, stop: stopTimer } = useTimer(roundDuration, handleTimerExpire);
 
+  const handleExitGame = () => {
+    if (!window.confirm('Czy na pewno chcesz zakończyć grę? Stracisz dotychczasowy postęp.')) return;
+    stopTimer();
+    navigate('/', { replace: true });
+  };
+
   // Start first round
   useEffect(() => {
     if (streets.length > 0 && streetNames.length > 0 && !isRoundActive && !showResult && !isGameOver && currentRound === 0 && playerRounds.length === 0) {
@@ -233,6 +239,7 @@ function GameWhatStreet() {
   const handleNext = () => {
     const nextRound = currentRound + 1;
     if (nextRound >= totalRounds) {
+      stopTimer();
       setIsGameOver(true);
       setShowResult(false);
       return;
@@ -356,11 +363,7 @@ function GameWhatStreet() {
         isTraining={gameVariant === 'training'}
         isChallenge={gameVariant === 'challenge'}
         isShowingResult={showResult}
-        onBackClick={() => {
-          if (window.confirm('Czy na pewno chcesz zakończyć grę? Stracisz dotychczasowy postęp.')) {
-            navigate('/');
-          }
-        }}
+        onBackClick={handleExitGame}
       />
 
       {/* HUD Bottom Bar — Figma layout */}
@@ -417,7 +420,7 @@ function GameWhatStreet() {
 
         <div className="hud-bottom-action">
           {showResult && (
-            <button className="btn-primary btn-next" onClick={handleNext}>
+            <button type="button" className="btn-primary btn-next" onClick={handleNext}>
               {currentRound + 1 >= totalRounds ? 'Zakończ grę' : 'Następna ulica'}
             </button>
           )}

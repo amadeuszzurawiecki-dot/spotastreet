@@ -166,6 +166,12 @@ function GameWhereIsStreet() {
 
   const { timeLeft, progress, isRunning, start: startTimer, stop: stopTimer } = useTimer(roundDuration, handleTimerExpire);
 
+  const handleExitGame = () => {
+    if (!window.confirm('Czy na pewno chcesz zakończyć grę? Stracisz dotychczasowy postęp.')) return;
+    stopTimer();
+    navigate('/', { replace: true });
+  };
+
   // Start first round when streets are loaded
   useEffect(() => {
     if (streets.length > 0 && !isRoundActive && !showResult && !isGameOver && currentRound === 0 && playerRounds.length === 0) {
@@ -197,6 +203,7 @@ function GameWhereIsStreet() {
   const handleNext = () => {
     const nextRound = currentRound + 1;
     if (nextRound >= totalRounds) {
+      stopTimer();
       setIsGameOver(true);
       setShowResult(false);
       return;
@@ -321,11 +328,7 @@ function GameWhereIsStreet() {
         isTraining={gameVariant === 'training'}
         isChallenge={gameVariant === 'challenge'}
         isShowingResult={showResult}
-        onBackClick={() => {
-          if (window.confirm('Czy na pewno chcesz zakończyć grę? Stracisz dotychczasowy postęp.')) {
-            navigate('/');
-          }
-        }}
+        onBackClick={handleExitGame}
       />
 
       {/* HUD Bottom Bar — Figma layout: info card + action button stacked */}
@@ -351,12 +354,12 @@ function GameWhereIsStreet() {
         {/* Action button — Zatwierdź cel OR Następna ulica */}
         <div className="hud-bottom-action">
           {isRoundActive && pinPosition && !hasSubmittedRef.current && (
-            <button className="btn-primary btn-confirm" onClick={handleConfirm}>
+            <button type="button" className="btn-primary btn-confirm" onClick={handleConfirm}>
               Zatwierdź cel
             </button>
           )}
           {showResult && (
-            <button className="btn-primary btn-next" onClick={handleNext}>
+            <button type="button" className="btn-primary btn-next" onClick={handleNext}>
               {currentRound + 1 >= totalRounds ? 'Zakończ grę' : 'Następna ulica'}
             </button>
           )}

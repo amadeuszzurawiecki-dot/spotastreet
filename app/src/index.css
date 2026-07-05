@@ -196,6 +196,19 @@ body {
   cursor: none;
 }
 
+@media (min-width: 720px) {
+  html {
+    scrollbar-width: none;
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+}
+
 * {
   cursor: none !important;
 }

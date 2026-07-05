@@ -268,6 +268,43 @@
   margin-top: 2px;
 }
 
+.map-result-pill {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: stretch;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.42);
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.map-result-pill__score,
+.map-result-pill__miss {
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+}
+
+.map-result-pill__score {
+  background: var(--green-primary);
+  color: #fff;
+}
+
+.map-result-pill__miss {
+  background: rgba(15, 23, 42, 0.96);
+  color: #cbd5e1;
+}
+
 .round-map-badge-icon {
   background: none !important;
   border: none !important;
