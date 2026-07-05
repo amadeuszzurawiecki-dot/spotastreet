@@ -286,6 +286,11 @@
   line-height: 1;
 }
 
+.map-result-pill--bottom {
+  top: calc(100% + 10px);
+  bottom: auto;
+}
+
 .map-result-pill__score,
 .map-result-pill__miss {
   min-height: 28px;
@@ -298,6 +303,10 @@
 .map-result-pill__score {
   background: var(--green-primary);
   color: #fff;
+}
+
+.map-result-pill--opponent .map-result-pill__score {
+  background: #ff9800;
 }
 
 .map-result-pill__miss {

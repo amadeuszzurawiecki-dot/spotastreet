@@ -152,7 +152,15 @@ function GameWhatStreet() {
   const handleExitGame = () => {
     if (!window.confirm('Czy na pewno chcesz zakończyć grę? Stracisz dotychczasowy postęp.')) return;
     stopTimer();
-    navigate('/', { replace: true });
+    window.location.assign('/');
+  };
+
+  const finishGame = () => {
+    stopTimer();
+    hasSubmittedRef.current = true;
+    setIsRoundActive(false);
+    setShowResult(false);
+    setIsGameOver(true);
   };
 
   // Start first round
@@ -238,10 +246,9 @@ function GameWhatStreet() {
   // Handle next round
   const handleNext = () => {
     const nextRound = currentRound + 1;
-    if (nextRound >= totalRounds) {
-      stopTimer();
-      setIsGameOver(true);
-      setShowResult(false);
+    const roundsLimit = Math.max(1, Math.min(Number(totalRounds) || 1, streets.length || Number(totalRounds) || 1));
+    if (nextRound >= roundsLimit) {
+      finishGame();
       return;
     }
     setCurrentRound(nextRound);

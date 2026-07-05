@@ -97,6 +97,8 @@ function applyGeoapifyOverrides(map) {
   setPaint('highway_major_inner', 'line-color', '#747474');
   setLayout('highway_name_other', 'visibility', 'none');
   setLayout('highway_name_motorway', 'visibility', 'none');
+  setLayout('road_label_primary', 'visibility', 'none');
+  setLayout('road_label_secondary', 'visibility', 'none');
 }
 
 function upsertLineLayer(map, sourceId, layerId, data, paint) {
@@ -494,10 +496,10 @@ function GameMap({
               <div className="player-map-marker__pulse" />
             </div>
             {botRoundScore !== undefined && (
-              <div className="map-tooltip-unified map-tooltip-unified--bot map-tooltip-unified--bottom">
-                <div className="map-tooltip__score">{opponentName}: {botRoundScore} pkt</div>
+              <div className="map-result-pill map-result-pill--opponent map-result-pill--bottom">
+                <div className="map-result-pill__score">{botRoundScore} pkt</div>
                 {botRoundDistance !== undefined && (
-                  <div className="map-tooltip__distance">Pudło o {Math.round(botRoundDistance)} metry</div>
+                  <div className="map-result-pill__miss">Pudło o {Math.round(botRoundDistance)} m</div>
                 )}
               </div>
             )}
