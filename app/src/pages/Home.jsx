@@ -83,42 +83,14 @@ function Home() {
           setIsOffline(true);
         }
 
-        // Filter challenges for today (exclude disabled challenges)
-        let active = allChallenges ? allChallenges.filter(ch => ch.date === todayStr && !ch.disabled) : [];
-        
-        // Fallbacks if empty or offline
-        if (active.length === 0) {
-          active = [
-            {
-              id: 'default_cudow',
-              title: 'Znawca Dzielnicy Cudów',
-              description: 'Rozpoznaj słynne patusiarskie ulice',
-              icon: 'scan',
-              rounds: 15,
-              timeLimit: 15,
-              gameMode: 'what-street',
-              streets: ['Kamienna', 'Limanowskiego', 'Partyzantów', 'Roosevelta', 'Kartuska', 'Pobożnego', 'Kolejowa', 'Głogowska', 'Wrocławska', 'Kopernika', 'Najświętszej Marii Panny', 'Chrobrego'],
-              date: todayStr,
-              imageUrl: '/images/challenge_1.png'
-            },
-            {
-              id: 'default_sienkiewicza',
-              title: 'Ekspert z Osiedla Sienkiewicza',
-              description: 'Henryk byłby dumny',
-              icon: 'pin',
-              rounds: 15,
-              timeLimit: 15,
-              gameMode: 'where-is-street',
-              streets: ['Sienkiewicza', 'Prusa', 'Asnyka', 'Orzeszkowej', 'Konopnickiej', 'Reymonta', 'Wyspiańskiego'],
-              date: todayStr,
-              imageUrl: '/images/challenge_2.png'
-            }
-          ];
-        }
+        // Filter challenges for today (exclude disabled challenges). No hardcoded fallbacks here:
+        // if there are no active challenges, the UI should show an empty state.
+        const active = allChallenges ? allChallenges.filter(ch => ch.date === todayStr && !ch.disabled) : [];
         setDailyChallenges(active);
       } catch (err) {
         console.warn('Error loading challenges:', err);
         setIsOffline(true);
+        setDailyChallenges([]);
       } finally {
         setLoadingChallenges(false);
       }
@@ -263,6 +235,14 @@ function Home() {
           <div className="challenges-carousel" ref={challengeViewportRef}>
             {loadingChallenges ? (
               <div className="home-loading-challenges">Wczytywanie wyzwań...</div>
+            ) : visibleChallenges.length === 0 ? (
+              <div className="home-empty-challenges">
+                <span className="home-empty-challenges__icon line-icon line-icon--target" aria-hidden="true" />
+                <div>
+                  <h3>Brak wyzwań</h3>
+                  <p>Zajrzyj tu później.</p>
+                </div>
+              </div>
             ) : (
               <div
                 className={`challenges-carousel__track ${isChallengeSliding ? 'challenges-carousel__track--sliding' : ''}`}

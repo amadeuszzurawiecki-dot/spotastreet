@@ -46,6 +46,7 @@ export function AdminPage() {
   const [challengeImageUrl, setChallengeImageUrl] = useState('');
   const [challengeDisabled, setChallengeDisabled] = useState(false);
   const [editingChallengeId, setEditingChallengeId] = useState(null);
+  const [challengeEditorOpen, setChallengeEditorOpen] = useState(false);
 
   // User editor state
   const [editingUser, setEditingUser] = useState(null);
@@ -66,54 +67,6 @@ export function AdminPage() {
     const list = await fetchDailyChallenges();
     setChallenges((list || []).sort((a, b) => (b.date || '').localeCompare(a.date || '')));
     setLoadingChallenges(false);
-  };
-
-  const handleLoadDefaultChallenges = async () => {
-    const todayStr = new Date().toLocaleDateString('sv-SE');
-    const defaults = [
-      {
-        id: 'challenge_default_cudow',
-        title: 'Znawca Dzielnicy Cudów',
-        description: 'Rozpoznaj słynne patusiarskie ulice',
-        icon: 'target',
-        gameMode: 'what-street',
-        rounds: 15,
-        timeLimit: 15,
-        streets: ['Kamienna', 'Limanowskiego', 'Partyzantów', 'Roosevelta', 'Kartuska', 'Pobożnego', 'Kolejowa', 'Głogowska', 'Wrocławska', 'Kopernika', 'Najświętszej Marii Panny', 'Chrobrego'],
-        date: todayStr,
-        imageUrl: '/images/challenge_1.png',
-        disabled: false,
-        createdAt: new Date().toISOString()
-      },
-      {
-        id: 'challenge_default_sienkiewicza',
-        title: 'Ekspert z Osiedla Sienkiewicza',
-        description: 'Henryk byłby dumny',
-        icon: 'pin',
-        gameMode: 'where-is-street',
-        rounds: 15,
-        timeLimit: 15,
-        streets: ['Sienkiewicza', 'Prusa', 'Asnyka', 'Orzeszkowej', 'Konopnickiej', 'Reymonta', 'Wyspiańskiego'],
-        date: todayStr,
-        imageUrl: '/images/challenge_2.png',
-        disabled: false,
-        createdAt: new Date().toISOString()
-      }
-    ];
-
-    setActionStatus({ type: 'info', message: 'Inicjalizowanie wyzwań w bazie Firestore...' });
-    let successCount = 0;
-    for (const ch of defaults) {
-      const ok = await saveDailyChallenge(ch);
-      if (ok) successCount++;
-    }
-
-    if (successCount === defaults.length) {
-      setActionStatus({ type: 'success', message: 'Pomyślnie wczytano i zapisano aktywne wyzwania w Firestore!' });
-      loadChallengesList();
-    } else {
-      setActionStatus({ type: 'error', message: 'Błąd podczas zapisywania niektórych wyzwań.' });
-    }
   };
 
   useEffect(() => {
@@ -285,18 +238,31 @@ export function AdminPage() {
           ? `Zaktualizowano wyzwanie "${challengeTitle}".` 
           : `Wyzwanie "${challengeTitle}" zostało utworzone.` 
       });
-      // Reset form
-      setChallengeTitle('');
-      setChallengeDesc('');
-      setChallengeIcon('target');
-      setChallengeStreets('');
-      setChallengeImageUrl('');
-      setChallengeDisabled(false);
-      setEditingChallengeId(null);
+      closeChallengeEditor();
       loadChallengesList();
     } else {
       setActionStatus({ type: 'error', message: 'Nie udało się zapisać wyzwania w chmurze.' });
     }
+  };
+
+  const resetChallengeForm = () => {
+    setEditingChallengeId(null);
+    setChallengeTitle('');
+    setChallengeDesc('');
+    setChallengeIcon('target');
+    setChallengeGameMode('where-is-street');
+    setChallengeRounds(15);
+    setChallengeTimeLimit(15);
+    setChallengeStreets('');
+    setChallengeDate('');
+    setChallengeImageUrl('');
+    setChallengeDisabled(false);
+  };
+
+  const openChallengeCreator = () => {
+    resetChallengeForm();
+    setChallengeDate(new Date().toLocaleDateString('sv-SE'));
+    setChallengeEditorOpen(true);
   };
 
   const handleStartEdit = (ch) => {
@@ -311,8 +277,7 @@ export function AdminPage() {
     setChallengeDate(ch.date);
     setChallengeImageUrl(ch.imageUrl || '');
     setChallengeDisabled(!!ch.disabled);
-    // Scroll form into view
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setChallengeEditorOpen(true);
   };
 
   const handleToggleDisable = async (ch) => {
@@ -334,13 +299,13 @@ export function AdminPage() {
   };
 
   const handleCancelEdit = () => {
-    setEditingChallengeId(null);
-    setChallengeTitle('');
-    setChallengeDesc('');
-    setChallengeIcon('target');
-    setChallengeStreets('');
-    setChallengeImageUrl('');
-    setChallengeDisabled(false);
+    resetChallengeForm();
+    setChallengeEditorOpen(false);
+  };
+
+  const closeChallengeEditor = () => {
+    resetChallengeForm();
+    setChallengeEditorOpen(false);
   };
 
   const handleDeleteChallenge = async (id) => {
@@ -350,7 +315,7 @@ export function AdminPage() {
     if (success) {
       setActionStatus({ type: 'success', message: 'Wyzwanie zostało usunięte z bazy danych.' });
       if (editingChallengeId === id) {
-        handleCancelEdit();
+        closeChallengeEditor();
       }
       loadChallengesList();
     } else {
@@ -584,6 +549,101 @@ export function AdminPage() {
       challengesCount,
       onlineTotal: (profile.onlineWins || 0) + (profile.onlineLosses || 0) + (profile.onlineDraws || 0),
     };
+  };
+
+  const todayStr = new Date().toLocaleDateString('sv-SE');
+  const gameModeLabels = {
+    'where-is-street': 'Gdzie jest ta ulica?',
+    'where-is-place': 'Gdzie jest to miejsce?',
+    'what-street': 'Co to za ulica?',
+  };
+
+  const getChallengeStatus = (challenge) => {
+    if (challenge.disabled) return { label: 'Wyłączone', type: 'disabled' };
+    if ((challenge.date || '') === todayStr) return { label: 'Aktywne teraz', type: 'active' };
+    if ((challenge.date || '') > todayStr) return { label: 'Zaplanowane', type: 'scheduled' };
+    return { label: 'Historyczne', type: 'history' };
+  };
+
+  const sortedChallenges = [...challenges].sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+  const challengeGroups = [
+    {
+      id: 'active',
+      title: 'Aktywne teraz',
+      desc: 'Wyzwania dostępne dzisiaj dla graczy.',
+      empty: 'Brak aktywnych wyzwań na dziś.',
+      items: sortedChallenges.filter(ch => !ch.disabled && (ch.date || '') === todayStr),
+    },
+    {
+      id: 'scheduled',
+      title: 'Zaplanowane',
+      desc: 'Wyzwania przygotowane na przyszłe dni.',
+      empty: 'Brak zaplanowanych wyzwań.',
+      items: sortedChallenges.filter(ch => (ch.date || '') > todayStr),
+    },
+    {
+      id: 'history',
+      title: 'Historyczne',
+      desc: 'Wyzwania z poprzednich dni oraz wyłączone pozycje.',
+      empty: 'Brak historycznych wyzwań.',
+      items: [...sortedChallenges]
+        .filter(ch => (ch.date || '') < todayStr || (ch.disabled && (ch.date || '') === todayStr))
+        .sort((a, b) => (b.date || '').localeCompare(a.date || '')),
+    },
+  ];
+
+  const renderChallengeRows = (items, emptyMessage) => {
+    if (items.length === 0) {
+      return (
+        <tr>
+          <td className="admin-challenge-empty-row" colSpan="6">
+            {emptyMessage}
+          </td>
+        </tr>
+      );
+    }
+
+    return items.map((ch) => {
+      const status = getChallengeStatus(ch);
+      return (
+        <tr key={ch.id}>
+          <td className="admin-challenge-table__date">{ch.date || 'Brak daty'}</td>
+          <td>
+            <div className="admin-challenge-table__challenge">
+              {ch.imageUrl ? (
+                <img className="admin-challenge-table__thumb" src={ch.imageUrl} alt="" />
+              ) : (
+                <span className={`admin-challenge-table__icon line-icon line-icon--${ch.icon || 'target'}`} aria-hidden="true" />
+              )}
+              <div>
+                <strong>{ch.title || 'Bez tytułu'}</strong>
+                <span>{ch.description || 'Brak opisu'}</span>
+              </div>
+            </div>
+          </td>
+          <td>{gameModeLabels[ch.gameMode] || ch.gameMode || 'Nieznany tryb'}</td>
+          <td>{Number(ch.rounds) || 0} rund / {Number(ch.timeLimit) || 0}s</td>
+          <td>
+            <span className={`admin-challenge-status admin-challenge-status--${status.type}`}>
+              {status.label}
+            </span>
+          </td>
+          <td>
+            <div className="admin-challenge-actions">
+              <button className="btn-secondary btn-sm" type="button" onClick={() => handleStartEdit(ch)}>
+                Edytuj
+              </button>
+              <button className="btn-secondary btn-sm" type="button" onClick={() => handleToggleDisable(ch)}>
+                {ch.disabled ? 'Włącz' : 'Wyłącz'}
+              </button>
+              <button className="btn-danger btn-sm" type="button" onClick={() => handleDeleteChallenge(ch.id)}>
+                Usuń
+              </button>
+            </div>
+          </td>
+        </tr>
+      );
+    });
   };
 
   if (!user.authReady) {
@@ -869,166 +929,21 @@ export function AdminPage() {
             </section>
           </>
         ) : activeTab === 'challenges' ? (
-          <div className="admin-challenges-container">
-            {/* Challenge Creator Form */}
-            <section className="admin-section glass-card admin-challenge-form-sec">
-              <h2 className="admin-section__title">Kreator Wyzwań Codziennych</h2>
-              <p className="admin-section__desc">Utwórz unikalne wyzwanie i zaplanuj je na konkretny dzień.</p>
-
-              <form onSubmit={handleCreateChallenge} className="admin-challenge-form">
-                <div className="form-row">
-                  <div className="form-group flex-2">
-                    <label>Tytuł wyzwania *</label>
-                    <input 
-                      type="text" 
-                      placeholder="np. Znawca Dzielnicy Cudów" 
-                      value={challengeTitle} 
-                      onChange={(e) => setChallengeTitle(e.target.value)} 
-                      required
-                    />
-                  </div>
-                  <div className="form-group flex-1">
-                    <label>Ikona liniowa</label>
-                    <input 
-                      type="text" 
-                      placeholder="np. target, pin, scan" 
-                      value={challengeIcon} 
-                      onChange={(e) => setChallengeIcon(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label>Opis / Podtytuł wyzwania</label>
-                  <input 
-                    type="text" 
-                    placeholder="np. Henryk byłby dumny" 
-                    value={challengeDesc} 
-                    onChange={(e) => setChallengeDesc(e.target.value)}
-                  />
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Tryb Rozgrywki</label>
-                    <select value={challengeGameMode} onChange={(e) => setChallengeGameMode(e.target.value)}>
-                      <option value="where-is-street">Gdzie jest ta ulica? (pinezka)</option>
-                      <option value="where-is-place">Gdzie jest to miejsce? (miejsca)</option>
-                      <option value="what-street">Co to za ulica? (quiz 4 opcje)</option>
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label>Ilość rund</label>
-                    <input 
-                      type="number" 
-                      min="1" 
-                      max="30" 
-                      value={challengeRounds} 
-                      onChange={(e) => setChallengeRounds(e.target.value)}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Czas na rundę (sekund)</label>
-                    <input 
-                      type="number" 
-                      min="3" 
-                      max="60" 
-                      value={challengeTimeLimit} 
-                      onChange={(e) => setChallengeTimeLimit(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group flex-2">
-                    <label>Zaplanowana Data *</label>
-                    <input 
-                      type="date" 
-                      value={challengeDate} 
-                      onChange={(e) => setChallengeDate(e.target.value)} 
-                      required
-                    />
-                  </div>
-                  <div className="form-group flex-2" style={{ alignSelf: 'center', paddingTop: 16 }}>
-                    <label className="form-checkbox-label" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <input 
-                        type="checkbox" 
-                        checked={challengeDisabled} 
-                        onChange={(e) => setChallengeDisabled(e.target.checked)} 
-                      />
-                      Wyzwanie wyłączone / zablokowane
-                    </label>
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label>Zdjęcie wyzwania (Wybierz plik z komputera lub wklej adres URL)</label>
-                  <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      onChange={handleImageFileChange}
-                      style={{ fontSize: '0.8rem' }}
-                    />
-                    <input 
-                      type="text" 
-                      placeholder="Lub wpisz bezpośredni URL do obrazka..." 
-                      value={challengeImageUrl} 
-                      onChange={(e) => setChallengeImageUrl(e.target.value)} 
-                      style={{ flex: 1 }}
-                    />
-                  </div>
-                  {challengeImageUrl && (
-                    <div style={{ marginTop: 8 }}>
-                      <span style={{ fontSize: '0.72rem', color: 'var(--text-tertiary)' }}>Podgląd miniatury:</span>
-                      <br />
-                      <img 
-                        src={challengeImageUrl} 
-                        alt="Preview" 
-                        style={{ height: 80, maxWidth: 140, objectFit: 'cover', borderRadius: 6, border: '1px solid var(--bg-glass-border)' }} 
-                      />
-                    </div>
-                  )}
-                </div>
-
-                <div className="form-group">
-                  <label>Lista nazw ulic lub kultowych miejsc (Jedna w linii - opcjonalnie, jeśli puste wylosujemy z ogólnej bazy)</label>
-                  <textarea 
-                    rows="6"
-                    placeholder="np.&#10;Kamienna&#10;Partyzantów&#10;Henryka Pobożnego"
-                    value={challengeStreets}
-                    onChange={(e) => setChallengeStreets(e.target.value)}
-                  />
-                </div>
-
-                <div style={{ display: 'flex', gap: 12 }}>
-                  <button type="submit" className="btn-primary" style={{ flex: 1 }}>
-                    {editingChallengeId ? 'Zapisz Zmiany' : 'Zaplanuj i Zapisz Wyzwanie'}
-                  </button>
-                  {editingChallengeId && (
-                    <button type="button" className="btn-secondary" onClick={handleCancelEdit}>
-                      Anuluj edycję
-                    </button>
-                  )}
-                </div>
-              </form>
-            </section>
-
-            {/* Scheduled Challenges List */}
-            <section className="admin-section glass-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12, marginBottom: '1rem' }}>
+          <div className="admin-challenges-container admin-challenges-container--table">
+            <section className="admin-section glass-card admin-challenges-overview">
+              <div className="admin-section__header admin-challenges-toolbar">
                 <div>
-                  <h2 className="admin-section__title">Zaplanowane Wyzwania</h2>
-                  <p className="admin-section__desc" style={{ margin: 0 }}>Lista aktualnie zaplanowanych wyzwań w bazie danych.</p>
+                  <h2 className="admin-section__title">Wyzwania codzienne</h2>
+                  <p className="admin-section__desc">Tabela wyzwań podzielona na aktywne, zaplanowane i historyczne.</p>
                 </div>
-                <button 
-                  type="button" 
-                  className="btn-secondary btn-sm"
-                  onClick={handleLoadDefaultChallenges}
-                  style={{ background: 'rgba(22, 163, 74, 0.1)', border: '1px solid rgba(22, 163, 74, 0.25)', color: 'var(--green-primary)' }}
-                >
-                  Wczytaj Wyzwania Domyślne
-                </button>
+                <div className="admin-challenges-actions">
+                  <button type="button" className="btn-primary" onClick={openChallengeCreator}>
+                    Stwórz nowe
+                  </button>
+                  <button type="button" className="btn-secondary" onClick={loadChallengesList}>
+                    Odśwież
+                  </button>
+                </div>
               </div>
 
               {loadingChallenges ? (
@@ -1038,71 +953,184 @@ export function AdminPage() {
                 </div>
               ) : challenges.length === 0 ? (
                 <div className="admin-empty-state">
-                  <p>Brak zaplanowanych wyzwań. Dodaj pierwsze wyzwanie powyżej!</p>
+                  <p>Brak wyzwań codziennych. Stwórz pierwsze wyzwanie przyciskiem powyżej.</p>
                 </div>
               ) : (
-                <div className="admin-challenges-list">
-                  {challenges.map((ch) => (
-                    <div key={ch.id} className={`admin-challenge-card glass-card ${ch.disabled ? 'admin-challenge-card--disabled' : ''}`}>
-                      <div className="admin-challenge-card__left">
-                        {ch.imageUrl ? (
-                          <img 
-                            src={ch.imageUrl} 
-                            alt="Miniature" 
-                            style={{ width: 44, height: 44, objectFit: 'cover', borderRadius: 6, marginRight: 8, border: '1px solid var(--bg-glass-border)' }} 
-                          />
-                        ) : (
-                          <span className={`admin-challenge-card__icon line-icon line-icon--${ch.icon || 'target'}`} aria-hidden="true" />
-                        )}
-                        <div className="admin-challenge-card__details">
-                          <h4 style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            {ch.title}
-                            {ch.disabled && (
-                              <span style={{ fontSize: '0.62rem', fontWeight: 800, background: '#FF5252', color: '#000', padding: '1px 6px', borderRadius: 4, textTransform: 'uppercase' }}>
-                                Wyłączone
-                              </span>
-                            )}
-                          </h4>
-                          <p>{ch.description || 'Brak opisu'}</p>
-                          <div className="admin-challenge-card__meta">
-                            <span>{ch.date}</span>
-                            <span>{ch.timeLimit || 15}s/runda</span>
-                            <span>{ch.rounds} rund</span>
-                            <span>{ch.gameMode}</span>
-                          </div>
-                          {ch.streets && ch.streets.length > 0 && (
-                            <div className="admin-challenge-card__streets">
-                              <strong>Ulice:</strong> {ch.streets.join(', ')}
-                            </div>
-                          )}
+                <div className="admin-challenge-groups">
+                  {challengeGroups.map(group => (
+                    <section className="admin-challenge-group" key={group.id}>
+                      <div className="admin-challenge-group__header">
+                        <div>
+                          <h3>{group.title}</h3>
+                          <p>{group.desc}</p>
                         </div>
+                        <span>{group.items.length}</span>
                       </div>
-                      
-                      <div style={{ display: 'flex', gap: 6 }}>
-                        <button 
-                          className="btn-secondary btn-sm"
-                          onClick={() => handleStartEdit(ch)}
-                        >
-                          Edytuj
-                        </button>
-                        <button 
-                          className="btn-secondary btn-sm"
-                          onClick={() => handleToggleDisable(ch)}
-                        >
-                          {ch.disabled ? 'Włącz' : 'Wyłącz'}
-                        </button>
-                        <button 
-                          className="btn-danger btn-sm"
-                          onClick={() => handleDeleteChallenge(ch.id)}
-                        >
-                          Usuń
-                        </button>
+                      <div className="admin-challenge-table-wrap">
+                        <table className="admin-challenge-table">
+                          <thead>
+                            <tr>
+                              <th>Data</th>
+                              <th>Wyzwanie</th>
+                              <th>Tryb</th>
+                              <th>Rundy</th>
+                              <th>Status</th>
+                              <th>Akcje</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {renderChallengeRows(group.items, group.empty)}
+                          </tbody>
+                        </table>
                       </div>
-                    </div>
+                    </section>
                   ))}
                 </div>
               )}
             </section>
+
+            {challengeEditorOpen && (
+              <section className="admin-section glass-card admin-challenge-editor-panel">
+                <div className="admin-section__header admin-challenge-editor-header">
+                  <div>
+                    <h2 className="admin-section__title">
+                      {editingChallengeId ? 'Edycja wyzwania' : 'Nowe wyzwanie'}
+                    </h2>
+                    <p className="admin-section__desc">
+                      {editingChallengeId ? 'Zmień ustawienia wybranego wyzwania.' : 'Utwórz wyzwanie i zaplanuj jego datę publikacji.'}
+                    </p>
+                  </div>
+                  <button type="button" className="btn-secondary btn-sm" onClick={handleCancelEdit}>
+                    Zamknij
+                  </button>
+                </div>
+
+                <form onSubmit={handleCreateChallenge} className="admin-challenge-form">
+                  <div className="form-row">
+                    <div className="form-group flex-2">
+                      <label>Tytuł wyzwania *</label>
+                      <input
+                        type="text"
+                        placeholder="np. Znawca Dzielnicy Cudów"
+                        value={challengeTitle}
+                        onChange={(e) => setChallengeTitle(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="form-group flex-1">
+                      <label>Ikona liniowa</label>
+                      <input
+                        type="text"
+                        placeholder="np. target, pin, scan"
+                        value={challengeIcon}
+                        onChange={(e) => setChallengeIcon(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Opis / Podtytuł wyzwania</label>
+                    <input
+                      type="text"
+                      placeholder="np. Henryk byłby dumny"
+                      value={challengeDesc}
+                      onChange={(e) => setChallengeDesc(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Tryb rozgrywki</label>
+                      <select value={challengeGameMode} onChange={(e) => setChallengeGameMode(e.target.value)}>
+                        <option value="where-is-street">Gdzie jest ta ulica? (pinezka)</option>
+                        <option value="where-is-place">Gdzie jest to miejsce? (miejsca)</option>
+                        <option value="what-street">Co to za ulica? (quiz 4 opcje)</option>
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label>Liczba rund</label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="30"
+                        value={challengeRounds}
+                        onChange={(e) => setChallengeRounds(e.target.value)}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Czas na rundę (sekund)</label>
+                      <input
+                        type="number"
+                        min="3"
+                        max="60"
+                        value={challengeTimeLimit}
+                        onChange={(e) => setChallengeTimeLimit(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row">
+                    <div className="form-group flex-2">
+                      <label>Zaplanowana data *</label>
+                      <input
+                        type="date"
+                        value={challengeDate}
+                        onChange={(e) => setChallengeDate(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="form-group flex-2 admin-checkbox-field">
+                      <label className="form-checkbox-label">
+                        <input
+                          type="checkbox"
+                          checked={challengeDisabled}
+                          onChange={(e) => setChallengeDisabled(e.target.checked)}
+                        />
+                        Wyzwanie wyłączone / zablokowane
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Zdjęcie wyzwania</label>
+                    <div className="admin-challenge-image-row">
+                      <input type="file" accept="image/*" onChange={handleImageFileChange} />
+                      <input
+                        type="text"
+                        placeholder="Lub wpisz bezpośredni URL do obrazka..."
+                        value={challengeImageUrl}
+                        onChange={(e) => setChallengeImageUrl(e.target.value)}
+                      />
+                    </div>
+                    {challengeImageUrl && (
+                      <div className="admin-challenge-preview">
+                        <span>Podgląd miniatury:</span>
+                        <img src={challengeImageUrl} alt="Podgląd wyzwania" />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="form-group">
+                    <label>Lista nazw ulic lub kultowych miejsc</label>
+                    <textarea
+                      rows="6"
+                      placeholder="np.&#10;Kamienna&#10;Partyzantów&#10;Henryka Pobożnego"
+                      value={challengeStreets}
+                      onChange={(e) => setChallengeStreets(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="admin-challenge-form-actions">
+                    <button type="submit" className="btn-primary">
+                      {editingChallengeId ? 'Zapisz zmiany' : 'Zaplanuj wyzwanie'}
+                    </button>
+                    <button type="button" className="btn-secondary" onClick={handleCancelEdit}>
+                      Anuluj
+                    </button>
+                  </div>
+                </form>
+              </section>
+            )}
           </div>
         ) : (
           <section className="admin-section glass-card">

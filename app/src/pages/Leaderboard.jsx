@@ -65,39 +65,15 @@ export function Leaderboard() {
         }
         setLeaderboard(combined);
 
-        // Process challenges
-        let chList = cloudChallenges ? [...cloudChallenges] : [];
-        if (chList.length === 0) {
-          const todayStr = new Date().toLocaleDateString('sv').substring(0, 10);
-          chList = [
-            {
-              id: 'default_cudow',
-              title: 'Znawca Dzielnicy Cudów',
-              description: 'Rozpoznaj słynne patusiarskie ulice',
-              icon: 'scan',
-              rounds: 15,
-              timeLimit: 15,
-              gameMode: 'what-street',
-              date: todayStr
-            },
-            {
-              id: 'default_sienkiewicza',
-              title: 'Ekspert z Osiedla Sienkiewicza',
-              description: 'Henryk byłby dumny',
-              icon: 'pin',
-              rounds: 15,
-              timeLimit: 15,
-              gameMode: 'where-is-street',
-              date: todayStr
-            }
-          ];
-        }
+        // Process challenges without hardcoded placeholders.
+        const chList = cloudChallenges ? [...cloudChallenges] : [];
         // Sort challenges descending by date
         chList.sort((a, b) => b.date.localeCompare(a.date));
         setChallenges(chList);
       } catch (err) {
         console.warn('Error loading leaderboard data:', err);
         setIsOffline(true);
+        setChallenges([]);
       } finally {
         setLoading(false);
       }
