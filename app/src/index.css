@@ -28,7 +28,7 @@
   --cursor-border: #fff;
   --grid-unit: 16px;
   --grid-major: 160px;
-  --grid-origin-x: calc((100vw - var(--layout-width-current)) / 2);
+  --grid-origin-x: calc((100% - var(--layout-width-current)) / 2);
   --layout-quarter: 240px;
   --layout-half: 480px;
   --layout-three-quarter: 720px;

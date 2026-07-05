@@ -29,7 +29,7 @@ function App() {
 
   useEffect(() => {
     const updateLayoutWidth = () => {
-      const viewportWidth = window.innerWidth || 0;
+      const viewportWidth = document.documentElement.clientWidth || window.innerWidth || 0;
       const gutter = viewportWidth >= 960 ? 32 : viewportWidth >= 720 ? 24 : 16;
       const availableWidth = Math.max(0, viewportWidth - gutter * 2);
       const moduleWidth = 160;
