@@ -1,5 +1,30 @@
 import { gameModeLabels } from './useAdminChallenges';
 
+const gameModeIcons = {
+  'where-is-street': '/icons/umiesc.svg',
+  'where-is-place': '/icons/pin.svg',
+  'what-street': '/icons/nazwij.svg',
+};
+
+function getChallengeWindow(challenge) {
+  const startAt = challenge.startAt || (challenge.date ? `${challenge.date}T00:00` : '');
+  const endAt = challenge.endAt || (challenge.date ? `${challenge.date}T23:59` : '');
+  return { startAt, endAt };
+}
+
+function formatDateTime(value) {
+  if (!value) return 'Brak daty';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value.replace('T', ' ');
+  return new Intl.DateTimeFormat('pl-PL', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date);
+}
+
 function AdminChallengesPanel({ adminChallenges }) {
   const {
     challengeEditorOpen,
@@ -33,9 +58,14 @@ function AdminChallengesPanel({ adminChallenges }) {
 
     return items.map((ch) => {
       const status = getChallengeStatus(ch);
+      const { startAt, endAt } = getChallengeWindow(ch);
+      const modeIcon = gameModeIcons[ch.gameMode] || '/icons/flag.svg';
       return (
         <tr key={ch.id}>
-          <td className="admin-challenge-table__date">{ch.date || 'Brak daty'}</td>
+          <td className="admin-challenge-table__date">
+            <span>{formatDateTime(startAt)}</span>
+            <small>{formatDateTime(endAt)}</small>
+          </td>
           <td>
             <div className="admin-challenge-table__challenge">
               {ch.imageUrl ? (
@@ -49,8 +79,26 @@ function AdminChallengesPanel({ adminChallenges }) {
               </div>
             </div>
           </td>
-          <td>{gameModeLabels[ch.gameMode] || ch.gameMode || 'Nieznany tryb'}</td>
-          <td>{Number(ch.rounds) || 0} rund / {Number(ch.timeLimit) || 0}s</td>
+          <td>
+            <span
+              className="admin-challenge-mode-icon svg-icon"
+              style={{ '--icon': `url(${modeIcon})` }}
+              title={gameModeLabels[ch.gameMode] || ch.gameMode || 'Nieznany tryb'}
+              aria-label={gameModeLabels[ch.gameMode] || ch.gameMode || 'Nieznany tryb'}
+            />
+          </td>
+          <td>
+            <div className="admin-challenge-round-pills">
+              <span className="challenge-pill challenge-pill--light">
+                <span className="svg-icon" style={{ '--icon': 'url(/icons/flag.svg)' }} aria-hidden="true" />
+                {Number(ch.rounds) || 0} rund
+              </span>
+              <span className="challenge-pill challenge-pill--dark">
+                <span className="svg-icon" style={{ '--icon': 'url(/icons/alarm.svg)' }} aria-hidden="true" />
+                {Number(ch.timeLimit) || 0}s
+              </span>
+            </div>
+          </td>
           <td>
             <span className={`admin-challenge-status admin-challenge-status--${status.type}`}>
               {status.label}
@@ -58,14 +106,14 @@ function AdminChallengesPanel({ adminChallenges }) {
           </td>
           <td>
             <div className="admin-challenge-actions">
-              <button className="btn-secondary btn-sm" type="button" onClick={() => handleStartEdit(ch)}>
-                Edytuj
+              <button className="admin-icon-btn" type="button" onClick={() => handleStartEdit(ch)} aria-label={`Edytuj ${ch.title || 'wyzwanie'}`} title="Edytuj">
+                <span className="svg-icon" style={{ '--icon': 'url(/icons/edit.svg)' }} aria-hidden="true" />
               </button>
-              <button className="btn-secondary btn-sm" type="button" onClick={() => handleToggleDisable(ch)}>
-                {ch.disabled ? 'Włącz' : 'Wyłącz'}
+              <button className="admin-icon-btn" type="button" onClick={() => handleToggleDisable(ch)} aria-label={ch.disabled ? 'Włącz wyzwanie' : 'Wyłącz wyzwanie'} title={ch.disabled ? 'Włącz' : 'Wyłącz'}>
+                <span className="svg-icon" style={{ '--icon': `url(${ch.disabled ? '/icons/play.svg' : '/icons/x.svg'})` }} aria-hidden="true" />
               </button>
-              <button className="btn-danger btn-sm" type="button" onClick={() => handleDeleteChallenge(ch.id)}>
-                Usuń
+              <button className="admin-icon-btn admin-icon-btn--danger" type="button" onClick={() => handleDeleteChallenge(ch.id)} aria-label={`Usuń ${ch.title || 'wyzwanie'}`} title="Usuń">
+                <span className="svg-icon" style={{ '--icon': 'url(/icons/trash.svg)' }} aria-hidden="true" />
               </button>
             </div>
           </td>
@@ -116,7 +164,7 @@ function AdminChallengesPanel({ adminChallenges }) {
                   <table className="admin-challenge-table">
                     <thead>
                       <tr>
-                        <th>Data</th>
+                        <th>Ramy</th>
                         <th>Wyzwanie</th>
                         <th>Tryb</th>
                         <th>Rundy</th>
@@ -136,23 +184,22 @@ function AdminChallengesPanel({ adminChallenges }) {
       </section>
 
       {challengeEditorOpen && (
-        <section className="admin-section glass-card admin-challenge-editor-panel">
-          <div className="admin-section__header admin-challenge-editor-header">
-            <div>
-              <h2 className="admin-section__title">
-                {editingChallengeId ? 'Edycja wyzwania' : 'Nowe wyzwanie'}
-              </h2>
-              <p className="admin-section__desc">
-                {editingChallengeId ? 'Zmień ustawienia wybranego wyzwania.' : 'Utwórz wyzwanie i zaplanuj jego datę publikacji.'}
-              </p>
+        <div className="admin-modal-overlay animate-fade-in">
+          <section className="admin-modal admin-challenge-editor-modal glass-card animate-scale-in">
+            <div className="admin-modal__header admin-challenge-editor-header">
+              <div>
+                <h3>{editingChallengeId ? 'Edycja wyzwania' : 'Nowe wyzwanie'}</h3>
+                <p>
+                  {editingChallengeId ? 'Zmień ustawienia wybranego wyzwania.' : 'Utwórz wyzwanie i zaplanuj jego ramy czasowe.'}
+                </p>
+              </div>
+              <button type="button" className="admin-icon-btn" onClick={handleCancelEdit} aria-label="Zamknij edycję">
+                <span className="svg-icon" style={{ '--icon': 'url(/icons/x.svg)' }} aria-hidden="true" />
+              </button>
             </div>
-            <button type="button" className="btn-secondary btn-sm" onClick={handleCancelEdit}>
-              Zamknij
-            </button>
-          </div>
 
-          <form onSubmit={handleCreateChallenge} className="admin-challenge-form">
-            <div className="form-row">
+            <form onSubmit={handleCreateChallenge} className="admin-challenge-form">
+              <div className="form-row">
               <div className="form-group flex-2">
                 <label>Tytuł wyzwania *</label>
                 <input
@@ -172,7 +219,7 @@ function AdminChallengesPanel({ adminChallenges }) {
                   onChange={(e) => updateForm('challengeIcon', e.target.value)}
                 />
               </div>
-            </div>
+              </div>
 
             <div className="form-group">
               <label>Opis / Podtytuł wyzwania</label>
@@ -216,12 +263,21 @@ function AdminChallengesPanel({ adminChallenges }) {
             </div>
 
             <div className="form-row">
-              <div className="form-group flex-2">
-                <label>Zaplanowana data *</label>
+              <div className="form-group flex-1">
+                <label>Początek wyzwania *</label>
                 <input
-                  type="date"
-                  value={form.challengeDate}
-                  onChange={(e) => updateForm('challengeDate', e.target.value)}
+                  type="datetime-local"
+                  value={form.challengeStartAt}
+                  onChange={(e) => updateForm('challengeStartAt', e.target.value)}
+                  required
+                />
+              </div>
+              <div className="form-group flex-1">
+                <label>Koniec wyzwania *</label>
+                <input
+                  type="datetime-local"
+                  value={form.challengeEndAt}
+                  onChange={(e) => updateForm('challengeEndAt', e.target.value)}
                   required
                 />
               </div>
@@ -274,8 +330,9 @@ function AdminChallengesPanel({ adminChallenges }) {
                 Anuluj
               </button>
             </div>
-          </form>
-        </section>
+            </form>
+          </section>
+        </div>
       )}
     </div>
   );

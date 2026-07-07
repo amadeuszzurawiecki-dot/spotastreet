@@ -14,15 +14,58 @@ const DEFAULT_CHALLENGE_FORM = {
   challengeTimeLimit: 15,
   challengeStreets: '',
   challengeDate: '',
+  challengeStartAt: '',
+  challengeEndAt: '',
   challengeImageUrl: '',
   challengeDisabled: false,
 };
 
 export const gameModeLabels = {
-  'where-is-street': 'Gdzie jest ta ulica?',
+  'where-is-street': 'Wskaż ulicę',
   'where-is-place': 'Gdzie jest to miejsce?',
-  'what-street': 'Co to za ulica?',
+  'what-street': 'Nazwij ulicę',
 };
+
+function formatDateTimeLocal(date) {
+  const value = date instanceof Date ? date : new Date(date);
+  if (Number.isNaN(value.getTime())) return '';
+  const local = new Date(value.getTime() - value.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 16);
+}
+
+function getDefaultChallengeWindow() {
+  const start = new Date();
+  start.setMinutes(0, 0, 0);
+
+  const end = new Date(start);
+  end.setHours(23, 59, 0, 0);
+
+  return {
+    startAt: formatDateTimeLocal(start),
+    endAt: formatDateTimeLocal(end),
+  };
+}
+
+function getLegacyDateWindow(date) {
+  if (!date) return { startAt: '', endAt: '' };
+  return {
+    startAt: `${date}T00:00`,
+    endAt: `${date}T23:59`,
+  };
+}
+
+function getChallengeWindow(challenge) {
+  const legacy = getLegacyDateWindow(challenge.date);
+  return {
+    startAt: challenge.startAt || legacy.startAt,
+    endAt: challenge.endAt || legacy.endAt,
+  };
+}
+
+function getChallengeTimeValue(value) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date.getTime();
+}
 
 export function useAdminChallenges({ activeTab, user, setActionStatus }) {
   const [challenges, setChallenges] = useState([]);
@@ -55,12 +98,19 @@ export function useAdminChallenges({ activeTab, user, setActionStatus }) {
   };
 
   const openChallengeCreator = () => {
+    const { startAt, endAt } = getDefaultChallengeWindow();
     resetChallengeForm();
-    updateForm('challengeDate', new Date().toLocaleDateString('sv-SE'));
+    setForm({
+      ...DEFAULT_CHALLENGE_FORM,
+      challengeDate: startAt.slice(0, 10),
+      challengeStartAt: startAt,
+      challengeEndAt: endAt,
+    });
     setChallengeEditorOpen(true);
   };
 
   const handleStartEdit = (ch) => {
+    const { startAt, endAt } = getChallengeWindow(ch);
     setEditingChallengeId(ch.id);
     setForm({
       challengeTitle: ch.title,
@@ -70,7 +120,9 @@ export function useAdminChallenges({ activeTab, user, setActionStatus }) {
       challengeRounds: ch.rounds || 15,
       challengeTimeLimit: ch.timeLimit || 15,
       challengeStreets: (ch.streets || []).join('\n'),
-      challengeDate: ch.date,
+      challengeDate: ch.date || startAt.slice(0, 10),
+      challengeStartAt: startAt,
+      challengeEndAt: endAt,
       challengeImageUrl: ch.imageUrl || '',
       challengeDisabled: !!ch.disabled,
     });
@@ -99,8 +151,16 @@ export function useAdminChallenges({ activeTab, user, setActionStatus }) {
 
   const handleCreateChallenge = async (e) => {
     e.preventDefault();
-    if (!form.challengeTitle || !form.challengeDate) {
-      setActionStatus({ type: 'error', message: 'Tytuł wyzwania oraz Data zaplanowania są wymagane!' });
+    if (!form.challengeTitle || !form.challengeStartAt || !form.challengeEndAt) {
+      setActionStatus({ type: 'error', message: 'Tytuł oraz początek i koniec wyzwania są wymagane!' });
+      return;
+    }
+
+    const startMs = getChallengeTimeValue(form.challengeStartAt);
+    const endMs = getChallengeTimeValue(form.challengeEndAt);
+
+    if (startMs === null || endMs === null || endMs <= startMs) {
+      setActionStatus({ type: 'error', message: 'Koniec wyzwania musi być później niż początek.' });
       return;
     }
 
@@ -118,7 +178,9 @@ export function useAdminChallenges({ activeTab, user, setActionStatus }) {
       rounds: Number(form.challengeRounds),
       timeLimit: Number(form.challengeTimeLimit),
       streets: streetList,
-      date: form.challengeDate,
+      date: form.challengeStartAt.slice(0, 10),
+      startAt: form.challengeStartAt,
+      endAt: form.challengeEndAt,
       imageUrl: form.challengeImageUrl || '',
       disabled: form.challengeDisabled,
       createdAt: new Date().toISOString()
@@ -173,31 +235,38 @@ export function useAdminChallenges({ activeTab, user, setActionStatus }) {
     }
   };
 
-  const todayStr = new Date().toLocaleDateString('sv-SE');
-
   const getChallengeStatus = (challenge) => {
     if (challenge.disabled) return { label: 'Wyłączone', type: 'disabled' };
-    if ((challenge.date || '') === todayStr) return { label: 'Aktywne teraz', type: 'active' };
-    if ((challenge.date || '') > todayStr) return { label: 'Zaplanowane', type: 'scheduled' };
+    const { startAt, endAt } = getChallengeWindow(challenge);
+    const startMs = getChallengeTimeValue(startAt);
+    const endMs = getChallengeTimeValue(endAt);
+    const nowMs = Date.now();
+
+    if (startMs !== null && endMs !== null && startMs <= nowMs && endMs >= nowMs) return { label: 'Aktywne teraz', type: 'active' };
+    if (startMs !== null && startMs > nowMs) return { label: 'Zaplanowane', type: 'scheduled' };
     return { label: 'Historyczne', type: 'history' };
   };
 
   const challengeGroups = useMemo(() => {
-    const sortedChallenges = [...challenges].sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+    const sortedChallenges = [...challenges].sort((a, b) => {
+      const aWindow = getChallengeWindow(a);
+      const bWindow = getChallengeWindow(b);
+      return (aWindow.startAt || '').localeCompare(bWindow.startAt || '');
+    });
     return [
       {
         id: 'active',
         title: 'Aktywne teraz',
-        desc: 'Wyzwania dostępne dzisiaj dla graczy.',
+        desc: 'Wyzwania dostępne teraz dla graczy.',
         empty: 'Brak aktywnych wyzwań na dziś.',
-        items: sortedChallenges.filter(ch => !ch.disabled && (ch.date || '') === todayStr),
+        items: sortedChallenges.filter(ch => getChallengeStatus(ch).type === 'active'),
       },
       {
         id: 'scheduled',
         title: 'Zaplanowane',
         desc: 'Wyzwania przygotowane na przyszłe dni.',
         empty: 'Brak zaplanowanych wyzwań.',
-        items: sortedChallenges.filter(ch => (ch.date || '') > todayStr),
+        items: sortedChallenges.filter(ch => getChallengeStatus(ch).type === 'scheduled'),
       },
       {
         id: 'history',
@@ -205,11 +274,15 @@ export function useAdminChallenges({ activeTab, user, setActionStatus }) {
         desc: 'Wyzwania z poprzednich dni oraz wyłączone pozycje.',
         empty: 'Brak historycznych wyzwań.',
         items: [...sortedChallenges]
-          .filter(ch => (ch.date || '') < todayStr || (ch.disabled && (ch.date || '') === todayStr))
-          .sort((a, b) => (b.date || '').localeCompare(a.date || '')),
+          .filter(ch => ['history', 'disabled'].includes(getChallengeStatus(ch).type))
+          .sort((a, b) => {
+            const aWindow = getChallengeWindow(a);
+            const bWindow = getChallengeWindow(b);
+            return (bWindow.startAt || '').localeCompare(aWindow.startAt || '');
+          }),
       },
     ];
-  }, [challenges, todayStr]);
+  }, [challenges]);
 
   return {
     challengeEditorOpen,

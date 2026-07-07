@@ -28,13 +28,49 @@ const ADDRESS_MODES = [
   },
 ];
 
+function getChallengeWindow(challenge) {
+  const startAt = challenge.startAt || (challenge.date ? `${challenge.date}T00:00` : '');
+  const endAt = challenge.endAt || (challenge.date ? `${challenge.date}T23:59` : '');
+  return {
+    start: startAt ? new Date(startAt) : null,
+    end: endAt ? new Date(endAt) : null,
+  };
+}
+
+function isChallengeActiveNow(challenge, now = new Date()) {
+  if (challenge.disabled) return false;
+  const { start, end } = getChallengeWindow(challenge);
+  const nowMs = now.getTime();
+
+  if (start && end && !Number.isNaN(start.getTime()) && !Number.isNaN(end.getTime())) {
+    return start.getTime() <= nowMs && end.getTime() >= nowMs;
+  }
+
+  const todayStr = now.toLocaleDateString('sv').substring(0, 10);
+  return challenge.date === todayStr;
+}
+
+function formatChallengeRemaining(challenge, now = new Date()) {
+  const { end } = getChallengeWindow(challenge);
+  const fallbackEnd = new Date(now);
+  fallbackEnd.setHours(24, 0, 0, 0);
+  const endDate = end && !Number.isNaN(end.getTime()) ? end : fallbackEnd;
+  const diffMs = Math.max(0, endDate.getTime() - now.getTime());
+
+  const hours = String(Math.floor(diffMs / (1000 * 60 * 60))).padStart(2, '0');
+  const minutes = String(Math.floor((diffMs / (1000 * 60)) % 60)).padStart(2, '0');
+  const seconds = String(Math.floor((diffMs / 1000) % 60)).padStart(2, '0');
+
+  return `${hours}:${minutes}:${seconds}`;
+}
+
 function Home() {
   const navigate = useNavigate();
   const user = useUserProfile();
   const [dailyChallenges, setDailyChallenges] = useState([]);
   const [loadingChallenges, setLoadingChallenges] = useState(true);
   const [isOffline, setIsOffline] = useState(false);
-  const [timeUntilMidnight, setTimeUntilMidnight] = useState('00:00:00');
+  const [currentTime, setCurrentTime] = useState(() => new Date());
   const [challengeIndex, setChallengeIndex] = useState(0);
   const [isChallengeSliding, setIsChallengeSliding] = useState(false);
   const [challengeSlideDistance, setChallengeSlideDistance] = useState(0);
@@ -46,23 +82,9 @@ function Home() {
   const completedChallenges = dailyChallenges.filter(ch => userAttempts[ch.id] !== undefined).length;
   const shouldLoopChallenges = !isMobileView && dailyChallenges.length >= 4;
 
-  // Countdown timer to midnight (HH:MM:SS)
+  // Countdown timer tick for challenge time windows.
   useEffect(() => {
-    const updateCountdown = () => {
-      const now = new Date();
-      const midnight = new Date();
-      midnight.setHours(24, 0, 0, 0); // next midnight
-      const diffMs = midnight - now;
-
-      const hours = String(Math.floor((diffMs / (1000 * 60 * 60)) % 24)).padStart(2, '0');
-      const minutes = String(Math.floor((diffMs / (1000 * 60)) % 60)).padStart(2, '0');
-      const seconds = String(Math.floor((diffMs / 1000) % 60)).padStart(2, '0');
-
-      setTimeUntilMidnight(`${hours}:${minutes}:${seconds}`);
-    };
-
-    updateCountdown();
-    const interval = setInterval(updateCountdown, 1000);
+    const interval = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -70,16 +92,16 @@ function Home() {
   useEffect(() => {
     async function load() {
       try {
-        const todayStr = new Date().toLocaleDateString('sv').substring(0, 10); // YYYY-MM-DD
+        const now = new Date();
         const allChallenges = await fetchDailyChallenges();
         
         if (allChallenges === null) {
           setIsOffline(true);
         }
 
-        // Filter challenges for today (exclude disabled challenges). No hardcoded fallbacks here:
+        // Filter active challenges (exclude disabled challenges). No hardcoded fallbacks here:
         // if there are no active challenges, the UI should show an empty state.
-        const active = allChallenges ? allChallenges.filter(ch => ch.date === todayStr && !ch.disabled) : [];
+        const active = allChallenges ? allChallenges.filter(ch => isChallengeActiveNow(ch, now)) : [];
         setDailyChallenges(active);
       } catch (err) {
         console.warn('Error loading challenges:', err);
@@ -249,7 +271,7 @@ function Home() {
                           ) : (
                             <span className="challenge-pill challenge-pill--dark">
                               <span className="svg-icon" style={{ '--icon': 'url(/icons/alarm.svg)' }} aria-hidden="true" />
-                              {timeUntilMidnight}
+                              {formatChallengeRemaining(challenge, currentTime)}
                             </span>
                           )}
                         </div>
