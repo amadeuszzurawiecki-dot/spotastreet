@@ -47,35 +47,26 @@ function QuizSummary({
     }
   }, [playerRounds, botRounds]);
 
-  // Record stats and challenge scores on mount
-  useEffect(() => {
+  const recordSummaryStats = () => {
     if (!user.isLoggedIn) return;
     if (hasRecordedStatsRef.current) return;
     hasRecordedStatsRef.current = true;
 
-    const recordTimer = window.setTimeout(() => {
-      try {
-        if (challengeId) {
-          user.recordChallengeAttempt(challengeId, safePlayerScore);
-        } else if (!isTraining && gameMode) {
-          user.recordGameResult(gameMode, safePlayerScore > safeBotScore);
-        }
-      } catch (err) {
-        console.warn('Could not persist game summary stats; showing local summary only.', err);
+    try {
+      if (challengeId) {
+        user.recordChallengeAttempt(challengeId, safePlayerScore);
+      } else if (!isTraining && gameMode) {
+        user.recordGameResult(gameMode, safePlayerScore > safeBotScore);
       }
-    }, 1200);
+    } catch (err) {
+      console.warn('Could not persist game summary stats; showing local summary only.', err);
+    }
+  };
 
-    return () => window.clearTimeout(recordTimer);
-  }, [
-    challengeId,
-    gameMode,
-    isTraining,
-    safeBotScore,
-    safePlayerScore,
-    user.isLoggedIn,
-    user.recordChallengeAttempt,
-    user.recordGameResult,
-  ]);
+  // Challenge scores are needed immediately for the challenge leaderboard.
+  useEffect(() => {
+    if (challengeId) recordSummaryStats();
+  }, []);
 
   // Fetch leaderboard for challenge
   useEffect(() => {
@@ -155,6 +146,24 @@ function QuizSummary({
     if (safePlayerScore >= 500) return 'Całkiem nieźle!';
     if (safePlayerScore >= 300) return 'Dobry początek';
     return 'Jest nad czym pracować';
+  };
+
+  const handlePlayAgain = () => {
+    recordSummaryStats();
+    if (onPlayAgain) {
+      onPlayAgain();
+      return;
+    }
+    window.location.reload();
+  };
+
+  const handleExit = () => {
+    recordSummaryStats();
+    if (onExit) {
+      onExit();
+      return;
+    }
+    navigate('/');
   };
 
   return (
@@ -335,10 +344,10 @@ function QuizSummary({
 
         {/* Actions */}
         <div className="quiz-summary__actions animate-fade-in-up" style={{ animationDelay: '1s' }}>
-          <button className="btn-primary" onClick={onPlayAgain || (() => window.location.reload())}>
+          <button className="btn-primary" onClick={handlePlayAgain}>
             Zagraj ponownie
           </button>
-          <button className="btn-secondary" onClick={onExit || (() => navigate('/'))}>
+          <button className="btn-secondary" onClick={handleExit}>
             Wróć do Menu
           </button>
         </div>
