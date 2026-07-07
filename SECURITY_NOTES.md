@@ -23,6 +23,8 @@ Do not change these casually.
 
 Do not edit Firestore rules without an explicit user request.
 
+Before tightening rules, use `FIRESTORE_RULES_MODEL.md` as the working model for collections, risky fields, and required tests.
+
 Rules changes should be handled as their own branch/PR and should include:
 
 - what access changes,
