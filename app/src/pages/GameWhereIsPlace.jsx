@@ -222,6 +222,13 @@ function GameWhereIsPlace() {
   };
 
   const handleNext = () => {
+    const nextRound = currentRound + 1;
+    const roundsLimit = getEffectiveTotalRounds(totalRounds, places.length);
+    if (nextRound >= roundsLimit) {
+      finishGame();
+      return;
+    }
+
     advanceSingleplayerRound({
       currentRound,
       finishGame,
@@ -231,6 +238,33 @@ function GameWhereIsPlace() {
       totalRounds,
     });
   };
+
+  // 2. Game over — show summary before any loading fallback
+  if (isGameOver) {
+    return (
+      <QuizSummary
+        playerScore={playerScore}
+        botScore={getSummaryBotScore(gameVariant, botScore)}
+        playerRounds={playerRounds}
+        botRounds={getSummaryBotRounds(gameVariant, botRounds)}
+        totalRounds={getSummaryTotalRounds(playerRounds, totalRounds, places.length)}
+        gameMode="where-is-place"
+        places={places}
+        isTraining={isTrainingVariant(gameVariant)}
+        challengeId={challenge?.id}
+        onPlayAgain={() => resetSingleplayerSummary({
+          setBotRounds,
+          setBotScore,
+          setCurrentRound,
+          setGameVariant,
+          setIsGameOver,
+          setPlayerRounds,
+          setPlayerScore,
+        })}
+        onExit={() => navigate('/')}
+      />
+    );
+  }
 
   // 1. Selector screen
   if (gameVariant === 'select') {
@@ -266,33 +300,6 @@ function GameWhereIsPlace() {
     ? { emoji: 'U', image: user.customAvatar, bg: 'transparent' }
     : (AVATARS.find(a => a.id === user.avatarId) || AVATARS[0]);
   const effectiveTotalRounds = getEffectiveTotalRounds(totalRounds, places.length);
-
-  // 3. Game over
-  if (isGameOver) {
-    return (
-      <QuizSummary
-        playerScore={playerScore}
-        botScore={getSummaryBotScore(gameVariant, botScore)}
-        playerRounds={playerRounds}
-        botRounds={getSummaryBotRounds(gameVariant, botRounds)}
-        totalRounds={getSummaryTotalRounds(playerRounds, totalRounds, places.length)}
-        gameMode="where-is-place"
-        places={places}
-        isTraining={isTrainingVariant(gameVariant)}
-        challengeId={challenge?.id}
-        onPlayAgain={() => resetSingleplayerSummary({
-          setBotRounds,
-          setBotScore,
-          setCurrentRound,
-          setGameVariant,
-          setIsGameOver,
-          setPlayerRounds,
-          setPlayerScore,
-        })}
-        onExit={() => navigate('/')}
-      />
-    );
-  }
 
   const currentPlace = places[currentRound];
   const actualTarget = currentPlace ? [currentPlace.lat, currentPlace.lng] : null;

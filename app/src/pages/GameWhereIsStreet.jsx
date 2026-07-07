@@ -218,6 +218,13 @@ function GameWhereIsStreet() {
 
   // Handle next round
   const handleNext = () => {
+    const nextRound = currentRound + 1;
+    const roundsLimit = getEffectiveTotalRounds(totalRounds, streets.length);
+    if (nextRound >= roundsLimit) {
+      finishGame();
+      return;
+    }
+
     advanceSingleplayerRound({
       currentRound,
       finishGame,
@@ -248,22 +255,7 @@ function GameWhereIsStreet() {
     );
   }
 
-  // 2. Loading state
-  if (loading) {
-    return (
-      <div className="game-loading">
-        <div className="game-loading__spinner" />
-        <p>Ładowanie ulic Legnicy...</p>
-      </div>
-    );
-  }
-
-  const avatar = user.avatarId === 'custom'
-    ? { emoji: 'U', image: user.customAvatar, bg: 'transparent' }
-    : (AVATARS.find(a => a.id === user.avatarId) || AVATARS[0]);
-  const effectiveTotalRounds = getEffectiveTotalRounds(totalRounds, streets.length);
-
-  // 3. Game over — show summary
+  // 2. Game over — show summary before any loading fallback
   if (isGameOver) {
     return (
       <QuizSummary
@@ -289,6 +281,21 @@ function GameWhereIsStreet() {
       />
     );
   }
+
+  // 2. Loading state
+  if (loading) {
+    return (
+      <div className="game-loading">
+        <div className="game-loading__spinner" />
+        <p>Ładowanie ulic Legnicy...</p>
+      </div>
+    );
+  }
+
+  const avatar = user.avatarId === 'custom'
+    ? { emoji: 'U', image: user.customAvatar, bg: 'transparent' }
+    : (AVATARS.find(a => a.id === user.avatarId) || AVATARS[0]);
+  const effectiveTotalRounds = getEffectiveTotalRounds(totalRounds, streets.length);
 
   const currentStreet = streets[currentRound];
   const summaryBounds = showResult ? getCombinedBounds(currentStreet?.segments, pinPosition, closestPoint) : null;
