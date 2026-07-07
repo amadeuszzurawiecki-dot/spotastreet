@@ -60,6 +60,30 @@ function GameWhatStreet() {
   const [answerTargetPoint, setAnswerTargetPoint] = useState(null);
   const hasSubmittedRef = useRef(false);
 
+  const createSummaryData = ({
+    playerScoreValue = playerScore,
+    botScoreValue = botScore,
+    playerRoundsValue = playerRounds,
+    botRoundsValue = botRounds,
+  } = {}) => ({
+    playerScore: playerScoreValue,
+    botScore: getSummaryBotScore(gameVariant, botScoreValue),
+    playerRounds: [...playerRoundsValue],
+    botRounds: [...getSummaryBotRounds(gameVariant, botRoundsValue)],
+    totalRounds: getSummaryTotalRounds(playerRoundsValue, totalRounds, streets.length),
+    gameMode: 'what-street',
+    streets: [...streets],
+    isTraining: isTrainingVariant(gameVariant),
+    challengeId: challenge?.id,
+  });
+
+  const setFinalRoundSummary = (summaryValues) => {
+    const roundsLimit = getEffectiveTotalRounds(totalRounds, streets.length);
+    if (currentRound + 1 >= roundsLimit) {
+      setSummaryData(createSummaryData(summaryValues));
+    }
+  };
+
   const getStreetAnchorPoint = useCallback((street) => {
     const segments = street?.segments || [];
     const longestSegment = segments.reduce((best, segment) => (
@@ -136,11 +160,20 @@ function GameWhatStreet() {
     setBotGuessPosition(botPosition);
     setCurrentBotResult(botResult);
     
-    setBotScore(prev => isTrainingVariant(gameVariant) ? 0 : prev + botScoreDelta);
-    setBotRounds(prev => [...prev, botRound]);
-
     const playerResult = { score: 0, correct: false, timedOut: true };
-    setPlayerRounds(prev => [...prev, playerResult]);
+    const nextPlayerRounds = [...playerRounds, playerResult];
+    const nextBotScore = isTrainingVariant(gameVariant) ? 0 : botScore + botScoreDelta;
+    const nextBotRounds = [...botRounds, botRound];
+
+    setBotScore(nextBotScore);
+    setBotRounds(nextBotRounds);
+    setPlayerRounds(nextPlayerRounds);
+    setFinalRoundSummary({
+      playerScoreValue: playerScore,
+      botScoreValue: nextBotScore,
+      playerRoundsValue: nextPlayerRounds,
+      botRoundsValue: nextBotRounds,
+    });
 
     setRoundResult(createStreetGuessRoundResult({
       playerScore: 0,
@@ -153,7 +186,19 @@ function GameWhatStreet() {
     }));
     setIsRoundActive(false);
     setShowResult(true);
-  }, [streets, currentRound, streetNames, gameVariant]);
+  }, [
+    botRounds,
+    botScore,
+    currentRound,
+    gameVariant,
+    getGuessPosition,
+    getStreetAnchorPoint,
+    playerRounds,
+    playerScore,
+    streetNames,
+    streets,
+    totalRounds,
+  ]);
 
   const {
     timeLeft,
@@ -207,20 +252,8 @@ function GameWhatStreet() {
     startTimer();
   };
 
-  const createSummaryData = () => ({
-    playerScore,
-    botScore: getSummaryBotScore(gameVariant, botScore),
-    playerRounds: [...playerRounds],
-    botRounds: [...getSummaryBotRounds(gameVariant, botRounds)],
-    totalRounds: getSummaryTotalRounds(playerRounds, totalRounds, streets.length),
-    gameMode: 'what-street',
-    streets: [...streets],
-    isTraining: isTrainingVariant(gameVariant),
-    challengeId: challenge?.id,
-  });
-
   const finishGameWithSummary = () => {
-    setSummaryData(createSummaryData());
+    setSummaryData(prev => prev || createSummaryData());
     finishGame();
   };
 
@@ -252,11 +285,21 @@ function GameWhatStreet() {
     setPlayerGuessPosition(guessPosition);
     setBotGuessPosition(botPosition);
     setCurrentBotResult(botResult);
-    setPlayerScore(prev => prev + score);
-    setPlayerRounds(prev => [...prev, { score, correct: isCorrect, guess: guessedName, distance: playerDistance }]);
+    const nextPlayerScore = playerScore + score;
+    const nextPlayerRounds = [...playerRounds, { score, correct: isCorrect, guess: guessedName, distance: playerDistance }];
+    const nextBotScore = isTrainingVariant(gameVariant) ? 0 : botScore + botScoreDelta;
+    const nextBotRounds = [...botRounds, botRound];
 
-    setBotScore(prev => isTrainingVariant(gameVariant) ? 0 : prev + botScoreDelta);
-    setBotRounds(prev => [...prev, botRound]);
+    setPlayerScore(nextPlayerScore);
+    setPlayerRounds(nextPlayerRounds);
+    setBotScore(nextBotScore);
+    setBotRounds(nextBotRounds);
+    setFinalRoundSummary({
+      playerScoreValue: nextPlayerScore,
+      botScoreValue: nextBotScore,
+      playerRoundsValue: nextPlayerRounds,
+      botRoundsValue: nextBotRounds,
+    });
 
     setRoundResult(createStreetGuessRoundResult({
       playerScore: score,
