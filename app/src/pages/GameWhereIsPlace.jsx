@@ -76,7 +76,8 @@ function GameWhereIsPlace() {
 
   const setFinalRoundSummary = (summaryValues) => {
     const roundsLimit = getEffectiveTotalRounds(totalRounds, places.length);
-    if (currentRound + 1 >= roundsLimit) {
+    const completedRounds = summaryValues?.playerRoundsValue?.length || currentRound + 1;
+    if (completedRounds >= roundsLimit) {
       setSummaryData(createSummaryData(summaryValues));
     }
   };
@@ -235,6 +236,12 @@ function GameWhereIsPlace() {
     setIsRoundActive,
     setShowResult,
   });
+
+  useEffect(() => {
+    if (gameVariant === 'challenge' && summaryData && !isGameOver) {
+      finishGame();
+    }
+  }, [gameVariant, summaryData, isGameOver, finishGame]);
 
   // Start first round
   useEffect(() => {

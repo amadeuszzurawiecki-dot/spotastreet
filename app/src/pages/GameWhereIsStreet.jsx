@@ -77,7 +77,8 @@ function GameWhereIsStreet() {
 
   const setFinalRoundSummary = (summaryValues) => {
     const roundsLimit = getEffectiveTotalRounds(totalRounds, streets.length);
-    if (currentRound + 1 >= roundsLimit) {
+    const completedRounds = summaryValues?.playerRoundsValue?.length || currentRound + 1;
+    if (completedRounds >= roundsLimit) {
       setSummaryData(createSummaryData(summaryValues));
     }
   };
@@ -229,6 +230,12 @@ function GameWhereIsStreet() {
     setIsRoundActive,
     setShowResult,
   });
+
+  useEffect(() => {
+    if (gameVariant === 'challenge' && summaryData && !isGameOver) {
+      finishGame();
+    }
+  }, [gameVariant, summaryData, isGameOver, finishGame]);
 
   // Start first round when streets are loaded
   useEffect(() => {
