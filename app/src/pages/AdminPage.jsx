@@ -14,6 +14,7 @@ import {
 import { GOOGLE_CLIENT_ID } from '../utils/googleAuth';
 import { maskEmail } from '../utils/privacy';
 import { AVATARS } from '../data/avatars';
+import TopNav from '../components/Navigation/TopNav';
 import './AdminPage.css';
 
 export function AdminPage() {
@@ -490,10 +491,13 @@ export function AdminPage() {
   // Filter users by search term
   const filteredUsers = allUsers.filter(u => {
     const term = searchTerm.toLowerCase();
+    const email = u.email || '';
+    const name = u.name || '';
+    const town = u.town || '';
     return (
-      u.email.toLowerCase().includes(term) ||
-      u.name.toLowerCase().includes(term) ||
-      u.town.toLowerCase().includes(term)
+      email.toLowerCase().includes(term) ||
+      name.toLowerCase().includes(term) ||
+      town.toLowerCase().includes(term)
     );
   });
 
@@ -536,19 +540,6 @@ export function AdminPage() {
       console.error(e);
       setActionStatus({ type: 'error', message: `Wystąpił błąd podczas zmiany statusu Premium.` });
     }
-  };
-
-  const getUserStatsTotals = (profile) => {
-    const modeStats = Object.values(profile.stats || {});
-    const singleWins = modeStats.reduce((sum, item) => sum + (Number(item?.wins) || 0), 0);
-    const singleLosses = modeStats.reduce((sum, item) => sum + (Number(item?.losses) || 0), 0);
-    const challengesCount = Object.keys(profile.challengeAttempts || {}).length;
-    return {
-      singleWins,
-      singleLosses,
-      challengesCount,
-      onlineTotal: (profile.onlineWins || 0) + (profile.onlineLosses || 0) + (profile.onlineDraws || 0),
-    };
   };
 
   const todayStr = new Date().toLocaleDateString('sv-SE');
@@ -731,29 +722,7 @@ export function AdminPage() {
   // State 3: Authorized Admin Panel UI
   return (
     <div className="admin-layout animate-fade-in">
-      {/* Top Header Bar */}
-      <header className="admin-header glass-card">
-        <div className="admin-header__left">
-          <div className="admin-badge">PANEL ADMINISTRATORA</div>
-          <h1 className="admin-header__title">Panel Administracyjny SPOTASTREET</h1>
-        </div>
-
-        <div className="admin-header__right">
-          <div className="admin-user-pill">
-            <span className="admin-user-pill__avatar line-icon line-icon--user" aria-hidden="true" />
-            <div className="admin-user-pill__info">
-              <span className="admin-user-pill__name">{user.name || 'Admin'}</span>
-              <span className="admin-user-pill__email">{maskEmail(user.email)}</span>
-            </div>
-          </div>
-          <button className="btn-secondary btn-sm" onClick={() => navigate('/')}>
-            Przejdź do gry
-          </button>
-          <button className="btn-danger btn-sm" onClick={() => user.logout()}>
-            Wyloguj
-          </button>
-        </div>
-      </header>
+      <TopNav variant="admin" adminTab={activeTab} onAdminTabChange={setActiveTab} />
 
       {/* Main Content Container */}
       <main className="admin-main">
@@ -767,65 +736,14 @@ export function AdminPage() {
           </div>
         )}
 
-        {/* Navigation Tabs */}
-        <div className="admin-tabs glass-card">
-          <button 
-            className={`admin-tab-btn ${activeTab === 'users' ? 'admin-tab-btn--active' : ''}`}
-            onClick={() => setActiveTab('users')}
-          >
-            <span className="line-icon line-icon--user" aria-hidden="true" />
-            Użytkownicy i Statystyki
-          </button>
-          <button 
-            className={`admin-tab-btn ${activeTab === 'challenges' ? 'admin-tab-btn--active' : ''}`}
-            onClick={() => setActiveTab('challenges')}
-          >
-            <span className="line-icon line-icon--target" aria-hidden="true" />
-            Wyzwania Codzienne
-          </button>
-          <button 
-            className={`admin-tab-btn ${activeTab === 'settings' ? 'admin-tab-btn--active' : ''}`}
-            onClick={() => setActiveTab('settings')}
-          >
-            Ustawienia aplikacji
-          </button>
-        </div>
-
         {activeTab === 'users' ? (
           <>
-            {/* Stats Overview */}
-            <div className="admin-stats-grid">
-              <div className="admin-stat-box glass-card">
-                <div className="admin-stat-box__icon"><span className="line-icon line-icon--user" aria-hidden="true" /></div>
-                <div className="admin-stat-box__data">
-                  <span className="admin-stat-box__value">{allUsers.length}</span>
-                  <span className="admin-stat-box__label">Aktywne Konta</span>
-                </div>
-              </div>
-
-              <div className="admin-stat-box glass-card">
-                <div className="admin-stat-box__icon"><span className="line-icon line-icon--settings" aria-hidden="true" /></div>
-                <div className="admin-stat-box__data">
-                  <span className="admin-stat-box__value">{cloudProfiles.length}</span>
-                  <span className="admin-stat-box__label">Zapisane w Chmurze</span>
-                </div>
-              </div>
-
-              <div className="admin-stat-box glass-card">
-                <div className="admin-stat-box__icon"><span className="line-icon line-icon--target" aria-hidden="true" /></div>
-                <div className="admin-stat-box__data">
-                  <span className="admin-stat-box__value">Aktywny</span>
-                  <span className="admin-stat-box__label">Status Autoryzacji</span>
-                </div>
-              </div>
-            </div>
-
             {/* User Management Section */}
             <section className="admin-section glass-card">
               <div className="admin-section__header">
                 <div>
-                  <h2 className="admin-section__title">Lista Aktywnych Użytkowników</h2>
-                  <p className="admin-section__desc">Możliwość podglądu oraz natychmiastowego usuwania kont z bazy danych.</p>
+                  <h2 className="admin-section__title">Użytkownicy</h2>
+                  <p className="admin-section__desc">{allUsers.length} aktywnych użytkowników.</p>
                 </div>
 
                 <div className="admin-section__actions">
@@ -853,76 +771,76 @@ export function AdminPage() {
                     <p>Brak kont spełniających kryteria wyszukiwania.</p>
                   </div>
                 ) : (
-                  <div className="admin-user-grid">
-                    {filteredUsers.map((u, idx) => {
-                      const isSelf = u.email.toLowerCase().trim() === user.email?.toLowerCase()?.trim();
-                      const stats = getUserStatsTotals(u);
-                      return (
-                        <article key={`${u.email}-${idx}`} className={`admin-user-card ${isSelf ? 'admin-user-card--self' : ''}`}>
-                          <div className="admin-user-card__top">
-                            <div className="admin-user-card__avatar">
-                              {getAvatarImage(u) ? (
-                                <img src={getAvatarImage(u)} alt="" />
-                              ) : (
-                                <span className="line-icon line-icon--user" aria-hidden="true" />
-                              )}
-                            </div>
-                            <div className="admin-user-card__identity">
-                              <div className="admin-user-card__name">
-                                {u.name}
-                                {isSelf && <span className="tag-self">Ty</span>}
-                              </div>
-                              <code className="table-email">{maskEmail(u.email)}</code>
-                            </div>
-                            {u.isPremium && <span className="badge-premium-pill">PREMIUM</span>}
-                          </div>
-
-                          <div className="admin-user-card__meta">
-                            <span>{u.town}</span>
-                            <span>{u.hideEmail ? 'Email ukryty' : 'Email widoczny'}</span>
-                            <span className="table-source-tag">{u.source}</span>
-                          </div>
-
-                          <div className="admin-user-card__stats">
-                            <div>
-                              <strong>{stats.singleWins}</strong>
-                              <span>wygrane</span>
-                            </div>
-                            <div>
-                              <strong>{stats.singleLosses}</strong>
-                              <span>porażki</span>
-                            </div>
-                            <div>
-                              <strong>{stats.challengesCount}</strong>
-                              <span>wyzwania</span>
-                            </div>
-                            <div>
-                              <strong>{stats.onlineTotal}</strong>
-                              <span>online</span>
-                            </div>
-                          </div>
-
-                          <div className="admin-user-card__actions">
-                            <button className="btn-primary btn-sm" onClick={() => openUserEditor(u)}>
-                              Edytuj profil
-                            </button>
-                            <button 
-                              className={u.isPremium ? "btn-secondary btn-sm" : "btn-secondary btn-sm btn-green-soft"}
-                              onClick={() => handleTogglePremium(u.email, u.isPremium)}
-                            >
-                              {u.isPremium ? 'Odbierz Premium' : 'Nadaj Premium'}
-                            </button>
-                            <button 
-                              className="btn-danger btn-sm"
-                              onClick={() => setDeletingEmail(u.email)}
-                              title={`Usuń konto ${maskEmail(u.email)}`}
-                            >
-                              Usuń
-                            </button>
-                          </div>
-                        </article>
-                      );
-                    })}
+                  <div className="admin-users-table-wrap">
+                    <table className="admin-users-table admin-users-table--management">
+                      <thead>
+                        <tr>
+                          <th>Imię</th>
+                          <th>E-mail</th>
+                          <th>Typ konta</th>
+                          <th aria-label="Akcje"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredUsers.map((u, idx) => {
+                          const email = u.email || '';
+                          const isSelf = email.toLowerCase().trim() === user.email?.toLowerCase()?.trim();
+                          const avatarImage = getAvatarImage(u);
+                          return (
+                            <tr key={`${email}-${idx}`} className={isSelf ? 'row-highlight' : ''}>
+                              <td>
+                                <div className="table-user-info">
+                                  <span className="admin-user-table-avatar">
+                                    {avatarImage ? (
+                                      <img src={avatarImage} alt="" />
+                                    ) : (
+                                      <span className="line-icon line-icon--user" aria-hidden="true" />
+                                    )}
+                                  </span>
+                                  <span className="table-user-name">
+                                    {u.name || 'Bez nazwy'}
+                                    {isSelf && <span className="tag-self">Ty</span>}
+                                  </span>
+                                </div>
+                              </td>
+                              <td>
+                                <code className="table-email">{maskEmail(email)}</code>
+                              </td>
+                              <td>
+                                <button
+                                  type="button"
+                                  className={`account-type-pill ${u.isPremium ? 'account-type-pill--premium' : 'account-type-pill--free'}`}
+                                  onClick={() => handleTogglePremium(email, u.isPremium)}
+                                  title={u.isPremium ? 'Odbierz Premium' : 'Nadaj Premium'}
+                                >
+                                  {u.isPremium ? 'Premium' : 'Free'}
+                                </button>
+                              </td>
+                              <td>
+                                <div className="admin-user-table-actions">
+                                  <button
+                                    type="button"
+                                    className="admin-icon-btn"
+                                    onClick={() => openUserEditor(u)}
+                                    aria-label={`Edytuj profil ${u.name || maskEmail(email)}`}
+                                  >
+                                    <span className="line-icon line-icon--settings" aria-hidden="true" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="admin-icon-btn admin-icon-btn--danger"
+                                    onClick={() => setDeletingEmail(email)}
+                                    aria-label={`Usuń konto ${maskEmail(email)}`}
+                                  >
+                                    <span className="line-icon line-icon--close" aria-hidden="true" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
                   </div>
                 )}
               </div>

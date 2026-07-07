@@ -3,14 +3,30 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import useUserProfile from '../../hooks/useUserProfile';
 import useTheme from '../../hooks/useTheme';
 import { logoutUser } from '../../config/firebase';
+import { AVATARS } from '../../data/avatars';
 import './TopNav.css';
 
-export function TopNav() {
+const ADMIN_EMAIL = 'amadeuszzurawiecki@gmail.com';
+
+export function TopNav({ variant = 'front', adminTab = 'users', onAdminTabChange }) {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const user = useUserProfile();
   const { theme, toggleTheme } = useTheme();
+  const isAdminVariant = variant === 'admin';
+  const userEmail = user.email || '';
+  const normalizedEmail = userEmail.toLowerCase().trim();
+  const canSeeAdmin = !!user.isPremium || normalizedEmail === ADMIN_EMAIL;
+
+  const avatarSrc = user.customAvatar
+    || AVATARS.find(avatar => avatar.id === user.avatarId)?.image
+    || AVATARS[0]?.image
+    || '';
+
+  const userDisplayName = normalizedEmail === ADMIN_EMAIL
+    ? 'Amadeusz'
+    : (user.name || userEmail.split('@')[0] || 'Użytkownik');
 
   const handleLogout = async () => {
     setIsOpen(false);
@@ -24,11 +40,36 @@ export function TopNav() {
     navigate(path);
   };
 
-  const navItems = [
+  const handleAdminTab = (tab) => {
+    setIsOpen(false);
+    onAdminTabChange?.(tab);
+    if (location.pathname !== '/admin') {
+      navigate('/admin');
+    }
+  };
+
+  const handleLogoClick = () => {
+    if (isAdminVariant) {
+      handleAdminTab('users');
+      return;
+    }
+    handleNavigate('/');
+  };
+
+  const frontNavItems = [
     { label: 'Profil', path: '/profile', icon: '/icons/user.svg', railIcon: 'user', desc: 'Konto i mapa' },
     { label: 'Ranking', path: '/leaderboard', icon: '/icons/ribbon.svg', railIcon: 'ranking', desc: 'Wyniki graczy' },
     { label: 'Admin', path: '/admin', icon: '/icons/admin.svg', railIcon: 'settings', desc: 'Panel' },
+  ].filter(item => item.path !== '/admin' || canSeeAdmin);
+
+  const adminNavItems = [
+    { label: 'Użytkownicy', id: 'users', icon: '/icons/user.svg', railIcon: 'user', desc: 'Konta' },
+    { label: 'Wyzwania', id: 'challenges', icon: '/icons/star.svg', railIcon: 'target', desc: 'Codzienne' },
+    { label: 'Ustawienia aplikacji', id: 'settings', icon: '/icons/admin.svg', railIcon: 'settings', desc: 'Globalne' },
+    { label: 'Powrót na front', path: '/', icon: '/icons/play.svg', railIcon: 'arrow-left', desc: 'Aplikacja' },
   ];
+
+  const navItems = isAdminVariant ? adminNavItems : frontNavItems;
 
   const LogoSygnet = () => (
     <svg className="topnav-logo__sygnet" viewBox="0 0 596.3 535.4" width="22" height="20">
@@ -39,28 +80,62 @@ export function TopNav() {
     </svg>
   );
 
+  const LogoText = () => (
+    <span className="topnav-logo__text">
+      SPOTASTREET
+      {isAdminVariant && <span className="topnav-logo__admin"> ADMIN</span>}
+    </span>
+  );
+
+  const UserPill = () => user.isLoggedIn ? (
+    <div className="topnav-user-pill">
+      <span className="topnav-user-pill__avatar" aria-hidden="true">
+        {avatarSrc ? <img src={avatarSrc} alt="" /> : <span className="line-icon line-icon--user" aria-hidden="true" />}
+      </span>
+      <span className="topnav-user-pill__copy">
+        <strong>{userDisplayName}</strong>
+        <span>{userEmail}</span>
+      </span>
+    </div>
+  ) : null;
+
+  const itemIsActive = (item) => {
+    if (item.id) return adminTab === item.id;
+    return location.pathname === item.path;
+  };
+
+  const handleItemClick = (item) => {
+    if (item.id) {
+      handleAdminTab(item.id);
+      return;
+    }
+    handleNavigate(item.path);
+  };
+
   return (
     <>
       <header className="topnav">
         <div className="topnav__inner">
           {/* Left Side: Logo (Sygnet + Text) */}
-          <div className="topnav-logo" onClick={() => handleNavigate('/')}>
+          <div className="topnav-logo" onClick={handleLogoClick}>
             <LogoSygnet />
-            <span className="topnav-logo__text">SPOTASTREET</span>
+            <LogoText />
           </div>
 
           <nav className="topnav-links" aria-label="Nawigacja">
             {navItems.map(item => (
               <button
-                key={item.path}
-                className={`topnav-link ${location.pathname === item.path ? 'topnav-link--active' : ''}`}
-                onClick={() => handleNavigate(item.path)}
+                key={item.path || item.id}
+                className={`topnav-link ${itemIsActive(item) ? 'topnav-link--active' : ''}`}
+                onClick={() => handleItemClick(item)}
                 data-label={item.label}
               >
                 <span>{item.label}</span>
               </button>
             ))}
           </nav>
+
+          <UserPill />
 
           <button className="theme-toggle" onClick={toggleTheme} aria-label="Przełącz motyw">
             <span
@@ -84,17 +159,17 @@ export function TopNav() {
       </header>
 
       <aside className="desktop-rail" aria-label="Nawigacja aplikacji">
-        <div className="topnav-logo desktop-rail__logo" onClick={() => handleNavigate('/')}>
+        <div className="topnav-logo desktop-rail__logo" onClick={handleLogoClick}>
           <LogoSygnet />
-          <span className="topnav-logo__text">SPOTASTREET</span>
+          <LogoText />
         </div>
 
         <nav className="desktop-rail__nav">
           {navItems.map(item => (
             <button
-              key={item.path}
-              className={`desktop-rail__card ${location.pathname === item.path ? 'desktop-rail__card--active' : ''}`}
-              onClick={() => handleNavigate(item.path)}
+              key={item.path || item.id}
+              className={`desktop-rail__card ${itemIsActive(item) ? 'desktop-rail__card--active' : ''}`}
+              onClick={() => handleItemClick(item)}
             >
               <span className={`desktop-rail__icon line-icon line-icon--${item.railIcon}`} aria-hidden="true" />
               <span>
@@ -129,9 +204,9 @@ export function TopNav() {
       {/* Full-Screen Drawer Menu */}
       <div className={`menu-drawer ${isOpen ? 'menu-drawer--open' : ''}`}>
         <div className="menu-drawer__header">
-          <div className="topnav-logo" onClick={() => handleNavigate('/')}>
+          <div className="topnav-logo" onClick={handleLogoClick}>
             <LogoSygnet />
-            <span className="topnav-logo__text">SPOTASTREET</span>
+            <LogoText />
           </div>
           <button className="menu-drawer__close" onClick={() => setIsOpen(false)} aria-label="Zamknij menu">
             <span className="line-icon line-icon--close" aria-hidden="true" />
@@ -142,9 +217,9 @@ export function TopNav() {
           <div className="menu-drawer__nav-links">
             {navItems.map(item => (
               <button
-                key={item.path}
-                className={`menu-drawer__link ${location.pathname === item.path ? 'menu-drawer__link--active' : ''}`}
-                onClick={() => handleNavigate(item.path)}
+                key={item.path || item.id}
+                className={`menu-drawer__link ${itemIsActive(item) ? 'menu-drawer__link--active' : ''}`}
+                onClick={() => handleItemClick(item)}
               >
                 <span className="svg-icon menu-drawer__icon" style={{ '--icon': `url(${item.icon})` }} aria-hidden="true" />
                 <span>{item.label}</span>
