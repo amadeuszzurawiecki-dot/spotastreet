@@ -1,5 +1,5 @@
 .variant-select-container {
-  min-height: 100dvh;
+  min-height: calc(100dvh - 64px - var(--safe-top));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -24,8 +24,8 @@
 
 .variant-select-header__title {
   color: var(--text-primary);
-  font-size: clamp(2rem, 8vw, 4.6rem);
-  line-height: 0.96;
+  font-size: 24px;
+  line-height: 1.08;
 }
 
 .variant-select-header__game-title,
@@ -44,6 +44,51 @@
   font-size: 0.78rem;
   font-weight: 850;
   letter-spacing: 0.05em;
+}
+
+.variant-select-header__mode-card {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  background: var(--main-color);
+  color: #fff;
+  text-align: left;
+  cursor: default;
+}
+
+.variant-select-header__mode-card::after {
+  display: none;
+}
+
+.variant-select-header__mode-card .mode-card__icon-wrap {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+}
+
+.variant-select-header__mode-card .mode-card__svg {
+  width: 36px;
+  height: 36px;
+}
+
+.variant-select-header__mode-card .mode-card__title {
+  margin: 0 0 6px;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.variant-select-header__mode-card .mode-card__desc {
+  margin: 0;
+  color: #fff;
+  opacity: 0.72;
+  font-size: 13px;
 }
 
 .variant-select-header__game-title .line-icon {
@@ -67,11 +112,11 @@
 }
 
 .variant-card {
-  min-height: 150px;
+  min-height: 96px;
   display: grid;
-  grid-template-columns: 56px minmax(0, 1fr);
+  grid-template-columns: 32px minmax(0, 1fr);
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   padding: 18px;
   position: relative;
   overflow: hidden;
@@ -115,10 +160,10 @@
 }
 
 .variant-card__icon {
-  width: 56px;
-  height: 56px;
-  background: var(--surface-muted);
-  color: var(--green-primary);
+  width: 32px;
+  height: 32px;
+  background: currentColor;
+  color: var(--text-secondary);
 }
 
 .variant-card__title {
@@ -132,6 +177,9 @@
 .variant-card__desc {
   color: var(--text-secondary);
   font-size: 0.88rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .variant-card--locked {
@@ -211,9 +259,9 @@
   }
 
   .variant-card {
-    min-height: 260px;
-    grid-template-columns: 1fr;
-    align-items: start;
-    align-content: space-between;
+    min-height: 132px;
+    grid-template-columns: 32px minmax(0, 1fr);
+    align-items: center;
+    align-content: center;
   }
 }

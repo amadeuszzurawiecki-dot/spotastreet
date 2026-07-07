@@ -25,7 +25,7 @@
 }
 
 .leaderboard-title {
-  font-size: 36px;
+  font-size: 24px;
   font-weight: 700;
   line-height: 1.04;
   margin-bottom: 16px;
@@ -241,7 +241,7 @@
   margin-top: var(--section-gap);
   padding: 16px;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 0;
   background: color-mix(in srgb, var(--surface) 82%, transparent);
 }
 
@@ -259,7 +259,6 @@
 
 .leaderboard-menu-card {
   position: relative;
-  min-height: 168px;
   display: grid;
   grid-template-columns: 1fr;
   align-content: start;
@@ -326,6 +325,12 @@
   cursor: pointer;
   font-family: var(--font-display);
   font-weight: 700;
+  background: var(--surface);
+}
+
+.leaderboard-avatar-wrapper.premium-glow-avatar,
+.leaderboard-avatar-circle.premium-glow-avatar {
+  border: 1px solid var(--green-primary);
 }
 
 .challenge-rank-card {
@@ -387,7 +392,7 @@
   }
 
   .leaderboard-title {
-    font-size: 36px;
+    font-size: 24px;
     line-height: 1.04;
   }
 
@@ -401,7 +406,6 @@
   }
 
   .leaderboard-menu-card {
-    min-height: 168px;
     grid-template-columns: 1fr;
     align-content: start;
     align-items: start;

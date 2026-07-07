@@ -92,7 +92,7 @@ function App() {
     return (
       <footer className="app-info-bar">
         <div className="app-info-bar__inner">
-          <span>Copyright © 2026 by Amadeusz Żurawiecki. All rights reserved.</span>
+          <span>Copyright © 2026 by Amadeusz Żurawiecki.</span>
           <span>{buildInfo?.version ? `wersja ${buildInfo.version}` : 'wersja lokalna'}</span>
         </div>
       </footer>

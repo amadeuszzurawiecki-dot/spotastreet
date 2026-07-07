@@ -3,7 +3,6 @@ import useUserProfile from '../hooks/useUserProfile';
 import TopNav from '../components/Navigation/TopNav';
 import { fetchAllCloudProfiles, fetchDailyChallenges } from '../config/firebase';
 import { AVATARS } from '../data/avatars';
-import { maskEmail } from '../utils/privacy';
 import './Leaderboard.css';
 
 export function Leaderboard() {
@@ -169,6 +168,7 @@ export function Leaderboard() {
                         const isSelf = user.email && row.email?.toLowerCase().trim() === user.email.toLowerCase().trim();
                         const isCustom = row.avatarId === 'custom' && row.customAvatar;
                         const avatarImg = isCustom ? row.customAvatar : (AVATARS.find(a => a.id === row.avatarId)?.image);
+                        const displayedEmail = row.hideEmail ? 'mail ukryty' : row.email;
                         return (
                           <tr key={idx} className={isSelf ? 'leaderboard-row--current-user' : ''} style={{ background: isSelf ? 'rgba(22, 163, 74, 0.08)' : 'transparent' }}>
                             <td style={{ fontWeight: '700' }}>
@@ -188,11 +188,10 @@ export function Leaderboard() {
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, flex: 1 }}>
                                   <span style={{ fontWeight: '700', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                    {row.name} {isSelf && <span className="player-you-tag" style={{ fontSize: '0.6rem' }}>Ty</span>}
-                                    {row.isPremium && <span className="player-you-tag">Premium</span>}
+                                    {row.name}
                                   </span>
                                   <span style={{ fontSize: '0.65rem', opacity: 0.6, display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                    {maskEmail(row.email)}
+                                    {displayedEmail}
                                   </span>
                                 </div>
                               </div>
@@ -254,6 +253,7 @@ export function Leaderboard() {
                   const isCurrentUser = user.email && item.email?.toLowerCase().trim() === user.email.toLowerCase().trim();
                   const isCustom = item.avatarId === 'custom' && item.customAvatar;
                   const avatarImg = isCustom ? item.customAvatar : (AVATARS.find(a => a.id === item.avatarId)?.image);
+                  const displayedEmail = item.hideEmail ? 'mail ukryty' : item.email;
 
                   return (
                     <tr 
@@ -279,11 +279,9 @@ export function Leaderboard() {
                           <div className="player-details" style={{ minWidth: 0, flex: 1 }}>
                             <span className="player-name" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'flex', alignItems: 'center', gap: '4px' }}>
                               {item.name}
-                              {isCurrentUser && <span className="player-you-tag">Ty</span>}
-                              {item.isPremium && <span className="player-you-tag">Premium</span>}
                             </span>
                             <span className="player-email">
-                              {maskEmail(item.email)}
+                              {displayedEmail}
                             </span>
                           </div>
                         </div>
@@ -333,16 +331,16 @@ export function Leaderboard() {
               </div>
 
               <div className="leaderboard-menu-card" onClick={() => setView('where-is-street')}>
-                <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/pin.svg)' }} aria-hidden="true" />
+                <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/umiesc.svg)' }} aria-hidden="true" />
                 <span className="leaderboard-menu-card__title">Wskaż ulicę</span>
-                <span className="leaderboard-menu-card__subtitle">Rozpoznawanie ulic na mapie</span>
+                <span className="leaderboard-menu-card__subtitle">Umieść pinezkę nad tą ulicą</span>
                 <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
               </div>
 
               <div className="leaderboard-menu-card" onClick={() => setView('what-street')}>
-                <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/keyboard.svg)' }} aria-hidden="true" />
+                <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/nazwij.svg)' }} aria-hidden="true" />
                 <span className="leaderboard-menu-card__title">Nazwij ulicę</span>
-                <span className="leaderboard-menu-card__subtitle">Nazywanie podświetlonych ulic</span>
+                <span className="leaderboard-menu-card__subtitle">Nazwij podświetloną ulicę</span>
                 <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
               </div>
             </div>

@@ -117,7 +117,7 @@ export function TopNav({ variant = 'front', adminTab = 'users', onAdminTabChange
   );
 
   const UserPill = () => user.isLoggedIn ? (
-    <div className="topnav-user-pill">
+    <div className={`topnav-user-pill ${user.isPremium ? 'topnav-user-pill--premium' : ''}`}>
       <span className="topnav-user-pill__avatar" aria-hidden="true">
         {avatarSrc ? <img src={avatarSrc} alt="" /> : <span className="line-icon line-icon--user" aria-hidden="true" />}
       </span>
@@ -166,23 +166,13 @@ export function TopNav({ variant = 'front', adminTab = 'users', onAdminTabChange
 
           <UserPill />
 
-          <button className="theme-toggle" onClick={handleThemeToggle} aria-label="Przełącz motyw">
-            <span
-              className="svg-icon theme-toggle__icon"
-              style={{ '--icon': `url(/icons/${activeTheme === 'dark' ? 'dark' : 'light'}.svg)` }}
-              aria-hidden="true"
-            />
-          </button>
-
           {/* Right Side: Hamburger Button */}
           <button
             className={`topnav-hamburger ${isOpen ? 'topnav-hamburger--open' : ''}`}
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Menu"
           >
-            <span></span>
-            <span></span>
-            <span></span>
+            <span className="svg-icon topnav-hamburger__icon" style={{ '--icon': 'url(/icons/menu.svg)' }} aria-hidden="true" />
           </button>
         </div>
       </header>
@@ -209,15 +199,6 @@ export function TopNav({ variant = 'front', adminTab = 'users', onAdminTabChange
           ))}
         </nav>
 
-        <button className="desktop-rail__theme" onClick={handleThemeToggle}>
-          <span
-            className="svg-icon"
-            style={{ '--icon': `url(/icons/${activeTheme === 'dark' ? 'dark' : 'light'}.svg)` }}
-            aria-hidden="true"
-          />
-          <span>{activeTheme === 'dark' ? 'Tryb ciemny' : 'Tryb jasny'}</span>
-        </button>
-
         <button className="desktop-rail__logout" onClick={handleLogout}>
           Wyloguj
         </button>
@@ -238,7 +219,7 @@ export function TopNav({ variant = 'front', adminTab = 'users', onAdminTabChange
             <LogoText />
           </div>
           <button className="menu-drawer__close" onClick={() => setIsOpen(false)} aria-label="Zamknij menu">
-            <span className="line-icon line-icon--close" aria-hidden="true" />
+            <span className="svg-icon" style={{ '--icon': 'url(/icons/x.svg)' }} aria-hidden="true" />
           </button>
         </div>
 

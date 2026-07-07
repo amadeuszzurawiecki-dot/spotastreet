@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useUserProfile from '../hooks/useUserProfile';
+import TopNav from './Navigation/TopNav';
 import './GameVariantSelect.css';
 
 function GameVariantSelect({ gameTitle, gameIcon, onSelectVariant, onBack }) {
@@ -9,6 +10,28 @@ function GameVariantSelect({ gameTitle, gameIcon, onSelectVariant, onBack }) {
   const [selectedMainOption, setSelectedMainOption] = useState(null); // null | 'training' | 'ai'
   const [rounds, setRounds] = useState(10);
   const [timeLimit, setTimeLimit] = useState(15);
+
+  const modeInfo = {
+    pin: {
+      icon: '/icons/umiesc.svg',
+      title: 'Wskaż ulicę',
+      description: 'Umieść pinezkę nad tą ulicą',
+    },
+    scan: {
+      icon: '/icons/nazwij.svg',
+      title: 'Nazwij ulicę',
+      description: 'Nazwij podświetloną ulicę',
+    },
+    target: {
+      icon: '/icons/flag.svg',
+      title: gameTitle,
+      description: 'Znajdź wskazane miejsce na mapie',
+    },
+  }[gameIcon] || {
+    icon: '/icons/play.svg',
+    title: gameTitle,
+    description: 'Wybierz wariant rozgrywki',
+  };
 
   const handleStartTraining = () => {
     onSelectVariant({
@@ -38,8 +61,10 @@ function GameVariantSelect({ gameTitle, gameIcon, onSelectVariant, onBack }) {
 
   if (selectedMainOption === 'training') {
     return (
-      <div className="variant-select-container animate-fade-in">
-        <div className="variant-select-glow" />
+      <>
+        <TopNav />
+        <div className="variant-select-container animate-fade-in">
+          <div className="variant-select-glow" />
         
         <header className="variant-select-header">
           <div className="variant-select-header__badge">KONFIGURATOR ROZGRYWKI</div>
@@ -92,37 +117,49 @@ function GameVariantSelect({ gameTitle, gameIcon, onSelectVariant, onBack }) {
         <button type="button" className="btn-secondary back-btn-variant" onClick={() => setSelectedMainOption(null)}>
           Wróć do wariantów
         </button>
-      </div>
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="variant-select-container animate-fade-in">
-      <div className="variant-select-glow" />
+    <>
+      <TopNav />
+      <div className="variant-select-container animate-fade-in">
+        <div className="variant-select-glow" />
       
       <header className="variant-select-header">
         <h1 className="variant-select-header__title text-display">
           WYBIERZ WARIANT GRY
         </h1>
-        <div className="variant-select-header__game-title">
-          {gameIcon && <span className={`line-icon line-icon--${gameIcon}`} aria-hidden="true" />}
-          {gameTitle.toUpperCase()}
+        <div className="mode-card mode-card--static variant-select-header__mode-card">
+          <span className="mode-card__icon-wrap" aria-hidden="true">
+            <span className="svg-icon mode-card__svg" style={{ '--icon': `url(${modeInfo.icon})` }} />
+          </span>
+          <div className="mode-card__content">
+            <h3 className="mode-card__title">{modeInfo.title}</h3>
+            <p className="mode-card__desc">{modeInfo.description}</p>
+          </div>
         </div>
       </header>
 
       <div className="variant-grid animate-scale-in">
         {/* Trening */}
         <button type="button" className="variant-card" onClick={() => setSelectedMainOption('training')}>
-          <span className="variant-card__icon line-icon line-icon--settings" aria-hidden="true" />
-          <h3 className="variant-card__title">Trening</h3>
-          <p className="variant-card__desc">Ustaw i ćwicz</p>
+          <span className="variant-card__icon svg-icon" style={{ '--icon': 'url(/icons/trening.svg)' }} aria-hidden="true" />
+          <span>
+            <h3 className="variant-card__title">Trening</h3>
+            <p className="variant-card__desc">Ustaw i ćwicz</p>
+          </span>
         </button>
 
         {/* Walka z AI */}
         <button type="button" className="variant-card" onClick={handleStartAi}>
-          <span className="variant-card__icon line-icon line-icon--target" aria-hidden="true" />
-          <h3 className="variant-card__title">Walka z AI</h3>
-          <p className="variant-card__desc">Pokonaj bota</p>
+          <span className="variant-card__icon svg-icon" style={{ '--icon': 'url(/icons/funny.svg)' }} aria-hidden="true" />
+          <span>
+            <h3 className="variant-card__title">Walka z AI</h3>
+            <p className="variant-card__desc">Pokonaj bota</p>
+          </span>
         </button>
 
         {/* Pojedynek */}
@@ -131,9 +168,11 @@ function GameVariantSelect({ gameTitle, gameIcon, onSelectVariant, onBack }) {
           className="variant-card" 
           onClick={handleStartMultiplayer}
         >
-          <span className="variant-card__icon line-icon line-icon--ranking" aria-hidden="true" />
-          <h3 className="variant-card__title">Pojedynek</h3>
-          <p className="variant-card__desc">Rywalizacja 1v1 online</p>
+          <span className="variant-card__icon svg-icon" style={{ '--icon': 'url(/icons/pojedynek.svg)' }} aria-hidden="true" />
+          <span>
+            <h3 className="variant-card__title">Pojedynek</h3>
+            <p className="variant-card__desc">Rywalizacja 1v1 online</p>
+          </span>
           {!user.isPremium && <div className="variant-card__lock-badge">PREMIUM</div>}
         </button>
       </div>
@@ -141,7 +180,8 @@ function GameVariantSelect({ gameTitle, gameIcon, onSelectVariant, onBack }) {
       <button type="button" className="btn-secondary back-btn-variant" onClick={onBack}>
         Wróć do menu
       </button>
-    </div>
+      </div>
+    </>
   );
 }
 

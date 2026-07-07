@@ -10,9 +10,9 @@ const PIN_MODES = [
   {
     id: 'where-is-street',
     path: '/game/where-is-street',
-    icon: '/icons/pin.svg',
+    icon: '/icons/umiesc.svg',
     title: 'Wskaż ulicę',
-    description: 'Upuść pinezkę na wylosowanej ulicy',
+    description: 'Umieść pinezkę nad tą ulicą',
     available: true,
   },
 ];
@@ -21,9 +21,9 @@ const ADDRESS_MODES = [
   {
     id: 'what-street',
     path: '/game/what-street',
-    icon: '/icons/keyboard.svg',
+    icon: '/icons/nazwij.svg',
     title: 'Nazwij ulicę',
-    description: 'Nazwij podświetloną ulicę.',
+    description: 'Nazwij podświetloną ulicę',
     available: true,
   },
 ];
