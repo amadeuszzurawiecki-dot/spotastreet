@@ -1,84 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
-import useUserProfile from '../hooks/useUserProfile';
-import { GOOGLE_CLIENT_ID } from '../utils/googleAuth';
+import GoogleSignInButton from '../features/auth/GoogleSignInButton';
+import useGoogleAuth from '../features/auth/useGoogleAuth';
 import './Welcome.css';
 
 export function Welcome({ onLoginSuccess }) {
-  const user = useUserProfile();
-  const [errorMsg, setErrorMsg] = useState(null);
-  const [isSigningIn, setIsSigningIn] = useState(false);
-  const googleBtnRef = useRef(null);
-  const isRenderedRef = useRef(false);
-
-  const handleCredentialResponse = async (response) => {
-    setIsSigningIn(true);
-    setErrorMsg(null);
-    try {
-      await user.loginWithGoogleCredential(response.credential);
-      onLoginSuccess?.();
-    } catch (e) {
-      console.error('GIS Error:', e);
-      setErrorMsg('Nie udało się dokończyć logowania przyciskiem Google. Spróbuj alternatywnego logowania poniżej.');
-    } finally {
-      setIsSigningIn(false);
-    }
-  };
-
-  const handlePopupLogin = async () => {
-    setIsSigningIn(true);
-    setErrorMsg(null);
-    try {
-      await user.loginWithGooglePopup();
-      onLoginSuccess?.();
-    } catch (e) {
-      console.error('Firebase popup login error:', e);
-      setErrorMsg(`Błąd autoryzacji konta Google${e?.code ? `: ${e.code}` : ''}.`);
-    } finally {
-      setIsSigningIn(false);
-    }
-  };
-
-  useEffect(() => {
-    localStorage.removeItem('bolters_google_client_id');
-
-    let intervalId = null;
-
-    const initGoogleGsi = () => {
-      if (window.google?.accounts?.id && googleBtnRef.current && !isRenderedRef.current) {
-        try {
-          isRenderedRef.current = true;
-          if (intervalId) clearInterval(intervalId);
-
-          window.google.accounts.id.initialize({
-            client_id: GOOGLE_CLIENT_ID,
-            callback: handleCredentialResponse,
-            auto_select: false,
-            cancel_on_tap_outside: true,
-          });
-
-          googleBtnRef.current.innerHTML = '';
-          window.google.accounts.id.renderButton(googleBtnRef.current, {
-            theme: 'filled_blue',
-            size: 'large',
-            type: 'standard',
-            shape: 'pill',
-            text: 'continue_with',
-            logo_alignment: 'left',
-            width: 320,
-          });
-        } catch (err) {
-          console.warn('Google GSI initialization warning:', err);
-          isRenderedRef.current = false;
-        }
-      }
-    };
-
-    initGoogleGsi();
-    intervalId = setInterval(initGoogleGsi, 300);
-    return () => {
-      if (intervalId) clearInterval(intervalId);
-    };
-  }, []);
+  const {
+    error: errorMsg,
+    isSigningIn,
+    loginWithCredentialResponse,
+    loginWithPopup,
+  } = useGoogleAuth({ onSuccess: onLoginSuccess });
 
   return (
     <div className="welcome">
@@ -102,20 +32,16 @@ export function Welcome({ onLoginSuccess }) {
           </div>
         )}
 
-        {/* Official Google Sign-In Button Container */}
-        <div className="welcome__gsi-container">
-          <div ref={googleBtnRef} className="welcome__gsi-btn" />
-        </div>
-
-        <button
-          className="btn-secondary"
-          type="button"
-          onClick={handlePopupLogin}
-          disabled={isSigningIn}
-          style={{ width: '100%', marginTop: '12px' }}
-        >
-          {isSigningIn ? 'Logowanie...' : 'Zaloguj przez Google'}
-        </button>
+        <GoogleSignInButton
+          gsiWrapperClassName="welcome__gsi-container"
+          gsiClassName="welcome__gsi-btn"
+          isSigningIn={isSigningIn}
+          onCredentialResponse={loginWithCredentialResponse}
+          onPopupLogin={loginWithPopup}
+          popupStyle={{ width: '100%', marginTop: '12px' }}
+          gsiOptions={{ cancel_on_tap_outside: true }}
+          width={320}
+        />
 
         <div className="welcome__footer-note">
           Logowanie jest dostępne wyłącznie przez oficjalne konto Google.

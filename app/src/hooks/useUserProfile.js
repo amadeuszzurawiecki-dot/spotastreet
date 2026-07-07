@@ -6,11 +6,14 @@ import {
   logoutUser,
   observeFirebaseAuth,
   refreshCurrentUserClaims,
-  signInWithGoogleIdToken,
-  signInWithGooglePopup,
 } from '../config/firebase';
 import { DEFAULT_MAP_STYLE_ID } from '../config/mapStyles';
-import { parseGoogleCredential } from '../utils/googleAuth';
+import {
+  canUseLocalGoogleCredentialFallback,
+  parseGoogleCredential,
+  signInWithGoogleCredential,
+  signInWithGooglePopup,
+} from '../features/auth/authService';
 
 const defaultCar = {
   brandId: 'toyota',
@@ -133,9 +136,14 @@ const useUserProfile = create(
 
       loginWithGoogleCredential: async (googleCredential) => {
         try {
-          await signInWithGoogleIdToken(googleCredential);
+          await signInWithGoogleCredential(googleCredential);
         } catch (e) {
-          if (e?.code !== 'auth/configuration-not-found') throw e;
+          if (
+            e?.code !== 'auth/configuration-not-found'
+            || !canUseLocalGoogleCredentialFallback()
+          ) {
+            throw e;
+          }
 
           const payload = parseGoogleCredential(googleCredential);
           if (!payload?.email) throw e;
