@@ -51,6 +51,7 @@ function GameWhereIsPlace() {
   const [showResult, setShowResult] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
   const [roundResult, setRoundResult] = useState(null);
+  const [summaryData, setSummaryData] = useState(null);
   const [closestPoint, setClosestPoint] = useState(null);
   const [showTarget, setShowTarget] = useState(false);
   const [currentBotResult, setCurrentBotResult] = useState(null);
@@ -215,6 +216,23 @@ function GameWhereIsPlace() {
     startTimer();
   };
 
+  const createSummaryData = () => ({
+    playerScore,
+    botScore: getSummaryBotScore(gameVariant, botScore),
+    playerRounds: [...playerRounds],
+    botRounds: [...getSummaryBotRounds(gameVariant, botRounds)],
+    totalRounds: getSummaryTotalRounds(playerRounds, totalRounds, places.length),
+    gameMode: 'where-is-place',
+    places: [...places],
+    isTraining: isTrainingVariant(gameVariant),
+    challengeId: challenge?.id,
+  });
+
+  const finishGameWithSummary = () => {
+    setSummaryData(createSummaryData());
+    finishGame();
+  };
+
   const handleMapClick = (position) => {
     if (isRoundActive && !hasSubmittedRef.current) {
       setPinPosition(position);
@@ -225,13 +243,13 @@ function GameWhereIsPlace() {
     const nextRound = currentRound + 1;
     const roundsLimit = getEffectiveTotalRounds(totalRounds, places.length);
     if (nextRound >= roundsLimit) {
-      finishGame();
+      finishGameWithSummary();
       return;
     }
 
     advanceSingleplayerRound({
       currentRound,
-      finishGame,
+      finishGame: finishGameWithSummary,
       itemCount: places.length,
       setCurrentRound,
       startRound,
@@ -241,17 +259,18 @@ function GameWhereIsPlace() {
 
   // 2. Game over — show summary before any loading fallback
   if (isGameOver) {
+    const summary = summaryData || createSummaryData();
     return (
       <QuizSummary
-        playerScore={playerScore}
-        botScore={getSummaryBotScore(gameVariant, botScore)}
-        playerRounds={playerRounds}
-        botRounds={getSummaryBotRounds(gameVariant, botRounds)}
-        totalRounds={getSummaryTotalRounds(playerRounds, totalRounds, places.length)}
-        gameMode="where-is-place"
-        places={places}
-        isTraining={isTrainingVariant(gameVariant)}
-        challengeId={challenge?.id}
+        playerScore={summary.playerScore}
+        botScore={summary.botScore}
+        playerRounds={summary.playerRounds}
+        botRounds={summary.botRounds}
+        totalRounds={summary.totalRounds}
+        gameMode={summary.gameMode}
+        places={summary.places}
+        isTraining={summary.isTraining}
+        challengeId={summary.challengeId}
         onPlayAgain={() => resetSingleplayerSummary({
           setBotRounds,
           setBotScore,
@@ -260,6 +279,7 @@ function GameWhereIsPlace() {
           setIsGameOver,
           setPlayerRounds,
           setPlayerScore,
+          setSummaryData,
         })}
         onExit={() => navigate('/')}
       />

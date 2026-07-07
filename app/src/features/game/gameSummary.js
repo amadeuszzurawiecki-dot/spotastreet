@@ -21,8 +21,10 @@ export function resetSingleplayerSummary({
   setIsGameOver,
   setPlayerRounds,
   setPlayerScore,
+  setSummaryData,
 }) {
   setIsGameOver(false);
+  setSummaryData?.(null);
   setCurrentRound(0);
   setPlayerScore(0);
   setBotScore(0);

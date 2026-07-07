@@ -52,6 +52,7 @@ function GameWhatStreet() {
   const [showResult, setShowResult] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
   const [roundResult, setRoundResult] = useState(null);
+  const [summaryData, setSummaryData] = useState(null);
   const [currentBotResult, setCurrentBotResult] = useState(null);
   const [streetBounds, setStreetBounds] = useState(null);
   const [playerGuessPosition, setPlayerGuessPosition] = useState(null);
@@ -206,6 +207,23 @@ function GameWhatStreet() {
     startTimer();
   };
 
+  const createSummaryData = () => ({
+    playerScore,
+    botScore: getSummaryBotScore(gameVariant, botScore),
+    playerRounds: [...playerRounds],
+    botRounds: [...getSummaryBotRounds(gameVariant, botRounds)],
+    totalRounds: getSummaryTotalRounds(playerRounds, totalRounds, streets.length),
+    gameMode: 'what-street',
+    streets: [...streets],
+    isTraining: isTrainingVariant(gameVariant),
+    challengeId: challenge?.id,
+  });
+
+  const finishGameWithSummary = () => {
+    setSummaryData(createSummaryData());
+    finishGame();
+  };
+
   // Handle street guess
   const handleGuess = (guessedName) => {
     if (!isRoundActive || hasSubmittedRef.current) return;
@@ -258,13 +276,13 @@ function GameWhatStreet() {
     const nextRound = currentRound + 1;
     const roundsLimit = getEffectiveTotalRounds(totalRounds, streets.length);
     if (nextRound >= roundsLimit) {
-      finishGame();
+      finishGameWithSummary();
       return;
     }
 
     advanceSingleplayerRound({
       currentRound,
-      finishGame,
+      finishGame: finishGameWithSummary,
       itemCount: streets.length,
       setCurrentRound,
       startRound,
@@ -294,17 +312,18 @@ function GameWhatStreet() {
 
   // 2. Game over — show summary before any loading fallback
   if (isGameOver) {
+    const summary = summaryData || createSummaryData();
     return (
       <QuizSummary
-        playerScore={playerScore}
-        botScore={getSummaryBotScore(gameVariant, botScore)}
-        playerRounds={playerRounds}
-        botRounds={getSummaryBotRounds(gameVariant, botRounds)}
-        totalRounds={getSummaryTotalRounds(playerRounds, totalRounds, streets.length)}
-        gameMode="what-street"
-        streets={streets}
-        isTraining={isTrainingVariant(gameVariant)}
-        challengeId={challenge?.id}
+        playerScore={summary.playerScore}
+        botScore={summary.botScore}
+        playerRounds={summary.playerRounds}
+        botRounds={summary.botRounds}
+        totalRounds={summary.totalRounds}
+        gameMode={summary.gameMode}
+        streets={summary.streets}
+        isTraining={summary.isTraining}
+        challengeId={summary.challengeId}
         onPlayAgain={() => resetSingleplayerSummary({
           setBotRounds,
           setBotScore,
@@ -313,6 +332,7 @@ function GameWhatStreet() {
           setIsGameOver,
           setPlayerRounds,
           setPlayerScore,
+          setSummaryData,
         })}
         onExit={() => navigate('/')}
       />
