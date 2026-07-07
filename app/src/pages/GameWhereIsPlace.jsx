@@ -5,11 +5,24 @@ import { GameHUD } from '../components/HUD/HUD';
 // RoundResult overlay removed — results now shown via HUD + map tooltips + bottom bar action
 import QuizSummary from '../components/QuizSummary';
 import GameVariantSelect from '../components/GameVariantSelect';
-import { useTimer } from '../hooks/useTimer';
 import useUserProfile from '../hooks/useUserProfile';
 import { distanceToPoint, getPointsCombinedBounds, LEGNICA_CENTER } from '../utils/geo';
-import { calculatePlaceScore } from '../utils/scoring';
-import { generateBotRound, generateBotCoordinates } from '../utils/bot';
+import { generateBotCoordinates } from '../utils/bot';
+import { createDistanceBotRound, isTrainingVariant } from '../features/game/gameBot';
+import {
+  advanceSingleplayerRound,
+  createDistanceRoundResult,
+  getEffectiveTotalRounds,
+  shouldStartInitialRound,
+} from '../features/game/gameRound';
+import { scorePlaceDistance } from '../features/game/gameScoring';
+import {
+  getSummaryBotRounds,
+  getSummaryBotScore,
+  getSummaryTotalRounds,
+  resetSingleplayerSummary,
+} from '../features/game/gameSummary';
+import useSingleplayerGame from '../features/game/useSingleplayerGame';
 import { AVATARS } from '../data/avatars';
 import './GamePage.css';
 
@@ -92,8 +105,8 @@ function GameWhereIsPlace() {
     const place = places[currentRound];
     const actualTarget = [place.lat, place.lng];
     const result = distanceToPoint(pinPosition, actualTarget);
-    const score = calculatePlaceScore(result.distance);
-    const botResult = generateBotRound();
+    const score = scorePlaceDistance(result.distance);
+    const { botResult, botRound, botScoreDelta } = createDistanceBotRound(gameVariant);
 
     setClosestPoint(actualTarget);
     setShowTarget(true);
@@ -106,22 +119,16 @@ function GameWhereIsPlace() {
     setPlayerScore(prev => prev + score);
     setPlayerRounds(prev => [...prev, { score, distance: result.distance }]);
 
-    if (gameVariant !== 'training') {
-      setBotScore(prev => prev + botResult.score);
-      setBotRounds(prev => [...prev, botResult]);
-    } else {
-      setBotScore(0);
-      setBotRounds(prev => [...prev, { score: 0, distance: 0 }]);
-    }
+    setBotScore(prev => isTrainingVariant(gameVariant) ? 0 : prev + botScoreDelta);
+    setBotRounds(prev => [...prev, botRound]);
 
-    setRoundResult({
-      type: 'distance',
+    setRoundResult(createDistanceRoundResult({
       playerScore: score,
       playerDistance: result.distance,
       timedOut: false,
-      botScore: gameVariant !== 'training' ? botResult.score : 0,
-      botDistance: gameVariant !== 'training' ? botResult.distance : 0,
-    });
+      botScore: isTrainingVariant(gameVariant) ? 0 : botResult.score,
+      botDistance: isTrainingVariant(gameVariant) ? 0 : botResult.distance,
+    }));
 
     setIsRoundActive(false);
     setShowResult(true);
@@ -137,16 +144,11 @@ function GameWhereIsPlace() {
     }
 
     hasSubmittedRef.current = true;
-    const botResult = generateBotRound();
+    const { botResult, botRound, botScoreDelta } = createDistanceBotRound(gameVariant);
     setCurrentBotResult(botResult);
     
-    if (gameVariant !== 'training') {
-      setBotScore(prev => prev + botResult.score);
-      setBotRounds(prev => [...prev, botResult]);
-    } else {
-      setBotScore(0);
-      setBotRounds(prev => [...prev, { score: 0, distance: 0 }]);
-    }
+    setBotScore(prev => isTrainingVariant(gameVariant) ? 0 : prev + botScoreDelta);
+    setBotRounds(prev => [...prev, botRound]);
 
     const playerResult = { score: 0, distance: undefined, timedOut: true };
     setPlayerRounds(prev => [...prev, playerResult]);
@@ -158,37 +160,44 @@ function GameWhereIsPlace() {
     setBotPinPosition(botPin);
     setClosestPoint(actualTarget);
 
-    setRoundResult({
-      type: 'distance',
+    setRoundResult(createDistanceRoundResult({
       playerScore: 0,
       playerDistance: undefined,
       timedOut: true,
-      botScore: gameVariant !== 'training' ? botResult.score : 0,
-      botDistance: gameVariant !== 'training' ? botResult.distance : 0,
-    });
+      botScore: isTrainingVariant(gameVariant) ? 0 : botResult.score,
+      botDistance: isTrainingVariant(gameVariant) ? 0 : botResult.distance,
+    }));
     setIsRoundActive(false);
     setShowResult(true);
   };
 
-  const { timeLeft, progress, isRunning, start: startTimer, stop: stopTimer } = useTimer(roundDuration, handleTimerExpire);
-
-  const handleExitGame = () => {
-    if (!window.confirm('Czy na pewno chcesz zakończyć grę? Stracisz dotychczasowy postęp.')) return;
-    stopTimer();
-    window.location.assign('/');
-  };
-
-  const finishGame = () => {
-    stopTimer();
-    hasSubmittedRef.current = true;
-    setIsRoundActive(false);
-    setShowResult(false);
-    setIsGameOver(true);
-  };
+  const {
+    timeLeft,
+    progress,
+    isRunning,
+    start: startTimer,
+    stop: stopTimer,
+    finishGame,
+    handleExitGame,
+  } = useSingleplayerGame({
+    hasSubmittedRef,
+    onTimerExpire: handleTimerExpire,
+    roundDuration,
+    setIsGameOver,
+    setIsRoundActive,
+    setShowResult,
+  });
 
   // Start first round
   useEffect(() => {
-    if (places.length > 0 && !isRoundActive && !showResult && !isGameOver && currentRound === 0 && playerRounds.length === 0) {
+    if (shouldStartInitialRound({
+      currentRound,
+      isGameOver,
+      isRoundActive,
+      playerRounds,
+      primaryItemsReady: places.length > 0,
+      showResult,
+    })) {
       startRound();
     }
   }, [places]);
@@ -213,14 +222,14 @@ function GameWhereIsPlace() {
   };
 
   const handleNext = () => {
-    const nextRound = currentRound + 1;
-    const roundsLimit = Math.max(1, Math.min(Number(totalRounds) || 1, places.length || Number(totalRounds) || 1));
-    if (nextRound >= roundsLimit) {
-      finishGame();
-      return;
-    }
-    setCurrentRound(nextRound);
-    startRound();
+    advanceSingleplayerRound({
+      currentRound,
+      finishGame,
+      itemCount: places.length,
+      setCurrentRound,
+      startRound,
+      totalRounds,
+    });
   };
 
   // 1. Selector screen
@@ -256,30 +265,30 @@ function GameWhereIsPlace() {
   const avatar = user.avatarId === 'custom'
     ? { emoji: 'U', image: user.customAvatar, bg: 'transparent' }
     : (AVATARS.find(a => a.id === user.avatarId) || AVATARS[0]);
-  const effectiveTotalRounds = Math.max(1, Math.min(Number(totalRounds) || 1, places.length || Number(totalRounds) || 1));
+  const effectiveTotalRounds = getEffectiveTotalRounds(totalRounds, places.length);
 
   // 3. Game over
   if (isGameOver) {
     return (
       <QuizSummary
         playerScore={playerScore}
-        botScore={gameVariant === 'training' ? 0 : botScore}
+        botScore={getSummaryBotScore(gameVariant, botScore)}
         playerRounds={playerRounds}
-        botRounds={gameVariant === 'training' ? [] : botRounds}
-        totalRounds={playerRounds.length || effectiveTotalRounds}
+        botRounds={getSummaryBotRounds(gameVariant, botRounds)}
+        totalRounds={getSummaryTotalRounds(playerRounds, totalRounds, places.length)}
         gameMode="where-is-place"
         places={places}
-        isTraining={gameVariant === 'training'}
+        isTraining={isTrainingVariant(gameVariant)}
         challengeId={challenge?.id}
-        onPlayAgain={() => {
-          setIsGameOver(false);
-          setCurrentRound(0);
-          setPlayerScore(0);
-          setBotScore(0);
-          setPlayerRounds([]);
-          setBotRounds([]);
-          setGameVariant('select');
-        }}
+        onPlayAgain={() => resetSingleplayerSummary({
+          setBotRounds,
+          setBotScore,
+          setCurrentRound,
+          setGameVariant,
+          setIsGameOver,
+          setPlayerRounds,
+          setPlayerScore,
+        })}
         onExit={() => navigate('/')}
       />
     );

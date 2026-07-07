@@ -6,11 +6,24 @@ import { GameHUD } from '../components/HUD/HUD';
 import QuizSummary from '../components/QuizSummary';
 import StreetAutocomplete from '../components/StreetAutocomplete';
 import GameVariantSelect from '../components/GameVariantSelect';
-import { useTimer } from '../hooks/useTimer';
 import useUserProfile from '../hooks/useUserProfile';
 import { selectRandomStreets, loadStreetNames, loadStreets, normalizeStreetName } from '../utils/streets';
 import { distanceToStreet, getCombinedBounds, getStreetBounds, haversineDistance } from '../utils/geo';
-import { generateBotStreetGuess } from '../utils/bot';
+import { createStreetGuessBotRound, isTrainingVariant } from '../features/game/gameBot';
+import {
+  advanceSingleplayerRound,
+  createStreetGuessRoundResult,
+  getEffectiveTotalRounds,
+  shouldStartInitialRound,
+} from '../features/game/gameRound';
+import { scoreStreetGuess } from '../features/game/gameScoring';
+import {
+  getSummaryBotRounds,
+  getSummaryBotScore,
+  getSummaryTotalRounds,
+  resetSingleplayerSummary,
+} from '../features/game/gameSummary';
+import useSingleplayerGame from '../features/game/useSingleplayerGame';
 import { AVATARS } from '../data/avatars';
 import './GamePage.css';
 
@@ -111,9 +124,9 @@ function GameWhatStreet() {
     hasSubmittedRef.current = true;
 
     const currentStreet = streets[currentRound];
-    const botResult = generateBotStreetGuess(currentStreet?.name, streetNames);
+    const { botResult, botRound, botScoreDelta } = createStreetGuessBotRound(gameVariant, currentStreet?.name, streetNames);
     const targetPoint = getStreetAnchorPoint(currentStreet);
-    const botPosition = gameVariant !== 'training'
+    const botPosition = !isTrainingVariant(gameVariant)
       ? getGuessPosition(botResult.guess, targetPoint)
       : null;
 
@@ -122,50 +135,53 @@ function GameWhatStreet() {
     setBotGuessPosition(botPosition);
     setCurrentBotResult(botResult);
     
-    if (gameVariant !== 'training') {
-      setBotScore(prev => prev + botResult.score);
-      setBotRounds(prev => [...prev, botResult]);
-    } else {
-      setBotScore(0);
-      setBotRounds(prev => [...prev, { score: 0, correct: false }]);
-    }
+    setBotScore(prev => isTrainingVariant(gameVariant) ? 0 : prev + botScoreDelta);
+    setBotRounds(prev => [...prev, botRound]);
 
     const playerResult = { score: 0, correct: false, timedOut: true };
     setPlayerRounds(prev => [...prev, playerResult]);
 
-    setRoundResult({
-      type: 'street-guess',
+    setRoundResult(createStreetGuessRoundResult({
       playerScore: 0,
       playerCorrect: false,
       playerDistance: undefined,
       timedOut: true,
-      botScore: gameVariant !== 'training' ? botResult.score : 0,
-      botCorrect: gameVariant !== 'training' ? botResult.correct : false,
+      botScore: isTrainingVariant(gameVariant) ? 0 : botResult.score,
+      botCorrect: isTrainingVariant(gameVariant) ? false : botResult.correct,
       botDistance: targetPoint && botPosition ? haversineDistance(targetPoint, botPosition) : undefined,
-    });
+    }));
     setIsRoundActive(false);
     setShowResult(true);
   }, [streets, currentRound, streetNames, gameVariant]);
 
-  const { timeLeft, progress, isRunning, start: startTimer, stop: stopTimer } = useTimer(roundDuration, handleTimerExpire);
-
-  const handleExitGame = () => {
-    if (!window.confirm('Czy na pewno chcesz zakończyć grę? Stracisz dotychczasowy postęp.')) return;
-    stopTimer();
-    window.location.assign('/');
-  };
-
-  const finishGame = () => {
-    stopTimer();
-    hasSubmittedRef.current = true;
-    setIsRoundActive(false);
-    setShowResult(false);
-    setIsGameOver(true);
-  };
+  const {
+    timeLeft,
+    progress,
+    isRunning,
+    start: startTimer,
+    stop: stopTimer,
+    finishGame,
+    handleExitGame,
+  } = useSingleplayerGame({
+    hasSubmittedRef,
+    onTimerExpire: handleTimerExpire,
+    roundDuration,
+    setIsGameOver,
+    setIsRoundActive,
+    setShowResult,
+  });
 
   // Start first round
   useEffect(() => {
-    if (streets.length > 0 && streetNames.length > 0 && !isRoundActive && !showResult && !isGameOver && currentRound === 0 && playerRounds.length === 0) {
+    if (shouldStartInitialRound({
+      currentRound,
+      isGameOver,
+      isRoundActive,
+      playerRounds,
+      primaryItemsReady: streets.length > 0,
+      secondaryItemsReady: streetNames.length > 0,
+      showResult,
+    })) {
       startRound();
     }
   }, [streets, streetNames]);
@@ -197,14 +213,14 @@ function GameWhatStreet() {
     stopTimer();
 
     const currentStreet = streets[currentRound];
-    const isCorrect = guessedName === currentStreet.name;
-    const score = isCorrect ? 100 : 0;
-    const botResult = generateBotStreetGuess(currentStreet.name, streetNames);
+    const score = scoreStreetGuess(guessedName, currentStreet.name);
+    const isCorrect = score === 100;
+    const { botResult, botRound, botScoreDelta } = createStreetGuessBotRound(gameVariant, currentStreet.name, streetNames);
     const targetPoint = getStreetAnchorPoint(currentStreet);
     const guessPosition = isCorrect
       ? targetPoint
       : getGuessPosition(guessedName, targetPoint);
-    const botPosition = gameVariant !== 'training'
+    const botPosition = !isTrainingVariant(gameVariant)
       ? getGuessPosition(botResult.guess, targetPoint)
       : null;
     const playerDistance = targetPoint && guessPosition
@@ -221,38 +237,32 @@ function GameWhatStreet() {
     setPlayerScore(prev => prev + score);
     setPlayerRounds(prev => [...prev, { score, correct: isCorrect, guess: guessedName, distance: playerDistance }]);
 
-    if (gameVariant !== 'training') {
-      setBotScore(prev => prev + botResult.score);
-      setBotRounds(prev => [...prev, botResult]);
-    } else {
-      setBotScore(0);
-      setBotRounds(prev => [...prev, { score: 0, correct: false }]);
-    }
+    setBotScore(prev => isTrainingVariant(gameVariant) ? 0 : prev + botScoreDelta);
+    setBotRounds(prev => [...prev, botRound]);
 
-    setRoundResult({
-      type: 'street-guess',
+    setRoundResult(createStreetGuessRoundResult({
       playerScore: score,
       playerCorrect: isCorrect,
       playerDistance,
       timedOut: false,
-      botScore: gameVariant !== 'training' ? botResult.score : 0,
-      botCorrect: gameVariant !== 'training' ? botResult.correct : false,
+      botScore: isTrainingVariant(gameVariant) ? 0 : botResult.score,
+      botCorrect: isTrainingVariant(gameVariant) ? false : botResult.correct,
       botDistance,
-    });
+    }));
     setIsRoundActive(false);
     setShowResult(true);
   };
 
   // Handle next round
   const handleNext = () => {
-    const nextRound = currentRound + 1;
-    const roundsLimit = Math.max(1, Math.min(Number(totalRounds) || 1, streets.length || Number(totalRounds) || 1));
-    if (nextRound >= roundsLimit) {
-      finishGame();
-      return;
-    }
-    setCurrentRound(nextRound);
-    startRound(nextRound);
+    advanceSingleplayerRound({
+      currentRound,
+      finishGame,
+      itemCount: streets.length,
+      setCurrentRound,
+      startRound,
+      totalRounds,
+    });
   };
 
   // 1. Selector screen
@@ -288,30 +298,30 @@ function GameWhatStreet() {
   const avatar = user.avatarId === 'custom'
     ? { emoji: 'U', image: user.customAvatar, bg: 'transparent' }
     : (AVATARS.find(a => a.id === user.avatarId) || AVATARS[0]);
-  const effectiveTotalRounds = Math.max(1, Math.min(Number(totalRounds) || 1, streets.length || Number(totalRounds) || 1));
+  const effectiveTotalRounds = getEffectiveTotalRounds(totalRounds, streets.length);
 
   // 3. Game over
   if (isGameOver) {
     return (
       <QuizSummary
         playerScore={playerScore}
-        botScore={gameVariant === 'training' ? 0 : botScore}
+        botScore={getSummaryBotScore(gameVariant, botScore)}
         playerRounds={playerRounds}
-        botRounds={gameVariant === 'training' ? [] : botRounds}
-        totalRounds={playerRounds.length || effectiveTotalRounds}
+        botRounds={getSummaryBotRounds(gameVariant, botRounds)}
+        totalRounds={getSummaryTotalRounds(playerRounds, totalRounds, streets.length)}
         gameMode="what-street"
         streets={streets}
-        isTraining={gameVariant === 'training'}
+        isTraining={isTrainingVariant(gameVariant)}
         challengeId={challenge?.id}
-        onPlayAgain={() => {
-          setIsGameOver(false);
-          setCurrentRound(0);
-          setPlayerScore(0);
-          setBotScore(0);
-          setPlayerRounds([]);
-          setBotRounds([]);
-          setGameVariant('select');
-        }}
+        onPlayAgain={() => resetSingleplayerSummary({
+          setBotRounds,
+          setBotScore,
+          setCurrentRound,
+          setGameVariant,
+          setIsGameOver,
+          setPlayerRounds,
+          setPlayerScore,
+        })}
         onExit={() => navigate('/')}
       />
     );
