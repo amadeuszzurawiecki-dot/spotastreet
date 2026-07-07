@@ -4,6 +4,7 @@ import useUserProfile from '../hooks/useUserProfile';
 import { fetchAllCloudProfiles } from '../config/firebase';
 import { AVATARS } from '../data/avatars';
 import { maskEmail } from '../utils/privacy';
+import { TopNav } from './Navigation/TopNav';
 import './QuizSummary.css';
 
 /**
@@ -166,8 +167,26 @@ function QuizSummary({
     navigate('/');
   };
 
+  const renderVerdictIcon = () => {
+    if (verdict.icon === 'alert') {
+      return (
+        <span
+          className="quiz-summary__verdict-emoji svg-icon"
+          style={{ '--icon': 'url(/icons/bot.svg)', color: verdict.color }}
+          aria-hidden="true"
+        />
+      );
+    }
+
+    return (
+      <span className={`quiz-summary__verdict-emoji line-icon line-icon--${verdict.icon}`} aria-hidden="true" />
+    );
+  };
+
   return (
-    <div className="quiz-summary">
+    <>
+      <TopNav />
+      <div className="quiz-summary">
       {/* Confetti */}
       {showConfetti && (
         <div className="confetti-container">
@@ -219,7 +238,7 @@ function QuizSummary({
         {/* Verdict (only for bot matches) */}
         {!challengeId && (
           <div className="quiz-summary__verdict animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-            <span className={`quiz-summary__verdict-emoji line-icon line-icon--${verdict.icon}`} aria-hidden="true" />
+            {renderVerdictIcon()}
             <span className="quiz-summary__verdict-text" style={{ color: verdict.color }}>{verdict.text}</span>
           </div>
         )}
@@ -252,27 +271,21 @@ function QuizSummary({
                 ? (safeRound.correct ? 100 : 0)
                 : (safeRound.score !== undefined ? Number(safeRound.score) || 0 : 0);
               const isError = pScore === 0;
+              const botRoundScore = safeBotRound ? Number(safeBotRound.score) || 0 : null;
 
               return (
-                <div key={i} className="quiz-summary__round-row">
+                <div key={i} className={`quiz-summary__round-row ${challengeId ? 'quiz-summary__round-row--solo' : ''}`}>
                   <span className="quiz-summary__round-num">{i + 1}</span>
+                  <span className={`quiz-summary__round-player ${isError ? 'quiz-summary__round-player--error' : ''}`}>
+                    {pScore} pkt
+                  </span>
                   <span className="quiz-summary__round-street-name">
                     {streets?.[i]?.name || places?.[i]?.name || `Cel ${i + 1}`}
                   </span>
-                  <span className={`quiz-summary__round-player ${isError ? 'quiz-summary__round-player--error' : ''}`}>
-                    {gameMode === 'what-street'
-                      ? (safeRound.correct ? '✓ 100 pkt' : '✗ 0 pkt')
-                      : `${pScore} pkt${typeof safeRound.distance === 'number' ? ` (${Math.round(safeRound.distance)}m)` : ''}`}
-                  </span>
                   {!challengeId && (
-                    <>
-                      <span className="quiz-summary__round-vs">vs</span>
-                      <span className="quiz-summary__round-bot">
-                        {safeBotRound
-                          ? `${Number(safeBotRound.score) || 0} pkt${typeof safeBotRound.distance === 'number' ? ` (${Math.round(safeBotRound.distance)}m)` : ''}`
-                          : '-'}
-                      </span>
-                    </>
+                    <span className="quiz-summary__round-bot">
+                      {botRoundScore !== null ? `${botRoundScore} pkt` : '-'}
+                    </span>
                   )}
                 </div>
               );
@@ -352,7 +365,8 @@ function QuizSummary({
           </button>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 

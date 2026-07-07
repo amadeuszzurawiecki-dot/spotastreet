@@ -1,11 +1,11 @@
 .quiz-summary {
-  min-height: 100dvh;
+  min-height: calc(100dvh - 64px - var(--safe-top));
   background: var(--bg-primary);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: var(--space-xl) var(--space-lg);
+  padding: 16px;
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;
@@ -72,6 +72,8 @@
 }
 
 .quiz-summary__verdict-emoji {
+  width: 32px;
+  height: 32px;
   font-size: 2rem;
 }
 
@@ -140,12 +142,17 @@
 }
 
 .quiz-summary__round-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 22px 72px minmax(0, 1fr) 72px;
   align-items: center;
   gap: var(--space-sm);
   padding: 8px 0;
   font-size: 0.82rem;
   border-bottom: 1px solid rgba(5, 5, 5, 0.08);
+}
+
+.quiz-summary__round-row--solo {
+  grid-template-columns: 22px 72px minmax(0, 1fr);
 }
 
 .quiz-summary__round-num {
@@ -172,40 +179,31 @@
 }
 
 .quiz-summary__round-street-name {
-  flex: 1;
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   color: var(--text-secondary);
   font-weight: 500;
-  text-align: left;
+  text-align: center;
 }
 
 .quiz-summary__round-player {
-  width: 112px;
-  text-align: right;
+  text-align: left;
   font-weight: 600;
   color: var(--green-primary);
-  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .quiz-summary__round-player--error {
   color: #F44336 !important;
 }
 
-.quiz-summary__round-vs {
-  font-size: 0.7rem;
-  color: var(--text-tertiary);
-  flex-shrink: 0;
-}
-
 .quiz-summary__round-bot {
-  width: 112px;
-  text-align: left;
+  text-align: right;
   font-weight: 500;
   color: var(--text-secondary);
-  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .quiz-summary__empty {
