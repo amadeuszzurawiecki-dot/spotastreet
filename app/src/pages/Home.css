@@ -37,7 +37,7 @@
   margin: 0;
   color: var(--text-primary);
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 700;
   line-height: 1.05;
   text-transform: none;
@@ -356,8 +356,9 @@
 .mode-card {
   width: 100%;
   display: grid;
-  align-content: space-between;
-  gap: 18px;
+  grid-template-columns: 40px minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
   padding: 18px;
   border: 1px solid var(--border);
   border-radius: var(--radius-control) !important;
@@ -391,7 +392,7 @@
   width: 36px;
   height: 36px;
   display: grid;
-  place-items: start;
+  place-items: center;
   color: #fff;
 }
 
@@ -415,6 +416,7 @@
 
 .mode-card__desc {
   color: #fff;
+  opacity: 0.72;
   font-size: 13px;
   font-weight: 400;
   line-height: 1.4;
@@ -435,7 +437,7 @@
   }
 
   .home-modes__grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
     padding: 16px;
   }

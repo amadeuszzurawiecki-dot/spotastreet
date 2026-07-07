@@ -251,6 +251,7 @@ body::before {
 #root > .home,
 #root > .leaderboard-page,
 #root > .profile-page,
+#root > .welcome,
 #root > .admin-layout {
   flex: 1 0 auto;
 }
@@ -753,6 +754,7 @@ footer {
     align-items: flex-start;
     flex-direction: column;
     justify-content: center;
+    gap: 4px;
     padding: 16px 0;
   }
 

@@ -15,14 +15,6 @@ const PIN_MODES = [
     description: 'Upuść pinezkę na wylosowanej ulicy',
     available: true,
   },
-  {
-    id: 'where-is-place',
-    path: '/game/where-is-place',
-    icon: '/icons/flag.svg',
-    title: 'Jak tu trafić?',
-    description: 'Odnajdź najważniejsze obiekty.',
-    available: false,
-  },
 ];
 
 const ADDRESS_MODES = [
@@ -30,7 +22,7 @@ const ADDRESS_MODES = [
     id: 'what-street',
     path: '/game/what-street',
     icon: '/icons/keyboard.svg',
-    title: 'Co to za ulica?',
+    title: 'Nazwij ulicę',
     description: 'Nazwij podświetloną ulicę.',
     available: true,
   },
@@ -252,7 +244,7 @@ function Home() {
                           {hasPlayed ? (
                             <span className="challenge-pill challenge-pill--score">
                               <span className="svg-icon" style={{ '--icon': 'url(/icons/star.svg)' }} aria-hidden="true" />
-                              <span className="challenge-pill__score">{score || 0}</span><span className="challenge-pill__max">/{maxScore} pkt</span>
+                              <span className="challenge-pill__score">{score || 0}</span><span className="challenge-pill__max">/{maxScore}pkt</span>
                             </span>
                           ) : (
                             <span className="challenge-pill challenge-pill--dark">

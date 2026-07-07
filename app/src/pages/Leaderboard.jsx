@@ -8,7 +8,7 @@ import './Leaderboard.css';
 
 export function Leaderboard() {
   const user = useUserProfile();
-  const [view, setView] = useState('menu'); // 'menu' | 'challenges' | 'where-is-street' | 'where-is-place' | 'what-street'
+  const [view, setView] = useState('menu'); // 'menu' | 'challenges' | 'where-is-street' | 'what-street'
   const [leaderboard, setLeaderboard] = useState([]);
   const [challenges, setChallenges] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -95,6 +95,11 @@ export function Leaderboard() {
   };
 
   const renderChallengesView = () => {
+    const getChallengeIcon = (icon) => {
+      const supportedIcons = ['alarm', 'flag', 'keyboard', 'pin', 'ribbon', 'star'];
+      return supportedIcons.includes(icon) ? `/icons/${icon}.svg` : '/icons/flag.svg';
+    };
+
     return (
       <div className="leaderboard-challenges-container animate-fade-in">
         <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '20px' }}>
@@ -103,7 +108,7 @@ export function Leaderboard() {
           </button>
         </div>
 
-        <header className="leaderboard-header" style={{ marginBottom: '24px' }}>
+        <header className="leaderboard-header">
           <h2 className="leaderboard-title text-display">Ranking Wyzwań Codziennych</h2>
           <p className="leaderboard-subtitle">Historia wyzwań i najlepsi gracze (najnowsze u góry)</p>
         </header>
@@ -131,10 +136,10 @@ export function Leaderboard() {
             ranks.sort((a, b) => b.score - a.score);
 
             return (
-              <div key={ch.id} className="glass-card challenge-rank-card" style={{ padding: '20px', marginBottom: '20px', borderRadius: '4px', textAlign: 'left' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '12px', marginBottom: '12px' }}>
+              <div key={ch.id} className="glass-card challenge-rank-card">
+                <div className="challenge-rank-card__header">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <span className={`line-icon line-icon--${ch.icon || 'target'}`} aria-hidden="true" />
+                    <span className="challenge-rank-card__icon svg-icon" style={{ '--icon': `url(${getChallengeIcon(ch.icon)})` }} aria-hidden="true" />
                     <div>
                       <h4 style={{ margin: 0, fontWeight: 700, fontSize: '1.05rem', color: 'var(--green-primary)' }}>{ch.title}</h4>
                       <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>{ch.description}</p>
@@ -153,10 +158,10 @@ export function Leaderboard() {
                   <table className="clean-leaderboard-table" style={{ width: '100%', fontSize: '0.82rem' }}>
                     <thead>
                       <tr>
-                        <th style={{ width: '45px' }}>Poz.</th>
+                        <th className="challenge-rank-card__rank-col" style={{ width: '45px' }}>Poz.</th>
                         <th>Gracz</th>
                         <th style={{ width: '70px', textAlign: 'right', color: 'var(--green-primary)' }}>Pkt</th>
-                        <th style={{ width: '60px', textAlign: 'right' }}>Max</th>
+                        <th className="challenge-rank-card__max-col" style={{ width: '60px', textAlign: 'right' }}>Max</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -329,21 +334,14 @@ export function Leaderboard() {
 
               <div className="leaderboard-menu-card" onClick={() => setView('where-is-street')}>
                 <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/pin.svg)' }} aria-hidden="true" />
-                <span className="leaderboard-menu-card__title">Gdzie jest ta ulica?</span>
+                <span className="leaderboard-menu-card__title">Wskaż ulicę</span>
                 <span className="leaderboard-menu-card__subtitle">Rozpoznawanie ulic na mapie</span>
-                <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
-              </div>
-
-              <div className="leaderboard-menu-card leaderboard-menu-card--place" onClick={() => setView('where-is-place')}>
-                <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/flag.svg)' }} aria-hidden="true" />
-                <span className="leaderboard-menu-card__title">Gdzie jest to miejsce?</span>
-                <span className="leaderboard-menu-card__subtitle">Rozpoznawanie zabytków i punktów</span>
                 <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
               </div>
 
               <div className="leaderboard-menu-card" onClick={() => setView('what-street')}>
                 <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/keyboard.svg)' }} aria-hidden="true" />
-                <span className="leaderboard-menu-card__title">Co to za ulica?</span>
+                <span className="leaderboard-menu-card__title">Nazwij ulicę</span>
                 <span className="leaderboard-menu-card__subtitle">Nazywanie podświetlonych ulic</span>
                 <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
               </div>
@@ -352,9 +350,8 @@ export function Leaderboard() {
         )}
 
         {view === 'challenges' && renderChallengesView()}
-        {view === 'where-is-street' && renderModeView('where-is-street', 'Gdzie jest ta ulica?', 'Najlepsi w lokalizowaniu ulic na mapie')}
-        {view === 'where-is-place' && renderModeView('where-is-place', 'Gdzie jest to miejsce?', 'Najlepsi w lokalizowaniu punktów i zabytków')}
-        {view === 'what-street' && renderModeView('what-street', 'Co to za ulica?', 'Najlepsi w podawaniu nazw podświetlonych ulic')}
+        {view === 'where-is-street' && renderModeView('where-is-street', 'Wskaż ulicę', 'Najlepsi w lokalizowaniu ulic na mapie')}
+        {view === 'what-street' && renderModeView('what-street', 'Nazwij ulicę', 'Najlepsi w podawaniu nazw podświetlonych ulic')}
       </main>
     </div>
   );

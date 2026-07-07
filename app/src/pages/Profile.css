@@ -130,7 +130,7 @@
   width: 100%;
   padding: 12px 14px;
   background: var(--surface);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border);
   color: var(--text-primary);
   font-size: 0.92rem;
   box-sizing: border-box;
@@ -139,6 +139,12 @@
 
 :root[data-theme="light"] .form-input {
   background: #fff;
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+.form-input:hover {
+  border-color: var(--border-strong);
 }
 
 .profile-form-row {
@@ -308,17 +314,16 @@
 }
 
 .stats-list {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
   gap: var(--section-padding);
   padding-top: var(--section-padding);
 }
 
 .stats-item {
-  min-height: 132px;
-  display: grid;
-  align-content: space-between;
-  gap: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
   padding: var(--section-padding);
   background: transparent;
   border: 1px solid var(--border);
@@ -326,11 +331,13 @@
 }
 
 .stats-item__icon {
-  width: 36px;
-  height: 36px;
-  background: rgba(255, 255, 255, 0.02);
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  background: transparent;
   flex-shrink: 0;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 0;
+  color: var(--green-primary);
 }
 
 .stats-item__icon::before,
@@ -422,21 +429,15 @@
   }
 
   .profile-container {
-    display: grid;
-    grid-template-columns: 360px minmax(0, 1fr);
-    grid-template-areas:
-      "header settings"
-      "stats settings";
-    align-items: start;
-    gap: var(--section-gap);
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
     padding: 0;
   }
 
   .profile-card-header {
-    grid-area: header;
-    min-height: 164px;
-    align-items: flex-start;
-    flex-direction: column;
+    align-items: center;
+    flex-direction: row;
     padding: var(--section-padding);
   }
 
@@ -447,15 +448,6 @@
 
   .profile-card-header__name {
     font-size: 1.42rem;
-  }
-
-  .profile-stats-section {
-    grid-area: stats;
-  }
-
-  .profile-settings {
-    grid-area: settings;
-    padding: var(--section-padding);
   }
 
   .clean-avatar-grid {
@@ -481,7 +473,6 @@
 .profile-card-header__avatar,
 .stats-item__icon {
   border-color: var(--border);
-  background: var(--surface-muted);
   box-shadow: none;
 }
 
@@ -494,7 +485,7 @@
 
 .form-input,
 .stats-item {
-  background: var(--surface-muted);
+  background: transparent;
   border-color: var(--border);
 }
 
@@ -522,9 +513,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .stats-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 719px) {

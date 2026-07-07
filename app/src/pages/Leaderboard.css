@@ -1,5 +1,5 @@
 .leaderboard-page {
-  min-height: 100dvh;
+  min-height: auto;
   display: flex;
   flex-direction: column;
   background: var(--units-paper);
@@ -20,7 +20,7 @@
 .leaderboard-header {
   text-align: center;
   margin-bottom: var(--space-xs);
-  padding: 56px 0 40px;
+  padding: 32px 0;
   border-bottom: 0;
 }
 
@@ -255,10 +255,6 @@
   .leaderboard-container {
     width: calc(100% - 32px);
   }
-
-  .leaderboard-menu-card--place {
-    display: none;
-  }
 }
 
 .leaderboard-menu-card {
@@ -306,7 +302,6 @@
 .leaderboard-menu-card__icon {
   width: 42px;
   height: 42px;
-  background: transparent;
   color: var(--green-primary);
 }
 
@@ -336,6 +331,44 @@
 .challenge-rank-card {
   border: 1px solid var(--bg-glass-border);
   background: var(--bg-glass);
+  padding: 0;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.challenge-rank-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.challenge-rank-card__icon {
+  width: 20px;
+  height: 20px;
+  color: var(--green-primary);
+}
+
+.challenge-rank-card__rank-col {
+  padding-left: 16px;
+}
+
+.challenge-rank-card__max-col {
+  padding-right: 16px;
+}
+
+.challenge-rank-card .clean-leaderboard-table th:first-child,
+.challenge-rank-card .clean-leaderboard-table td:first-child {
+  padding-left: 16px;
+}
+
+.challenge-rank-card .clean-leaderboard-table th:last-child,
+.challenge-rank-card .clean-leaderboard-table td:last-child {
+  padding-right: 16px;
 }
 
 @media (min-width: 960px) {
@@ -350,7 +383,7 @@
 
   .leaderboard-header {
     margin-bottom: var(--section-gap);
-    padding: 72px 0 48px;
+    padding: 32px 0;
   }
 
   .leaderboard-title {
@@ -359,8 +392,12 @@
   }
 
   .leaderboard-menu-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
+  }
+
+  .leaderboard-menu-card:first-child {
+    grid-column: 1 / -1;
   }
 
   .leaderboard-menu-card {

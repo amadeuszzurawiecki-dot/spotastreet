@@ -12,6 +12,7 @@ function GoogleSignInButton({
   popupStyle,
   popupLabel = 'Zaloguj przez Google',
   signingInLabel = 'Logowanie...',
+  showPopupButton = true,
   width = 320,
   gsiOptions = {},
 }) {
@@ -76,15 +77,17 @@ function GoogleSignInButton({
           {gsiButton}
         </div>
       ) : gsiButton}
-      <button
-        className={popupClassName}
-        type="button"
-        onClick={onPopupLogin}
-        disabled={disabled || isSigningIn}
-        style={popupStyle}
-      >
-        {isSigningIn ? signingInLabel : popupLabel}
-      </button>
+      {showPopupButton && (
+        <button
+          className={popupClassName}
+          type="button"
+          onClick={onPopupLogin}
+          disabled={disabled || isSigningIn}
+          style={popupStyle}
+        >
+          {isSigningIn ? signingInLabel : popupLabel}
+        </button>
+      )}
     </>
   );
 }
