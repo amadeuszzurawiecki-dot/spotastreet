@@ -1719,15 +1719,17 @@
 }
 
 .admin-layout {
-  width: var(--content-width);
+  width: 100%;
   min-height: auto;
-  margin: 0 auto;
+  margin: 0;
   padding: 0 0 64px;
   background-image: none;
 }
 
 .admin-main {
+  width: var(--content-width);
   max-width: none;
+  margin: 0 auto;
 }
 
 .admin-header,
@@ -1902,7 +1904,6 @@
 
 @media (max-width: 719px) {
   .admin-container,
-  .admin-layout,
   .admin-header,
   .admin-section,
   .admin-stat-box,

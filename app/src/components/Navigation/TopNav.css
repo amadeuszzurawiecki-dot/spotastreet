@@ -23,11 +23,6 @@
   margin: 0 auto;
 }
 
-.topnav--admin .topnav__inner {
-  width: 100%;
-  padding: 0 32px;
-}
-
 .topnav-links {
   display: none;
 }
@@ -534,11 +529,6 @@
 @media (max-width: 719px) {
   .topnav__inner {
     width: calc(100% - 32px);
-  }
-
-  .topnav--admin .topnav__inner {
-    width: 100%;
-    padding: 0 32px;
   }
 
   .menu-drawer {
