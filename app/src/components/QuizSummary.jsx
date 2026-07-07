@@ -29,19 +29,34 @@ function QuizSummary({
   const [showDetails, setShowDetails] = useState(false);
   const [challengeLeaderboard, setChallengeLeaderboard] = useState([]);
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
-  const playedRoundsCount = Math.max(1, playerRounds?.length || Number(totalRounds) || 1);
+  const safePlayerScore = Number(playerScore) || 0;
+  const safeBotScore = Number(botScore) || 0;
+  const safePlayerRounds = Array.isArray(playerRounds) ? playerRounds : [];
+  const safeBotRounds = Array.isArray(botRounds) ? botRounds : [];
+  const safeTotalRounds = Number(totalRounds) || 1;
+  const playedRoundsCount = Math.max(1, safePlayerRounds.length || safeTotalRounds);
   const maxScore = playedRoundsCount * 100;
   const animatedScoreRatio = maxScore > 0 ? Math.min(1, animatedScore / maxScore) : 0;
-  const playerWon = playerScore > botScore;
-  const isDraw = playerScore === botScore;
+  const playerWon = safePlayerScore > safeBotScore;
+  const isDraw = safePlayerScore === safeBotScore;
+
+  useEffect(() => {
+    if (!Array.isArray(playerRounds) || !Array.isArray(botRounds)) {
+      console.warn('QuizSummary received incomplete round data; using safe fallbacks.');
+    }
+  }, [playerRounds, botRounds]);
 
   // Record stats and challenge scores on mount
   useEffect(() => {
     if (!user.isLoggedIn) return;
-    if (challengeId) {
-      user.recordChallengeAttempt(challengeId, playerScore);
-    } else if (!isTraining && gameMode) {
-      user.recordGameResult(gameMode, playerScore > botScore);
+    try {
+      if (challengeId) {
+        user.recordChallengeAttempt(challengeId, safePlayerScore);
+      } else if (!isTraining && gameMode) {
+        user.recordGameResult(gameMode, safePlayerScore > safeBotScore);
+      }
+    } catch (err) {
+      console.warn('Could not persist game summary stats; showing local summary only.', err);
     }
   }, []);
 
@@ -73,7 +88,7 @@ function QuizSummary({
             setChallengeLeaderboard(ranks.slice(0, 10));
           }
         } catch (err) {
-          console.error('Error loading challenge leaderboard:', err);
+          console.warn('Could not load challenge leaderboard; showing local summary only.', err);
         } finally {
           setLoadingLeaderboard(false);
         }
@@ -87,27 +102,27 @@ function QuizSummary({
   useEffect(() => {
     const duration = 1500;
     const steps = 60;
-    const increment = playerScore / steps;
+    const increment = safePlayerScore / steps;
     let current = 0;
     let step = 0;
 
     const interval = setInterval(() => {
       step++;
-      current = Math.min(playerScore, Math.round(increment * step));
+      current = Math.min(safePlayerScore, Math.round(increment * step));
       setAnimatedScore(current);
 
       if (step >= steps) {
         clearInterval(interval);
-        setAnimatedScore(playerScore);
+        setAnimatedScore(safePlayerScore);
         setTimeout(() => setShowDetails(true), 300);
       }
     }, duration / steps);
 
     return () => clearInterval(interval);
-  }, [playerScore]);
+  }, [safePlayerScore]);
 
   // Confetti for great scores
-  const showConfetti = playerScore >= 800;
+  const showConfetti = safePlayerScore >= 800;
 
   const getVerdict = () => {
     if (isDraw) return { text: 'Remis!', icon: 'target', color: '#FFEB3B' };
@@ -118,10 +133,10 @@ function QuizSummary({
   const verdict = getVerdict();
 
   const getTitle = () => {
-    if (playerScore >= 900) return 'Legenda Legnicy!';
-    if (playerScore >= 700) return 'Znawca miasta!';
-    if (playerScore >= 500) return 'Całkiem nieźle!';
-    if (playerScore >= 300) return 'Dobry początek';
+    if (safePlayerScore >= 900) return 'Legenda Legnicy!';
+    if (safePlayerScore >= 700) return 'Znawca miasta!';
+    if (safePlayerScore >= 500) return 'Całkiem nieźle!';
+    if (safePlayerScore >= 300) return 'Dobry początek';
     return 'Jest nad czym pracować';
   };
 
@@ -188,12 +203,12 @@ function QuizSummary({
           <div className="quiz-summary__comparison animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
             <div className={`quiz-summary__player ${playerWon ? 'quiz-summary__player--winner' : ''}`}>
               <span className="quiz-summary__player-label">Ty</span>
-              <span className="quiz-summary__player-score">{playerScore}</span>
+              <span className="quiz-summary__player-score">{safePlayerScore}</span>
             </div>
             <div className="quiz-summary__vs">vs</div>
             <div className={`quiz-summary__player ${!playerWon && !isDraw ? 'quiz-summary__player--winner' : ''}`}>
               <span className="quiz-summary__player-label">Bot</span>
-              <span className="quiz-summary__player-score">{botScore}</span>
+              <span className="quiz-summary__player-score">{safeBotScore}</span>
             </div>
           </div>
         )}
@@ -202,12 +217,14 @@ function QuizSummary({
         {showDetails && (
           <div className="quiz-summary__rounds animate-fade-in-up">
             <h3 className="quiz-summary__rounds-title">Szczegóły rund</h3>
-            {playerRounds.length === 0 ? (
+            {safePlayerRounds.length === 0 ? (
               <div className="quiz-summary__empty">Brak zapisanych rund dla tej gry.</div>
-            ) : playerRounds.map((round, i) => {
-              const pScore = gameMode === 'what-street' 
-                ? (round.correct ? 100 : 0) 
-                : (round.score !== undefined ? round.score : 0);
+            ) : safePlayerRounds.map((round, i) => {
+              const safeRound = round || {};
+              const safeBotRound = safeBotRounds[i] || null;
+              const pScore = gameMode === 'what-street'
+                ? (safeRound.correct ? 100 : 0)
+                : (safeRound.score !== undefined ? Number(safeRound.score) || 0 : 0);
               const isError = pScore === 0;
 
               return (
@@ -217,16 +234,16 @@ function QuizSummary({
                     {streets?.[i]?.name || places?.[i]?.name || `Cel ${i + 1}`}
                   </span>
                   <span className={`quiz-summary__round-player ${isError ? 'quiz-summary__round-player--error' : ''}`}>
-                    {gameMode === 'what-street' 
-                      ? (round.correct ? '✓ 100 pkt' : '✗ 0 pkt') 
-                      : `${pScore} pkt${typeof round.distance === 'number' ? ` (${Math.round(round.distance)}m)` : ''}`}
+                    {gameMode === 'what-street'
+                      ? (safeRound.correct ? '✓ 100 pkt' : '✗ 0 pkt')
+                      : `${pScore} pkt${typeof safeRound.distance === 'number' ? ` (${Math.round(safeRound.distance)}m)` : ''}`}
                   </span>
                   {!challengeId && (
                     <>
                       <span className="quiz-summary__round-vs">vs</span>
                       <span className="quiz-summary__round-bot">
-                        {botRounds[i]
-                          ? `${botRounds[i].score} pkt${typeof botRounds[i].distance === 'number' ? ` (${Math.round(botRounds[i].distance)}m)` : ''}`
+                        {safeBotRound
+                          ? `${Number(safeBotRound.score) || 0} pkt${typeof safeBotRound.distance === 'number' ? ` (${Math.round(safeBotRound.distance)}m)` : ''}`
                           : '-'}
                       </span>
                     </>

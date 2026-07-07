@@ -592,9 +592,14 @@ export function Multiplayer() {
     
     if (nextRoundIndex >= TOTAL_ROUNDS) {
       // End game
-      await updateDoc(doc(db, "matches", matchId), {
-        status: 'finished'
-      });
+      try {
+        await updateDoc(doc(db, "matches", matchId), {
+          status: 'finished'
+        });
+      } catch (e) {
+        console.warn("Could not persist finished match status; showing local summary.", e);
+      }
+      setGameState('finished');
       return;
     }
 
@@ -778,11 +783,27 @@ export function Multiplayer() {
 
   // Summary result at game end JSX
   if (gameState === 'finished' && matchData) {
-    const p1 = matchData.player1;
-    const p2 = matchData.player2;
+    const fallbackPlayer = {
+      email: '',
+      name: 'Gracz',
+      avatarId: 'bolciarz-1',
+      customAvatar: null,
+      isPremium: false,
+      score: 0,
+      rounds: []
+    };
+    const p1 = matchData.player1 || fallbackPlayer;
+    const p2 = matchData.player2 || { ...fallbackPlayer, name: 'Przeciwnik' };
+    const questions = Array.isArray(matchData.questions) ? matchData.questions : [];
 
-    const myScore = isPlayer1 ? p1.score : p2.score;
-    const oppScore = isPlayer1 ? p2.score : p1.score;
+    if (!matchData.player1 || !matchData.player2 || !Array.isArray(matchData.questions)) {
+      console.warn('Multiplayer summary received incomplete match data; using safe fallbacks.', matchData);
+    }
+
+    const p1Score = Number(p1.score) || 0;
+    const p2Score = Number(p2.score) || 0;
+    const myScore = isPlayer1 ? p1Score : p2Score;
+    const oppScore = isPlayer1 ? p2Score : p1Score;
 
     const playerWon = myScore > oppScore;
     const isDraw = myScore === oppScore;
@@ -795,7 +816,7 @@ export function Multiplayer() {
       ? { image: p2.customAvatar, bg: 'transparent' }
       : (AVATARS.find(a => a.id === p2.avatarId) || AVATARS[0]);
 
-    const summaryMapItems = matchData.questions
+    const summaryMapItems = questions
       .map((quest, idx) => {
         const questionName = typeof quest === 'string' ? quest : quest.name;
         const color = SUMMARY_ROUTE_COLORS[idx % SUMMARY_ROUTE_COLORS.length];
@@ -866,7 +887,7 @@ export function Multiplayer() {
                 )}
               </div>
               <div className="mp-vs-name">{p1.name}</div>
-              <div className="mp-vs-score">{p1.score}</div>
+              <div className="mp-vs-score">{p1Score}</div>
             </div>
 
             <div className="mp-vs-divider">VS</div>
@@ -883,7 +904,7 @@ export function Multiplayer() {
                 )}
               </div>
               <div className="mp-vs-name">{p2.name}</div>
-              <div className="mp-vs-score">{p2.score}</div>
+              <div className="mp-vs-score">{p2Score}</div>
             </div>
           </div>
 
@@ -910,13 +931,19 @@ export function Multiplayer() {
           <div className="mp-rounds-breakdown glass-card">
             <h3 className="mp-breakdown-title">Podsumowanie rund</h3>
             
-            {matchData.questions.map((quest, idx) => {
+            {questions.length === 0 ? (
+              <div className="mp-round-row">
+                <div className="mp-round-question-name">Brak zapisanych rund dla tego meczu.</div>
+              </div>
+            ) : questions.map((quest, idx) => {
               const p1Round = p1.rounds?.[idx] || { score: 0 };
               const p2Round = p2.rounds?.[idx] || { score: 0 };
-              const questionName = typeof quest === 'string' ? quest : quest.name;
+              const p1RoundScore = Number(p1Round.score) || 0;
+              const p2RoundScore = Number(p2Round.score) || 0;
+              const questionName = typeof quest === 'string' ? quest : quest?.name || `Runda ${idx + 1}`;
               
-              const isP1Closer = (p1Round.score || 0) > (p2Round.score || 0);
-              const isP2Closer = (p2Round.score || 0) > (p1Round.score || 0);
+              const isP1Closer = p1RoundScore > p2RoundScore;
+              const isP2Closer = p2RoundScore > p1RoundScore;
               const isFocusedRound = focusedSummaryRound === idx + 1;
 
               return (
@@ -933,11 +960,11 @@ export function Multiplayer() {
                   
                   <div className="mp-round-scores-comparison">
                     <span className={`mp-round-p1-score ${isP1Closer ? 'winner-text' : ''}`}>
-                      {p1Round.score} pkt {typeof p1Round.distance === 'number' && `(${Math.round(p1Round.distance)}m)`}
+                      {p1RoundScore} pkt {typeof p1Round.distance === 'number' && `(${Math.round(p1Round.distance)}m)`}
                     </span>
                     <span className="scores-divider">•</span>
                     <span className={`mp-round-p2-score ${isP2Closer ? 'winner-text' : ''}`}>
-                      {p2Round.score} pkt {typeof p2Round.distance === 'number' && `(${Math.round(p2Round.distance)}m)`}
+                      {p2RoundScore} pkt {typeof p2Round.distance === 'number' && `(${Math.round(p2Round.distance)}m)`}
                     </span>
                   </div>
                 </div>
