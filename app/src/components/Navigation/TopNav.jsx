@@ -143,7 +143,7 @@ export function TopNav({ variant = 'front', adminTab = 'users', onAdminTabChange
 
   return (
     <>
-      <header className="topnav">
+      <header className={`topnav ${isAdminVariant ? 'topnav--admin' : ''}`}>
         <div className="topnav__inner">
           {/* Left Side: Logo (Sygnet + Text) */}
           <div className="topnav-logo" onClick={handleLogoClick}>

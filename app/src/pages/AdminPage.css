@@ -290,6 +290,11 @@
   min-width: 720px;
 }
 
+.admin-users-table--management th:first-child,
+.admin-users-table--management td:first-child {
+  width: 100px;
+}
+
 .admin-users-table--management th,
 .admin-users-table--management td {
   padding: 14px 16px;
@@ -353,10 +358,11 @@
 }
 
 .table-email {
-  color: var(--green-primary);
-  background: rgba(15, 23, 42, 0.6);
-  padding: 0.25rem 0.5rem;
-  border-radius: 6px;
+  color: var(--text-primary);
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  font-family: inherit;
   font-size: 0.85rem;
 }
 
@@ -420,6 +426,11 @@
 
 .admin-icon-btn--danger {
   color: var(--color-bad);
+}
+
+.admin-icon-btn .svg-icon {
+  width: 18px;
+  height: 18px;
 }
 
 /* Common Buttons & Alerts */
@@ -1742,7 +1753,6 @@
 }
 
 .admin-user-pill,
-.table-email,
 .table-source-tag,
 .admin-user-card__meta span,
 .admin-user-card__stats div,

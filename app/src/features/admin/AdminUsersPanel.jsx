@@ -88,12 +88,11 @@ function AdminUsersPanel({ adminUsers, user }) {
                             </span>
                             <span className="table-user-name">
                               {u.name || 'Bez nazwy'}
-                              {isSelf && <span className="tag-self">Ty</span>}
                             </span>
                           </div>
                         </td>
                         <td>
-                          <code className="table-email">{maskEmail(email)}</code>
+                          <span className="table-email">{email}</span>
                         </td>
                         <td>
                           <button
@@ -113,7 +112,7 @@ function AdminUsersPanel({ adminUsers, user }) {
                               onClick={() => openUserEditor(u)}
                               aria-label={`Edytuj profil ${u.name || maskEmail(email)}`}
                             >
-                              <span className="line-icon line-icon--settings" aria-hidden="true" />
+                              <span className="svg-icon" style={{ '--icon': 'url(/icons/edit.svg)' }} aria-hidden="true" />
                             </button>
                             <button
                               type="button"
@@ -121,7 +120,7 @@ function AdminUsersPanel({ adminUsers, user }) {
                               onClick={() => setDeletingEmail(email)}
                               aria-label={`Usuń konto ${maskEmail(email)}`}
                             >
-                              <span className="line-icon line-icon--close" aria-hidden="true" />
+                              <span className="svg-icon" style={{ '--icon': 'url(/icons/trash.svg)' }} aria-hidden="true" />
                             </button>
                           </div>
                         </td>
