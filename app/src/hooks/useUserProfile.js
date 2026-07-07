@@ -455,6 +455,8 @@ const useUserProfile = create(
       },
 
       recordChallengeAttempt: (challengeId, score) => {
+        let profileToSync = null;
+
         set((state) => {
           const currentAttempts = state.challengeAttempts || {};
           const updatedAttempts = {
@@ -473,9 +475,17 @@ const useUserProfile = create(
               },
             };
           }
-          syncUserProfile(newState);
+          profileToSync = newState;
           return newState;
         });
+
+        if (profileToSync) {
+          window.setTimeout(() => {
+            syncUserProfile(profileToSync).catch((err) => {
+              console.warn('Could not sync challenge attempt; keeping local summary visible.', err);
+            });
+          }, 0);
+        }
       },
 
       deleteUserAccount: async (targetEmail) => {
