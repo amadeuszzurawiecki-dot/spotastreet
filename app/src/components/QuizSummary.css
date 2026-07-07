@@ -17,7 +17,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-lg);
+  gap: 16px;
 }
 
 .quiz-summary__hero-card {
@@ -27,15 +27,15 @@
   align-items: center;
   gap: var(--space-lg);
   padding: 24px 16px;
-  background: #fff;
+  background: var(--surface);
   border: 1px solid var(--border);
-  color: #0f172a;
+  color: var(--text-primary);
 }
 
 .quiz-summary__title {
   font-size: clamp(1.4rem, 5vw, 2rem);
   text-align: center;
-  color: #0f172a;
+  color: var(--text-primary);
 }
 
 /* Score Circle */
@@ -72,7 +72,7 @@
 
 .quiz-summary__score-max {
   font-size: 0.9rem;
-  color: #64748b;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -118,9 +118,24 @@
 .quiz-summary__comparison-scoreline {
   width: 100%;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto auto minmax(0, 1fr);
-  align-items: center;
-  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: end;
+  gap: 12px;
+}
+
+.quiz-summary__comparison-side {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.quiz-summary__comparison-side--player {
+  align-items: flex-start;
+}
+
+.quiz-summary__comparison-side--bot {
+  align-items: flex-end;
 }
 
 .quiz-summary__identity-pill {
@@ -181,6 +196,7 @@
   font-weight: 800;
   font-size: 1.8rem;
   color: var(--text-primary);
+  line-height: 1;
 }
 
 .quiz-summary__vs {
@@ -192,7 +208,7 @@
 /* Round Breakdown */
 .quiz-summary__rounds {
   width: 100%;
-  padding: 12px;
+  padding: 12px 0 0;
   background: var(--surface);
   border: 1px solid var(--border);
 }
@@ -213,9 +229,17 @@
   grid-template-columns: 72px minmax(0, 1fr) 72px;
   align-items: center;
   gap: var(--space-sm);
-  padding: 8px 0;
+  padding: 8px;
   font-size: 0.82rem;
   border-bottom: 1px solid rgba(5, 5, 5, 0.08);
+}
+
+.quiz-summary__round-row--win {
+  background: color-mix(in srgb, var(--green-primary) 12%, transparent);
+}
+
+.quiz-summary__round-row--loss {
+  background: rgba(244, 67, 54, 0.1);
 }
 
 .quiz-summary__round-row--solo {
@@ -267,13 +291,9 @@
 
 .quiz-summary__round-player {
   text-align: left;
-  font-weight: 600;
-  color: var(--green-primary);
+  font-weight: 500;
+  color: var(--text-primary);
   white-space: nowrap;
-}
-
-.quiz-summary__round-player--error {
-  color: #F44336 !important;
 }
 
 .quiz-summary__round-bot {
@@ -281,6 +301,10 @@
   font-weight: 500;
   color: var(--text-secondary);
   white-space: nowrap;
+}
+
+.quiz-summary__round-score--strong {
+  font-weight: 800;
 }
 
 .quiz-summary__empty {

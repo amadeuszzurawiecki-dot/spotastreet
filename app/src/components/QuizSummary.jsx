@@ -277,11 +277,15 @@ function QuizSummary({
             </div>
 
             <div className="quiz-summary__comparison-scoreline">
-              {renderPlayerPill()}
-              <span className="quiz-summary__player-score">{safePlayerScore}</span>
+              <div className="quiz-summary__comparison-side quiz-summary__comparison-side--player">
+                {renderPlayerPill()}
+                <span className="quiz-summary__player-score">{safePlayerScore}</span>
+              </div>
               <div className="quiz-summary__vs">VS</div>
-              <span className="quiz-summary__player-score">{safeBotScore}</span>
-              {renderBotPill()}
+              <div className="quiz-summary__comparison-side quiz-summary__comparison-side--bot">
+                {renderBotPill()}
+                <span className="quiz-summary__player-score">{safeBotScore}</span>
+              </div>
             </div>
           </div>
         )}
@@ -298,12 +302,20 @@ function QuizSummary({
               const pScore = gameMode === 'what-street'
                 ? (safeRound.correct ? 100 : 0)
                 : (safeRound.score !== undefined ? Number(safeRound.score) || 0 : 0);
-              const isError = pScore === 0;
               const botRoundScore = safeBotRound ? Number(safeBotRound.score) || 0 : null;
+              const playerRoundWon = botRoundScore !== null && pScore > botRoundScore;
+              const playerRoundLost = botRoundScore !== null && pScore < botRoundScore;
+              const rowResultClass = playerRoundWon
+                ? 'quiz-summary__round-row--win'
+                : playerRoundLost
+                  ? 'quiz-summary__round-row--loss'
+                  : '';
+              const playerScoreClass = playerRoundWon ? 'quiz-summary__round-score--strong' : '';
+              const botScoreClass = playerRoundLost ? 'quiz-summary__round-score--strong' : '';
 
               return (
-                <div key={i} className={`quiz-summary__round-row ${challengeId ? 'quiz-summary__round-row--solo' : ''}`}>
-                  <span className={`quiz-summary__round-player ${isError ? 'quiz-summary__round-player--error' : ''}`}>
+                <div key={i} className={`quiz-summary__round-row ${challengeId ? 'quiz-summary__round-row--solo' : ''} ${rowResultClass}`}>
+                  <span className={`quiz-summary__round-player ${playerScoreClass}`}>
                     {pScore} pkt
                   </span>
                   <span className="quiz-summary__round-street-name">
@@ -311,7 +323,7 @@ function QuizSummary({
                     <span>{streets?.[i]?.name || places?.[i]?.name || `Cel ${i + 1}`}</span>
                   </span>
                   {!challengeId && (
-                    <span className="quiz-summary__round-bot">
+                    <span className={`quiz-summary__round-bot ${botScoreClass}`}>
                       {botRoundScore !== null ? `${botRoundScore} pkt` : '-'}
                     </span>
                   )}
