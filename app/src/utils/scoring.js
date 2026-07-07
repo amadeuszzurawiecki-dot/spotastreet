@@ -1,5 +1,5 @@
 /**
- * Scoring utility for Bolters Legnica
+ * Scoring utility for Spotastreet
  * Uses exponential decay formula: max(0, 100 × e^(-0.003 × max(0, distance - 10)))
  */
 

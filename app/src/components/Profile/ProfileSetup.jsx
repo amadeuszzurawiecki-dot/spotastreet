@@ -10,7 +10,7 @@ export function ProfileSetup({ onComplete }) {
   const [step, setStep] = useState(1); // 1: Avatar, 2: Car, 3: Details
 
   // Profile Form State
-  const initialGoogleName = user.googleUser?.name || user.googleUser?.displayName || user.name || 'Bolter';
+  const initialGoogleName = user.googleUser?.name || user.googleUser?.displayName || user.name || 'Gracz';
   const firstName = initialGoogleName.split(' ')[0];
   const [name, setName] = useState(firstName);
   const [town, setTown] = useState(user.town || 'Legnica');
@@ -28,7 +28,7 @@ export function ProfileSetup({ onComplete }) {
   
   const handleFinish = () => {
     user.updateProfile({
-      name: name || 'Bolter',
+      name: name || 'Gracz',
       town: town || 'Legnica',
       avatarId,
       hideEmail,
@@ -120,7 +120,7 @@ export function ProfileSetup({ onComplete }) {
           {step === 1 && (
             <div className="setup-body animate-fade-in">
               <h2 className="setup-title text-display">Wybierz swój Avatar</h2>
-              <p className="setup-desc">Wybierz postać Legnickiego Bolciarza lub wgraj własne zdjęcie:</p>
+              <p className="setup-desc">Wybierz avatar Spotastreet lub wgraj własne zdjęcie:</p>
               
               <div className="setup-avatar-grid">
                 {customAvatar && (

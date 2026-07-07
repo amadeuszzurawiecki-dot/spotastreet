@@ -375,7 +375,7 @@ function GameWhereIsPlace() {
           )}
         </div>
 
-        <div className="hud-bottom-bar__footer">Stworzono dla Legnickich Bolciarzy</div>
+        <div className="hud-bottom-bar__footer">Spotastreet</div>
       </div>
     </div>
   );

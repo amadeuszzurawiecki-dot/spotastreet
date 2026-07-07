@@ -106,7 +106,7 @@ const useUserProfile = create(
             const userPayload = {
               sub: firebaseUser.uid,
               email: firebaseUser.email,
-              name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Bolter',
+              name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Gracz',
               picture: firebaseUser.photoURL || '',
             };
 
@@ -169,7 +169,7 @@ const useUserProfile = create(
         const savedProfiles = get().savedProfiles || {};
         const existingProfile = savedProfiles[emailKey];
 
-        const initialName = existingProfile?.name || (userPayload.name ? userPayload.name.split(' ')[0] : 'Bolter');
+        const initialName = existingProfile?.name || (userPayload.name ? userPayload.name.split(' ')[0] : 'Gracz');
         const initialProfileData = {
           email: userPayload.email,
           name: initialName,
@@ -265,7 +265,7 @@ const useUserProfile = create(
 
         const updatedProfileData = {
           email: email || googleUser?.email,
-          name: name || 'Bolter',
+          name: name || 'Gracz',
           town: town || 'Legnica',
           avatarId: avatarId || 'bolciarz-1',
           car: car || defaultCar,

@@ -1,5 +1,5 @@
 /**
- * Street data loading and management for Bolters Legnica
+ * Street data loading and management for Spotastreet
  */
 
 let streetsCache = null;

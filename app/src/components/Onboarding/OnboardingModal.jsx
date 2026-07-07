@@ -5,8 +5,8 @@ import './OnboardingModal.css';
 const SLIDES = [
   {
     icon: 'pin',
-    title: 'Witaj w Bolters Legnica!',
-    desc: 'Unikalna gra topograficzna stworzona specjalnie dla mieszkańców Legnicy i prawdziwych kierowców Bolta.',
+    title: 'Witaj w Spotastreet!',
+    desc: 'Unikalna gra topograficzna stworzona dla osób, które chcą lepiej znać swoje miasto.',
   },
   {
     icon: 'target',
@@ -16,7 +16,7 @@ const SLIDES = [
   {
     icon: 'settings',
     title: 'Skonfiguruj swój profil',
-    desc: 'Wybierz swój ulubiony avatar Legnickiego Bolciarza i zarejestruj swoje auto, aby zabłysnąć w rankingach.',
+    desc: 'Wybierz swój ulubiony avatar Spotastreet i zarejestruj swoje auto, aby zabłysnąć w rankingach.',
   },
 ];
 

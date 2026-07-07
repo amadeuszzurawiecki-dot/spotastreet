@@ -50,7 +50,7 @@ async function fetchOverpass(query) {
           method: "GET",
           headers: {
             Accept: "application/json",
-            "User-Agent": "BoltersApp/1.0 (street data fetch)",
+            "User-Agent": "Spotastreet/1.0 (street data fetch)",
           },
           signal: AbortSignal.timeout(180_000), // 3 min timeout
         });

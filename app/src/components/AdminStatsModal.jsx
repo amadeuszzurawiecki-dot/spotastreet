@@ -28,7 +28,7 @@ export function AdminStatsModal({ onClose }) {
     if (p.email || p.name) {
       const key = (p.email || p.name).toLowerCase();
       profileMap[key] = {
-        name: p.name || 'Bolter',
+        name: p.name || 'Gracz',
         email: p.email || 'Konto Google',
         town: p.town || 'Legnica',
         car: p.car || user.car,
@@ -62,7 +62,7 @@ export function AdminStatsModal({ onClose }) {
         {/* Header */}
         <div className="admin-stats__header">
           <div>
-            <div className="admin-stats__badge">GLOBALNE STATYSTYKI FLOTY BOLTERS</div>
+            <div className="admin-stats__badge">GLOBALNE STATYSTYKI SPOTASTREET</div>
             <h2 className="admin-stats__title text-display">Konta i Wybrane Auta</h2>
           </div>
           <button className="admin-stats__close" onClick={onClose} aria-label="Zamknij">

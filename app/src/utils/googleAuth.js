@@ -1,4 +1,4 @@
-// Official Google Client ID for Bolters Legnica
+// Official Google Client ID for Spotastreet
 export const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID
   || "210221782427-rkrlru0cap8l3lasnb6nkrchroulmmpi.apps.googleusercontent.com";
 

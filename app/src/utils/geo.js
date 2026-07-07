@@ -1,5 +1,5 @@
 /**
- * Geo utility functions for Bolters Legnica
+ * Geo utility functions for Spotastreet
  * Calculates distances between points and polylines using Haversine formula
  */
 
@@ -192,5 +192,4 @@ export const LEGNICA_CENTER = [51.2070, 16.1619];
  * Legnica default bounds for the map
  */
 export const LEGNICA_BOUNDS = [[51.155, 16.09], [51.255, 16.24]];
-
 

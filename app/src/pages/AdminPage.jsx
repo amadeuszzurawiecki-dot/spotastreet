@@ -162,7 +162,7 @@ export function AdminPage() {
   const handleSaveUserProfile = async () => {
     if (!userDraft?.email) return;
     const fields = {
-      name: userDraft.name.trim() || 'Użytkownik Bolters',
+      name: userDraft.name.trim() || 'Użytkownik Spotastreet',
       town: userDraft.town.trim() || 'Legnica',
       avatarId: userDraft.avatarId,
       customAvatar: userDraft.customAvatar || null,
@@ -421,7 +421,7 @@ export function AdminPage() {
       const key = (p.email || p.name).toLowerCase().trim();
       profileMap[key] = {
         email: p.email || 'Brak emaila',
-        name: p.name || 'Użytkownik Bolters',
+        name: p.name || 'Użytkownik Spotastreet',
         town: p.town || 'Legnica',
         avatarId: p.avatarId || 'bolciarz-1',
         customAvatar: p.customAvatar || null,
@@ -446,7 +446,7 @@ export function AdminPage() {
       profileMap[key] = {
         ...(profileMap[key] || {}),
         email: p.email || profileMap[key]?.email || 'Brak emaila',
-        name: p.name || profileMap[key]?.name || 'Użytkownik Bolters',
+        name: p.name || profileMap[key]?.name || 'Użytkownik Spotastreet',
         town: p.town || profileMap[key]?.town || 'Legnica',
         avatarId: p.avatarId || profileMap[key]?.avatarId || 'bolciarz-1',
         customAvatar: p.customAvatar || profileMap[key]?.customAvatar || null,
@@ -657,7 +657,7 @@ export function AdminPage() {
           <div className="admin-badge">WERYFIKACJA ADMINISTRATORA</div>
           <h1 className="admin-title text-display">Panel Administracyjny</h1>
           <p className="admin-subtitle">
-            Dostęp do zarządzania kontami Bolters wymaga zalogowania autoryzowanym kontem Google Administratora.
+            Dostęp do zarządzania kontami Spotastreet wymaga zalogowania autoryzowanym kontem Google Administratora.
           </p>
 
           {actionStatus && (
