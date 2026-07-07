@@ -9,12 +9,12 @@
   flex: 1;
   width: var(--content-width);
   max-width: none;
-  margin: 0 auto;
-  padding: 0 0 64px;
+  margin: var(--section-gap) auto 0;
+  padding: 0;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: var(--section-gap);
 }
 
 /* Header summary card */
@@ -428,8 +428,8 @@
       "header settings"
       "stats settings";
     align-items: start;
-    gap: 22px;
-    padding: 0 0 64px;
+    gap: var(--section-gap);
+    padding: 0;
   }
 
   .profile-card-header {
@@ -515,7 +515,7 @@
 
 @media (min-width: 960px) {
   .profile-container {
-    padding: 0 0 64px;
+    padding: 0;
   }
 
   .profile-form-row {

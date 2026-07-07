@@ -21,7 +21,7 @@ const PIN_MODES = [
     icon: '/icons/flag.svg',
     title: 'Jak tu trafić?',
     description: 'Odnajdź najważniejsze obiekty.',
-    available: true,
+    available: false,
   },
 ];
 
@@ -51,6 +51,7 @@ function Home() {
   const avatar = AVATARS.find(a => a.id === user.avatarId) || AVATARS[0];
   const userAttempts = user.challengeAttempts || {};
   const completedChallenges = dailyChallenges.filter(ch => userAttempts[ch.id] !== undefined).length;
+  const shouldLoopChallenges = dailyChallenges.length >= 4;
 
   // Countdown timer to midnight (HH:MM:SS)
   useEffect(() => {
@@ -99,7 +100,7 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    if (dailyChallenges.length <= 1) return undefined;
+    if (!shouldLoopChallenges) return undefined;
 
     const interval = setInterval(() => {
       setIsChallengeSliding(true);
@@ -110,7 +111,7 @@ function Home() {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [dailyChallenges.length]);
+  }, [shouldLoopChallenges, dailyChallenges.length]);
 
   useEffect(() => {
     const updateSlideDistance = () => {
@@ -132,11 +133,9 @@ function Home() {
     return () => window.removeEventListener('resize', updateSlideDistance);
   }, [dailyChallenges.length]);
 
-  const visibleChallenges = dailyChallenges.length > 1
+  const visibleChallenges = shouldLoopChallenges
     ? [0, 1, 2, 3].map((offset) => dailyChallenges[(challengeIndex + offset) % dailyChallenges.length])
-    : dailyChallenges.length === 1
-      ? [dailyChallenges[0]]
-    : [];
+    : dailyChallenges;
 
   const handleChallengeClick = (challenge) => {
     const attemptScore = userAttempts[challenge.id];
@@ -195,23 +194,6 @@ function Home() {
       {/* Redesigned top navbar */}
       <TopNav />
 
-      {/* Hero Section */}
-      <header className="home-hero">
-        <div className="home-hero__content">
-          <section className="home-hero__panel">
-            <div>
-              <h1 className="home-hero__title text-display">
-                Precyzja miasta.
-                <span> Rywalizacja na mapie.</span>
-              </h1>
-            </div>
-            <div className="home-hero__side">
-              <p>Rozpoznawaj ulice, wskazuj miejsca i sprawdzaj, kto naprawdę zna układ miasta.</p>
-            </div>
-          </section>
-        </div>
-      </header>
-
       {/* Game Modes & Challenges */}
       <main className="home-modes">
         {/* Section: Codzienne wyzwania */}
@@ -245,7 +227,7 @@ function Home() {
               </div>
             ) : (
               <div
-                className={`challenges-carousel__track ${isChallengeSliding ? 'challenges-carousel__track--sliding' : ''}`}
+                className={`challenges-carousel__track ${shouldLoopChallenges ? 'challenges-carousel__track--looping' : 'challenges-carousel__track--static'} ${isChallengeSliding ? 'challenges-carousel__track--sliding' : ''}`}
                 style={{ '--challenge-slide-distance': `${challengeSlideDistance}px` }}
               >
                 {visibleChallenges.map((challenge, visibleIndex) => {
@@ -282,7 +264,7 @@ function Home() {
                       <div className="challenge-card__bottom">
                         <div className="challenge-card__details">
                           <div className="challenge-card__title-container">
-                            {challenge.title.length > 22 ? (
+                            {shouldLoopChallenges && challenge.title.length > 22 ? (
                               <div className="marquee-text-wrapper">
                                 <span className="marquee-text">
                                   {challenge.title} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {challenge.title} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

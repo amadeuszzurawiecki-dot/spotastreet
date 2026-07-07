@@ -62,7 +62,7 @@
 .topnav-user-pill {
   min-width: 0;
   max-width: min(280px, 34vw);
-  min-height: 42px;
+  height: 42px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -510,6 +510,15 @@
   .menu-drawer__header {
     height: calc(72px + var(--safe-top));
   }
+
+  .topnav-user-pill {
+    height: 46px;
+  }
+
+  .topnav-user-pill__avatar {
+    width: 36px;
+    height: 36px;
+  }
 }
 
 @media (max-width: 390px) {
@@ -528,6 +537,10 @@
 }
 
 @media (max-width: 719px) {
+  .menu-drawer {
+    width: 100vw;
+  }
+
   .topnav-user-pill {
     max-width: 42px;
     padding: 4px;

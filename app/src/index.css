@@ -24,6 +24,7 @@
   --layout-width-current: 960px;
   --content-width: min(100% - calc(var(--page-gutter) * 2), var(--layout-width-current));
   --section-padding: 16px;
+  --section-gap: 32px;
   --cursor-color: #fff;
   --cursor-border: #fff;
   --grid-unit: 16px;
@@ -196,17 +197,15 @@ body {
   cursor: none;
 }
 
-@media (min-width: 720px) {
-  html {
-    scrollbar-width: none;
-  }
+html {
+  scrollbar-width: none;
+}
 
-  html::-webkit-scrollbar,
-  body::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-    display: none;
-  }
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 * {
@@ -699,7 +698,7 @@ footer {
 
 .app-info-bar {
   width: 100%;
-  margin-top: auto;
+  margin-top: var(--section-gap);
   padding: 0;
   background: #000;
   color: #fff;
@@ -728,6 +727,7 @@ footer {
   :root {
     --page-gutter: 16px;
     --section-padding: 16px;
+    --section-gap: 16px;
   }
 
   html,
