@@ -7,7 +7,8 @@
   justify-content: center;
   padding: var(--space-xl) var(--space-lg);
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .quiz-summary__content {
@@ -205,6 +206,14 @@
   font-weight: 500;
   color: var(--text-secondary);
   flex-shrink: 0;
+}
+
+.quiz-summary__empty {
+  padding: 12px;
+  border: 1px solid var(--border);
+  color: var(--text-tertiary);
+  font-size: 0.82rem;
+  text-align: center;
 }
 
 /* Actions */

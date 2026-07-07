@@ -328,21 +328,21 @@ export function Leaderboard() {
               </div>
 
               <div className="leaderboard-menu-card" onClick={() => setView('where-is-street')}>
-                <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/ribbon.svg)' }} aria-hidden="true" />
+                <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/pin.svg)' }} aria-hidden="true" />
                 <span className="leaderboard-menu-card__title">Gdzie jest ta ulica?</span>
                 <span className="leaderboard-menu-card__subtitle">Rozpoznawanie ulic na mapie</span>
                 <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
               </div>
 
-              <div className="leaderboard-menu-card" onClick={() => setView('where-is-place')}>
-                <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/ribbon.svg)' }} aria-hidden="true" />
+              <div className="leaderboard-menu-card leaderboard-menu-card--place" onClick={() => setView('where-is-place')}>
+                <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/flag.svg)' }} aria-hidden="true" />
                 <span className="leaderboard-menu-card__title">Gdzie jest to miejsce?</span>
                 <span className="leaderboard-menu-card__subtitle">Rozpoznawanie zabytków i punktów</span>
                 <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
               </div>
 
               <div className="leaderboard-menu-card" onClick={() => setView('what-street')}>
-                <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/ribbon.svg)' }} aria-hidden="true" />
+                <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/keyboard.svg)' }} aria-hidden="true" />
                 <span className="leaderboard-menu-card__title">Co to za ulica?</span>
                 <span className="leaderboard-menu-card__subtitle">Nazywanie podświetlonych ulic</span>
                 <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />

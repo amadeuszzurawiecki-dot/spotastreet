@@ -252,6 +252,7 @@ function GameWhereIsStreet() {
   const avatar = user.avatarId === 'custom'
     ? { emoji: 'U', image: user.customAvatar, bg: 'transparent' }
     : (AVATARS.find(a => a.id === user.avatarId) || AVATARS[0]);
+  const effectiveTotalRounds = Math.max(1, Math.min(Number(totalRounds) || 1, streets.length || Number(totalRounds) || 1));
 
   // 3. Game over — show summary
   if (isGameOver) {
@@ -261,7 +262,7 @@ function GameWhereIsStreet() {
         botScore={gameVariant === 'training' ? 0 : botScore}
         playerRounds={playerRounds}
         botRounds={gameVariant === 'training' ? [] : botRounds}
-        totalRounds={totalRounds}
+        totalRounds={playerRounds.length || effectiveTotalRounds}
         gameMode="where-is-street"
         streets={streets}
         isTraining={gameVariant === 'training'}
@@ -331,7 +332,7 @@ function GameWhereIsStreet() {
         isRunning={isRunning}
         
         currentRound={currentRound + 1}
-        totalRounds={totalRounds}
+        totalRounds={effectiveTotalRounds}
         isTraining={gameVariant === 'training'}
         isChallenge={gameVariant === 'challenge'}
         isShowingResult={showResult}
@@ -367,7 +368,7 @@ function GameWhereIsStreet() {
           )}
           {showResult && (
             <button type="button" className="btn-primary btn-next" onClick={handleNext}>
-              {currentRound + 1 >= totalRounds ? 'Zakończ grę' : 'Następna ulica'}
+              {currentRound + 1 >= effectiveTotalRounds ? 'Zakończ grę' : 'Następna ulica'}
             </button>
           )}
         </div>

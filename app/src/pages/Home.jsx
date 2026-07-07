@@ -46,12 +46,13 @@ function Home() {
   const [challengeIndex, setChallengeIndex] = useState(0);
   const [isChallengeSliding, setIsChallengeSliding] = useState(false);
   const [challengeSlideDistance, setChallengeSlideDistance] = useState(0);
+  const [isMobileView, setIsMobileView] = useState(false);
   const challengeViewportRef = useRef(null);
 
   const avatar = AVATARS.find(a => a.id === user.avatarId) || AVATARS[0];
   const userAttempts = user.challengeAttempts || {};
   const completedChallenges = dailyChallenges.filter(ch => userAttempts[ch.id] !== undefined).length;
-  const shouldLoopChallenges = dailyChallenges.length >= 4;
+  const shouldLoopChallenges = !isMobileView && dailyChallenges.length >= 4;
 
   // Countdown timer to midnight (HH:MM:SS)
   useEffect(() => {
@@ -116,6 +117,7 @@ function Home() {
   useEffect(() => {
     const updateSlideDistance = () => {
       const viewport = challengeViewportRef.current;
+      setIsMobileView(window.innerWidth <= 620);
       if (!viewport) return;
 
       const cardGap = 16;
@@ -250,7 +252,7 @@ function Home() {
                           {hasPlayed ? (
                             <span className="challenge-pill challenge-pill--score">
                               <span className="svg-icon" style={{ '--icon': 'url(/icons/star.svg)' }} aria-hidden="true" />
-                              <span className="challenge-pill__score">{score || 0}</span><span>/{maxScore} pkt</span>
+                              <span className="challenge-pill__score">{score || 0}</span><span className="challenge-pill__max">/{maxScore} pkt</span>
                             </span>
                           ) : (
                             <span className="challenge-pill challenge-pill--dark">

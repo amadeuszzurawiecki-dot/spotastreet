@@ -12,8 +12,8 @@ import './QuizSummary.css';
 function QuizSummary({
   playerScore,
   botScore,
-  playerRounds,
-  botRounds,
+  playerRounds = [],
+  botRounds = [],
   totalRounds = 10,
   gameMode,
   streets,
@@ -29,7 +29,9 @@ function QuizSummary({
   const [showDetails, setShowDetails] = useState(false);
   const [challengeLeaderboard, setChallengeLeaderboard] = useState([]);
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
-  const maxScore = totalRounds * 100;
+  const playedRoundsCount = Math.max(1, playerRounds?.length || Number(totalRounds) || 1);
+  const maxScore = playedRoundsCount * 100;
+  const animatedScoreRatio = maxScore > 0 ? Math.min(1, animatedScore / maxScore) : 0;
   const playerWon = playerScore > botScore;
   const isDraw = playerScore === botScore;
 
@@ -162,7 +164,7 @@ function QuizSummary({
               strokeWidth="8"
               strokeLinecap="round"
               strokeDasharray={2 * Math.PI * 52}
-              strokeDashoffset={2 * Math.PI * 52 * (1 - animatedScore / maxScore)}
+              strokeDashoffset={2 * Math.PI * 52 * (1 - animatedScoreRatio)}
               transform="rotate(-90 60 60)"
               style={{ transition: 'stroke-dashoffset 1.5s ease-out' }}
             />
@@ -200,7 +202,9 @@ function QuizSummary({
         {showDetails && (
           <div className="quiz-summary__rounds animate-fade-in-up">
             <h3 className="quiz-summary__rounds-title">Szczegóły rund</h3>
-            {playerRounds.map((round, i) => {
+            {playerRounds.length === 0 ? (
+              <div className="quiz-summary__empty">Brak zapisanych rund dla tej gry.</div>
+            ) : playerRounds.map((round, i) => {
               const pScore = gameMode === 'what-street' 
                 ? (round.correct ? 100 : 0) 
                 : (round.score !== undefined ? round.score : 0);

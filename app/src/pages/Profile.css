@@ -528,6 +528,10 @@
 }
 
 @media (max-width: 719px) {
+  .profile-container {
+    width: calc(100% - 32px);
+  }
+
   .profile-card-header,
   .profile-settings,
   .profile-stats-section,

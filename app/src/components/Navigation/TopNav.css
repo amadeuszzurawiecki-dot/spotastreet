@@ -537,6 +537,10 @@
 }
 
 @media (max-width: 719px) {
+  .topnav__inner {
+    width: calc(100% - 32px);
+  }
+
   .menu-drawer {
     width: 100vw;
   }

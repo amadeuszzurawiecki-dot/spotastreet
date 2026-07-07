@@ -251,6 +251,16 @@
   }
 }
 
+@media (max-width: 719px) {
+  .leaderboard-container {
+    width: calc(100% - 32px);
+  }
+
+  .leaderboard-menu-card--place {
+    display: none;
+  }
+}
+
 .leaderboard-menu-card {
   position: relative;
   min-height: 168px;

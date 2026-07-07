@@ -340,13 +340,17 @@
 }
 
 .challenge-pill--score {
-  background: #000;
-  border-color: #000;
+  background: var(--main-color);
+  border-color: var(--main-color);
   color: #fff;
 }
 
 .challenge-pill__score {
-  color: var(--main-color);
+  color: #fff;
+}
+
+.challenge-pill__max {
+  opacity: 0.64;
 }
 
 .mode-card {
@@ -479,7 +483,21 @@
     display: block;
   }
 
+  .challenges-carousel__track {
+    flex-direction: column;
+  }
+
+  .challenges-carousel__track--sliding {
+    transform: none;
+    transition: none;
+  }
+
   .challenge-card {
     flex-basis: 100%;
+    grid-template-rows: minmax(132px, auto) auto;
+  }
+
+  .challenge-card__top {
+    min-height: 132px;
   }
 }
