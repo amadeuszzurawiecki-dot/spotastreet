@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useUserProfile from '../hooks/useUserProfile';
 import { fetchAllCloudProfiles } from '../config/firebase';
 import { AVATARS } from '../data/avatars';
@@ -29,6 +29,7 @@ function QuizSummary({
   const [showDetails, setShowDetails] = useState(false);
   const [challengeLeaderboard, setChallengeLeaderboard] = useState([]);
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
+  const hasRecordedStatsRef = useRef(false);
   const safePlayerScore = Number(playerScore) || 0;
   const safeBotScore = Number(botScore) || 0;
   const safePlayerRounds = Array.isArray(playerRounds) ? playerRounds : [];
@@ -49,16 +50,32 @@ function QuizSummary({
   // Record stats and challenge scores on mount
   useEffect(() => {
     if (!user.isLoggedIn) return;
-    try {
-      if (challengeId) {
-        user.recordChallengeAttempt(challengeId, safePlayerScore);
-      } else if (!isTraining && gameMode) {
-        user.recordGameResult(gameMode, safePlayerScore > safeBotScore);
+    if (hasRecordedStatsRef.current) return;
+    hasRecordedStatsRef.current = true;
+
+    const recordTimer = window.setTimeout(() => {
+      try {
+        if (challengeId) {
+          user.recordChallengeAttempt(challengeId, safePlayerScore);
+        } else if (!isTraining && gameMode) {
+          user.recordGameResult(gameMode, safePlayerScore > safeBotScore);
+        }
+      } catch (err) {
+        console.warn('Could not persist game summary stats; showing local summary only.', err);
       }
-    } catch (err) {
-      console.warn('Could not persist game summary stats; showing local summary only.', err);
-    }
-  }, []);
+    }, 1200);
+
+    return () => window.clearTimeout(recordTimer);
+  }, [
+    challengeId,
+    gameMode,
+    isTraining,
+    safeBotScore,
+    safePlayerScore,
+    user.isLoggedIn,
+    user.recordChallengeAttempt,
+    user.recordGameResult,
+  ]);
 
   // Fetch leaderboard for challenge
   useEffect(() => {

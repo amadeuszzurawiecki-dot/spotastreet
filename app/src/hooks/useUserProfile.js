@@ -416,6 +416,8 @@ const useUserProfile = create(
       },
 
       recordGameResult: (gameModeId, won) => {
+        let profileToSync = null;
+
         set((state) => {
           const currentStats = state.stats || defaultStats;
           const modeStats = currentStats[gameModeId] || { wins: 0, losses: 0 };
@@ -439,9 +441,17 @@ const useUserProfile = create(
               },
             };
           }
-          syncUserProfile(newState);
+          profileToSync = newState;
           return newState;
         });
+
+        if (profileToSync) {
+          window.setTimeout(() => {
+            syncUserProfile(profileToSync).catch((err) => {
+              console.warn('Could not sync game result stats; keeping local summary visible.', err);
+            });
+          }, 0);
+        }
       },
 
       recordChallengeAttempt: (challengeId, score) => {
