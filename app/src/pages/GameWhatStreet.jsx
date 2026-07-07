@@ -168,12 +168,13 @@ function GameWhatStreet() {
     setBotScore(nextBotScore);
     setBotRounds(nextBotRounds);
     setPlayerRounds(nextPlayerRounds);
-    setFinalRoundSummary({
+    const finalSummaryValues = {
       playerScoreValue: playerScore,
       botScoreValue: nextBotScore,
       playerRoundsValue: nextPlayerRounds,
       botRoundsValue: nextBotRounds,
-    });
+    };
+    setFinalRoundSummary(finalSummaryValues);
 
     setRoundResult(createStreetGuessRoundResult({
       playerScore: 0,
@@ -185,6 +186,7 @@ function GameWhatStreet() {
       botDistance: targetPoint && botPosition ? haversineDistance(targetPoint, botPosition) : undefined,
     }));
     setIsRoundActive(false);
+    if (finishChallengeRoundIfComplete(finalSummaryValues)) return;
     setShowResult(true);
   }, [
     botRounds,
@@ -252,9 +254,16 @@ function GameWhatStreet() {
     startTimer();
   };
 
-  const finishGameWithSummary = () => {
-    setSummaryData(prev => prev || createSummaryData());
+  const finishGameWithSummary = (summaryValues) => {
+    setSummaryData(prev => prev || createSummaryData(summaryValues));
     finishGame();
+  };
+
+  const finishChallengeRoundIfComplete = (summaryValues) => {
+    const roundsLimit = getEffectiveTotalRounds(totalRounds, streets.length);
+    if (gameVariant !== 'challenge' || currentRound + 1 < roundsLimit) return false;
+    finishGameWithSummary(summaryValues);
+    return true;
   };
 
   // Handle street guess
@@ -294,12 +303,13 @@ function GameWhatStreet() {
     setPlayerRounds(nextPlayerRounds);
     setBotScore(nextBotScore);
     setBotRounds(nextBotRounds);
-    setFinalRoundSummary({
+    const finalSummaryValues = {
       playerScoreValue: nextPlayerScore,
       botScoreValue: nextBotScore,
       playerRoundsValue: nextPlayerRounds,
       botRoundsValue: nextBotRounds,
-    });
+    };
+    setFinalRoundSummary(finalSummaryValues);
 
     setRoundResult(createStreetGuessRoundResult({
       playerScore: score,
@@ -311,6 +321,7 @@ function GameWhatStreet() {
       botDistance,
     }));
     setIsRoundActive(false);
+    if (finishChallengeRoundIfComplete(finalSummaryValues)) return;
     setShowResult(true);
   };
 

@@ -143,12 +143,13 @@ function GameWhereIsStreet() {
     setPlayerRounds(nextPlayerRounds);
     setBotScore(nextBotScore);
     setBotRounds(nextBotRounds);
-    setFinalRoundSummary({
+    const finalSummaryValues = {
       playerScoreValue: nextPlayerScore,
       botScoreValue: nextBotScore,
       playerRoundsValue: nextPlayerRounds,
       botRoundsValue: nextBotRounds,
-    });
+    };
+    setFinalRoundSummary(finalSummaryValues);
 
     setRoundResult(createDistanceRoundResult({
       playerScore: score,
@@ -159,6 +160,7 @@ function GameWhereIsStreet() {
     }));
 
     setIsRoundActive(false);
+    if (finishChallengeRoundIfComplete(finalSummaryValues)) return;
     setShowResult(true);
   };
 
@@ -183,12 +185,13 @@ function GameWhereIsStreet() {
     setBotScore(nextBotScore);
     setBotRounds(nextBotRounds);
     setPlayerRounds(nextPlayerRounds);
-    setFinalRoundSummary({
+    const finalSummaryValues = {
       playerScoreValue: playerScore,
       botScoreValue: nextBotScore,
       playerRoundsValue: nextPlayerRounds,
       botRoundsValue: nextBotRounds,
-    });
+    };
+    setFinalRoundSummary(finalSummaryValues);
     setShowStreet(true);
 
     const street = streets[currentRound];
@@ -206,6 +209,7 @@ function GameWhereIsStreet() {
       botDistance: isTrainingVariant(gameVariant) ? 0 : botResult.distance,
     }));
     setIsRoundActive(false);
+    if (finishChallengeRoundIfComplete(finalSummaryValues)) return;
     setShowResult(true);
   };
 
@@ -253,9 +257,16 @@ function GameWhereIsStreet() {
     startTimer();
   };
 
-  const finishGameWithSummary = () => {
-    setSummaryData(prev => prev || createSummaryData());
+  const finishGameWithSummary = (summaryValues) => {
+    setSummaryData(prev => prev || createSummaryData(summaryValues));
     finishGame();
+  };
+
+  const finishChallengeRoundIfComplete = (summaryValues) => {
+    const roundsLimit = getEffectiveTotalRounds(totalRounds, streets.length);
+    if (gameVariant !== 'challenge' || currentRound + 1 < roundsLimit) return false;
+    finishGameWithSummary(summaryValues);
+    return true;
   };
 
   // Handle map click
