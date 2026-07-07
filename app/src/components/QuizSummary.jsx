@@ -41,6 +41,9 @@ function QuizSummary({
   const animatedScoreRatio = maxScore > 0 ? Math.min(1, animatedScore / maxScore) : 0;
   const playerWon = safePlayerScore > safeBotScore;
   const isDraw = safePlayerScore === safeBotScore;
+  const playerAvatar = user.avatarId === 'custom'
+    ? { image: user.customAvatar, emoji: 'U', bg: 'transparent' }
+    : (AVATARS.find(avatar => avatar.id === user.avatarId) || AVATARS[0]);
 
   useEffect(() => {
     if (!Array.isArray(playerRounds) || !Array.isArray(botRounds)) {
@@ -178,14 +181,40 @@ function QuizSummary({
       );
     }
 
+    if (verdict.icon === 'trophy') {
+      return (
+        <span
+          className="quiz-summary__verdict-emoji svg-icon"
+          style={{ '--icon': 'url(/icons/funny.svg)', color: verdict.color }}
+          aria-hidden="true"
+        />
+      );
+    }
+
     return (
       <span className={`quiz-summary__verdict-emoji line-icon line-icon--${verdict.icon}`} aria-hidden="true" />
     );
   };
 
+  const renderPlayerPill = () => (
+    <div className="quiz-summary__identity-pill quiz-summary__identity-pill--player">
+      <span className={`quiz-summary__identity-avatar ${user.isPremium ? 'premium-glow-avatar' : ''}`} style={{ backgroundColor: playerAvatar?.bg || '#3b82f6' }}>
+        {playerAvatar?.image ? <img src={playerAvatar.image} alt="" /> : (playerAvatar?.emoji || 'U')}
+      </span>
+      <span className="quiz-summary__identity-name">{user.name || 'Ty'}</span>
+    </div>
+  );
+
+  const renderBotPill = () => (
+    <div className="quiz-summary__identity-pill quiz-summary__identity-pill--bot">
+      <span className="quiz-summary__identity-avatar quiz-summary__identity-avatar--bot">AI</span>
+      <span className="quiz-summary__identity-name">Legniczanin</span>
+    </div>
+  );
+
   return (
     <>
-      <TopNav />
+      <TopNav isolatedThemeToggle />
       <div className="quiz-summary">
       {/* Confetti */}
       {showConfetti && (
@@ -208,52 +237,51 @@ function QuizSummary({
       )}
 
       <div className="quiz-summary__content">
-        {/* Title */}
-        <h2 className="quiz-summary__title text-display animate-fade-in-up">
-          {getTitle()}
-        </h2>
+        <section className="quiz-summary__hero-card animate-fade-in-up">
+          {/* Title */}
+          <h2 className="quiz-summary__title text-display">
+            {getTitle()}
+          </h2>
 
-        {/* Score Circle */}
-        <div className="quiz-summary__score-circle animate-scale-in">
-          <svg className="quiz-summary__ring" viewBox="0 0 120 120">
-            <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
-            <circle
-              cx="60" cy="60" r="52"
-              fill="none"
-              stroke="var(--green-primary)"
-              strokeWidth="8"
-              strokeLinecap="round"
-              strokeDasharray={2 * Math.PI * 52}
-              strokeDashoffset={2 * Math.PI * 52 * (1 - animatedScoreRatio)}
-              transform="rotate(-90 60 60)"
-              style={{ transition: 'stroke-dashoffset 1.5s ease-out' }}
-            />
-          </svg>
-          <div className="quiz-summary__score-inner">
-            <span className="quiz-summary__score-value">{animatedScore}</span>
-            <span className="quiz-summary__score-max">/ {maxScore}</span>
+          {/* Score Circle */}
+          <div className="quiz-summary__score-circle animate-scale-in">
+            <svg className="quiz-summary__ring" viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(15,23,42,0.08)" strokeWidth="8" />
+              <circle
+                cx="60" cy="60" r="52"
+                fill="none"
+                stroke="var(--green-primary)"
+                strokeWidth="8"
+                strokeLinecap="round"
+                strokeDasharray={2 * Math.PI * 52}
+                strokeDashoffset={2 * Math.PI * 52 * (1 - animatedScoreRatio)}
+                transform="rotate(-90 60 60)"
+                style={{ transition: 'stroke-dashoffset 1.5s ease-out' }}
+              />
+            </svg>
+            <div className="quiz-summary__score-inner">
+              <span className="quiz-summary__score-value">{animatedScore}</span>
+              <span className="quiz-summary__score-max">/ {maxScore}</span>
+            </div>
           </div>
-        </div>
-
-        {/* Verdict (only for bot matches) */}
-        {!challengeId && (
-          <div className="quiz-summary__verdict animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-            {renderVerdictIcon()}
-            <span className="quiz-summary__verdict-text" style={{ color: verdict.color }}>{verdict.text}</span>
-          </div>
-        )}
+        </section>
 
         {/* Score comparison (only for bot matches) */}
         {!challengeId && (
           <div className="quiz-summary__comparison animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
-            <div className={`quiz-summary__player ${playerWon ? 'quiz-summary__player--winner' : ''}`}>
-              <span className="quiz-summary__player-label">Ty</span>
-              <span className="quiz-summary__player-score">{safePlayerScore}</span>
+            <div className="quiz-summary__comparison-verdict">
+              <div className="quiz-summary__verdict">
+                {renderVerdictIcon()}
+                <span className="quiz-summary__verdict-text" style={{ color: verdict.color }}>{verdict.text}</span>
+              </div>
             </div>
-            <div className="quiz-summary__vs">vs</div>
-            <div className={`quiz-summary__player ${!playerWon && !isDraw ? 'quiz-summary__player--winner' : ''}`}>
-              <span className="quiz-summary__player-label">Bot</span>
+
+            <div className="quiz-summary__comparison-scoreline">
+              {renderPlayerPill()}
+              <span className="quiz-summary__player-score">{safePlayerScore}</span>
+              <div className="quiz-summary__vs">VS</div>
               <span className="quiz-summary__player-score">{safeBotScore}</span>
+              {renderBotPill()}
             </div>
           </div>
         )}
@@ -275,12 +303,12 @@ function QuizSummary({
 
               return (
                 <div key={i} className={`quiz-summary__round-row ${challengeId ? 'quiz-summary__round-row--solo' : ''}`}>
-                  <span className="quiz-summary__round-num">{i + 1}</span>
                   <span className={`quiz-summary__round-player ${isError ? 'quiz-summary__round-player--error' : ''}`}>
                     {pScore} pkt
                   </span>
                   <span className="quiz-summary__round-street-name">
-                    {streets?.[i]?.name || places?.[i]?.name || `Cel ${i + 1}`}
+                    <span className="quiz-summary__round-num">{i + 1}</span>
+                    <span>{streets?.[i]?.name || places?.[i]?.name || `Cel ${i + 1}`}</span>
                   </span>
                   {!challengeId && (
                     <span className="quiz-summary__round-bot">

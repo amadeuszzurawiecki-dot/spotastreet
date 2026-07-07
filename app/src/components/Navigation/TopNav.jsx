@@ -8,8 +8,25 @@ import './TopNav.css';
 
 const ADMIN_EMAIL = 'amadeuszzurawiecki@gmail.com';
 
-export function TopNav({ variant = 'front', adminTab = 'users', onAdminTabChange }) {
+function getStoredTheme() {
+  try {
+    const stored = JSON.parse(localStorage.getItem('spotastreet-theme') || '{}');
+    return stored?.state?.theme === 'dark' ? 'dark' : 'light';
+  } catch {
+    return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+  }
+}
+
+function applyIsolatedTheme(theme) {
+  const nextTheme = theme === 'dark' ? 'dark' : 'light';
+  document.documentElement.dataset.theme = nextTheme;
+  document.documentElement.style.colorScheme = nextTheme;
+  localStorage.setItem('spotastreet-theme', JSON.stringify({ state: { theme: nextTheme }, version: 0 }));
+}
+
+export function TopNav({ variant = 'front', adminTab = 'users', onAdminTabChange, isolatedThemeToggle = false }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isolatedTheme, setIsolatedTheme] = useState(getStoredTheme);
   const navigate = useNavigate();
   const location = useLocation();
   const user = useUserProfile();
@@ -70,6 +87,18 @@ export function TopNav({ variant = 'front', adminTab = 'users', onAdminTabChange
   ];
 
   const navItems = isAdminVariant ? adminNavItems : frontNavItems;
+  const activeTheme = isolatedThemeToggle ? isolatedTheme : theme;
+
+  const handleThemeToggle = () => {
+    if (!isolatedThemeToggle) {
+      toggleTheme();
+      return;
+    }
+
+    const nextTheme = isolatedTheme === 'dark' ? 'light' : 'dark';
+    applyIsolatedTheme(nextTheme);
+    setIsolatedTheme(nextTheme);
+  };
 
   const LogoSygnet = () => (
     <svg className="topnav-logo__sygnet" viewBox="0 0 596.3 535.4" width="22" height="20">
@@ -137,10 +166,10 @@ export function TopNav({ variant = 'front', adminTab = 'users', onAdminTabChange
 
           <UserPill />
 
-          <button className="theme-toggle" onClick={toggleTheme} aria-label="Przełącz motyw">
+          <button className="theme-toggle" onClick={handleThemeToggle} aria-label="Przełącz motyw">
             <span
               className="svg-icon theme-toggle__icon"
-              style={{ '--icon': `url(/icons/${theme === 'dark' ? 'dark' : 'light'}.svg)` }}
+              style={{ '--icon': `url(/icons/${activeTheme === 'dark' ? 'dark' : 'light'}.svg)` }}
               aria-hidden="true"
             />
           </button>
@@ -180,13 +209,13 @@ export function TopNav({ variant = 'front', adminTab = 'users', onAdminTabChange
           ))}
         </nav>
 
-        <button className="desktop-rail__theme" onClick={toggleTheme}>
+        <button className="desktop-rail__theme" onClick={handleThemeToggle}>
           <span
             className="svg-icon"
-            style={{ '--icon': `url(/icons/${theme === 'dark' ? 'dark' : 'light'}.svg)` }}
+            style={{ '--icon': `url(/icons/${activeTheme === 'dark' ? 'dark' : 'light'}.svg)` }}
             aria-hidden="true"
           />
-          <span>{theme === 'dark' ? 'Tryb ciemny' : 'Tryb jasny'}</span>
+          <span>{activeTheme === 'dark' ? 'Tryb ciemny' : 'Tryb jasny'}</span>
         </button>
 
         <button className="desktop-rail__logout" onClick={handleLogout}>
@@ -228,13 +257,13 @@ export function TopNav({ variant = 'front', adminTab = 'users', onAdminTabChange
           </div>
 
           <div className="menu-drawer__account-actions">
-            <button className="menu-drawer__theme" onClick={toggleTheme}>
+            <button className="menu-drawer__theme" onClick={handleThemeToggle}>
               <span
                 className="svg-icon menu-drawer__icon"
-                style={{ '--icon': `url(/icons/${theme === 'dark' ? 'light' : 'dark'}.svg)` }}
+                style={{ '--icon': `url(/icons/${activeTheme === 'dark' ? 'light' : 'dark'}.svg)` }}
                 aria-hidden="true"
               />
-              <span>{theme === 'dark' ? 'Tryb jasny' : 'Tryb ciemny'}</span>
+              <span>{activeTheme === 'dark' ? 'Tryb jasny' : 'Tryb ciemny'}</span>
             </button>
 
             <button
