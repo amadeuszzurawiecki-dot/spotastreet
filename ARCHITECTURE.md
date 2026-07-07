@@ -51,6 +51,8 @@ Multiplayer:
 
 This file is high-risk because it combines UI, timers, matchmaking, Firestore writes, scoring, and bot simulation.
 
+Trusted scoring is not implemented yet. Use `SERVER_SCORING_PLAN.md` before moving ranking, challenge, or multiplayer results to a backend-controlled write path.
+
 ## Admin
 
 Admin panel:

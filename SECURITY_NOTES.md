@@ -41,6 +41,8 @@ Challenge attempts and leaderboard data depend on client-written profile fields.
 
 Multiplayer match data is written from the client.
 
+Trusted ranking and scoring should follow `SERVER_SCORING_PLAN.md` before direct client writes are restricted.
+
 Admin access depends on Firebase Auth custom claim `admin=true`.
 
 These areas should be hardened with server-side validation or Cloud Functions/API routes in a dedicated security task.
