@@ -287,12 +287,22 @@
 }
 
 .admin-users-table--management {
-  min-width: 720px;
+  min-width: 940px;
 }
 
 .admin-users-table--management th:first-child,
 .admin-users-table--management td:first-child {
   width: 100px;
+}
+
+.admin-users-table--management .admin-users-table__account-col,
+.admin-users-table--management .admin-users-table__account-col + td {
+  width: 120px;
+}
+
+.admin-users-table--management th:last-child,
+.admin-users-table--management td:last-child {
+  width: 120px;
 }
 
 .admin-users-table--management th,
@@ -366,6 +376,12 @@
   font-size: 0.85rem;
 }
 
+.admin-table-date {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
 .table-source-tag {
   font-size: 0.75rem;
   color: #94a3b8;
@@ -404,6 +420,30 @@
   justify-content: flex-end;
   gap: 8px;
   white-space: nowrap;
+}
+
+.admin-users-mobile-list,
+.admin-challenge-mobile-list {
+  display: none;
+}
+
+.admin-users-section {
+  padding: 0;
+}
+
+.admin-users-section .admin-section__header {
+  padding: 16px;
+  padding-bottom: 16px;
+  margin-bottom: 0;
+  border-bottom: none;
+}
+
+.admin-users-section .admin-table-wrapper {
+  overflow: visible;
+}
+
+.admin-users-section .admin-users-table-wrap {
+  border: none;
 }
 
 .admin-icon-btn {
@@ -1246,8 +1286,14 @@
     padding: 14px;
   }
 
-  .admin-challenge-table {
-    min-width: 940px;
+  .admin-challenge-table-wrap {
+    display: none;
+  }
+
+  .admin-challenge-mobile-list {
+    display: grid;
+    gap: 12px;
+    padding: 12px;
   }
 
   .admin-challenge-image-row {
@@ -1903,6 +1949,12 @@
 }
 
 @media (max-width: 719px) {
+  .admin-main {
+    width: auto;
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
   .admin-container,
   .admin-header,
   .admin-section,
@@ -1910,5 +1962,146 @@
   .admin-auth-card {
     padding-left: 16px;
     padding-right: 16px;
+  }
+
+  .admin-users-section {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .admin-users-section .admin-section__header {
+    padding: 16px;
+  }
+
+  .admin-users-section .admin-users-table {
+    display: none;
+  }
+
+  .admin-users-mobile-list {
+    display: grid;
+    gap: 12px;
+    padding: 12px;
+  }
+}
+
+.admin-mobile-card {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-mobile-card--self {
+  border-color: rgba(22, 163, 74, 0.35);
+  background: rgba(22, 163, 74, 0.08);
+}
+
+.admin-mobile-card--empty {
+  color: var(--text-tertiary);
+  text-align: center;
+}
+
+.admin-mobile-card__top {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-mobile-card__identity {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.admin-mobile-card__identity strong {
+  color: var(--text-primary);
+  font-size: 0.92rem;
+  font-weight: 750;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-mobile-card__identity span {
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-mobile-card__meta {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.admin-mobile-card__meta div {
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-muted);
+}
+
+.admin-mobile-card__meta span,
+.admin-mobile-card__meta strong {
+  display: block;
+}
+
+.admin-mobile-card__meta span {
+  color: var(--text-tertiary);
+  font-size: 0.68rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.admin-mobile-card__meta strong {
+  margin-top: 2px;
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+.admin-mobile-card__actions,
+.admin-mobile-card__pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-mobile-card__actions {
+  justify-content: flex-end;
+}
+
+.admin-mobile-user-card .account-type-pill {
+  min-width: 78px;
+}
+
+.admin-mobile-challenge-card__thumb {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  background: var(--surface-muted);
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+@media (max-width: 420px) {
+  .admin-mobile-card__top {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .admin-mobile-card__top .account-type-pill,
+  .admin-mobile-card__top .admin-challenge-mode-icon {
+    grid-column: 1 / -1;
+    width: fit-content;
   }
 }

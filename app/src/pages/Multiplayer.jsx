@@ -457,7 +457,7 @@ export function Multiplayer() {
     const botProfile = {
       email: 'wirtualny_kierowca@bolters.pl',
       name: 'Kierowca Jan',
-      avatarId: 'auris',
+      avatarId: 'funny-bunny',
       isPremium: true,
       isBot: true,
       score: 0,
@@ -786,7 +786,7 @@ export function Multiplayer() {
     const fallbackPlayer = {
       email: '',
       name: 'Gracz',
-      avatarId: 'bolciarz-1',
+      avatarId: '01',
       customAvatar: null,
       isPremium: false,
       score: 0,

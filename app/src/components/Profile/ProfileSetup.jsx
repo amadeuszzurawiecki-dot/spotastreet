@@ -14,7 +14,7 @@ export function ProfileSetup({ onComplete }) {
   const firstName = initialGoogleName.split(' ')[0];
   const [name, setName] = useState(firstName);
   const [town, setTown] = useState(user.town || 'Legnica');
-  const [avatarId, setAvatarId] = useState(user.avatarId || 'man-1');
+  const [avatarId, setAvatarId] = useState(user.avatarId || '01');
   const [hideEmail, setHideEmail] = useState(user.hideEmail || false);
   const [customAvatar, setCustomAvatar] = useState(user.customAvatar || null);
 

@@ -122,6 +122,80 @@ function AdminChallengesPanel({ adminChallenges }) {
     });
   };
 
+  const renderChallengeCards = (items, emptyMessage) => {
+    if (items.length === 0) {
+      return (
+        <div className="admin-mobile-card admin-mobile-card--empty">
+          {emptyMessage}
+        </div>
+      );
+    }
+
+    return items.map((ch) => {
+      const status = getChallengeStatus(ch);
+      const { startAt, endAt } = getChallengeWindow(ch);
+      const modeIcon = gameModeIcons[ch.gameMode] || '/icons/flag.svg';
+      return (
+        <article className="admin-mobile-card admin-mobile-challenge-card" key={`${ch.id}-card`}>
+          <div className="admin-mobile-card__top">
+            {ch.imageUrl ? (
+              <img className="admin-mobile-challenge-card__thumb" src={ch.imageUrl} alt="" />
+            ) : (
+              <span className={`admin-mobile-challenge-card__thumb line-icon line-icon--${ch.icon || 'target'}`} aria-hidden="true" />
+            )}
+            <div className="admin-mobile-card__identity">
+              <strong>{ch.title || 'Bez tytułu'}</strong>
+              <span>{ch.description || 'Brak opisu'}</span>
+            </div>
+            <span
+              className="admin-challenge-mode-icon svg-icon"
+              style={{ '--icon': `url(${modeIcon})` }}
+              title={gameModeLabels[ch.gameMode] || ch.gameMode || 'Nieznany tryb'}
+              aria-hidden="true"
+            />
+          </div>
+
+          <div className="admin-mobile-card__meta">
+            <div>
+              <span>Start</span>
+              <strong>{formatDateTime(startAt)}</strong>
+            </div>
+            <div>
+              <span>Koniec</span>
+              <strong>{formatDateTime(endAt)}</strong>
+            </div>
+          </div>
+
+          <div className="admin-mobile-card__pills">
+            <span className="challenge-pill challenge-pill--light">
+              <span className="svg-icon" style={{ '--icon': 'url(/icons/flag.svg)' }} aria-hidden="true" />
+              {Number(ch.rounds) || 0} rund
+            </span>
+            <span className="challenge-pill challenge-pill--dark">
+              <span className="svg-icon" style={{ '--icon': 'url(/icons/alarm.svg)' }} aria-hidden="true" />
+              {Number(ch.timeLimit) || 0}s
+            </span>
+            <span className={`admin-challenge-status admin-challenge-status--${status.type}`}>
+              {status.label}
+            </span>
+          </div>
+
+          <div className="admin-mobile-card__actions">
+            <button className="admin-icon-btn" type="button" onClick={() => handleStartEdit(ch)} aria-label={`Edytuj ${ch.title || 'wyzwanie'}`} title="Edytuj">
+              <span className="svg-icon" style={{ '--icon': 'url(/icons/edit.svg)' }} aria-hidden="true" />
+            </button>
+            <button className="admin-icon-btn" type="button" onClick={() => handleToggleDisable(ch)} aria-label={ch.disabled ? 'Włącz wyzwanie' : 'Wyłącz wyzwanie'} title={ch.disabled ? 'Włącz' : 'Wyłącz'}>
+              <span className="svg-icon" style={{ '--icon': `url(${ch.disabled ? '/icons/play.svg' : '/icons/x.svg'})` }} aria-hidden="true" />
+            </button>
+            <button className="admin-icon-btn admin-icon-btn--danger" type="button" onClick={() => handleDeleteChallenge(ch.id)} aria-label={`Usuń ${ch.title || 'wyzwanie'}`} title="Usuń">
+              <span className="svg-icon" style={{ '--icon': 'url(/icons/trash.svg)' }} aria-hidden="true" />
+            </button>
+          </div>
+        </article>
+      );
+    });
+  };
+
   return (
     <div className="admin-challenges-container admin-challenges-container--table">
       <section className="admin-section glass-card admin-challenges-overview">
@@ -176,6 +250,9 @@ function AdminChallengesPanel({ adminChallenges }) {
                       {renderChallengeRows(group.items, group.empty)}
                     </tbody>
                   </table>
+                </div>
+                <div className="admin-challenge-mobile-list">
+                  {renderChallengeCards(group.items, group.empty)}
                 </div>
               </section>
             ))}

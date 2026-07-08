@@ -1,6 +1,20 @@
 import { AVATARS } from '../../data/avatars';
 import { maskEmail } from '../../utils/privacy';
 
+function formatAdminDateTime(value) {
+  if (!value) return '—';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '—';
+
+  return new Intl.DateTimeFormat('pl-PL', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date);
+}
+
 function AdminUsersPanel({ adminUsers, user }) {
   const {
     allUsers,
@@ -26,9 +40,22 @@ function AdminUsersPanel({ adminUsers, user }) {
     userDraft,
   } = adminUsers;
 
+  const renderUserAvatar = (u) => {
+    const avatarImage = getAvatarImage(u);
+    return (
+      <span className={`admin-user-table-avatar ${u.isPremium ? 'premium-glow-avatar' : ''}`}>
+        {avatarImage ? (
+          <img src={avatarImage} alt="" />
+        ) : (
+          <span className="line-icon line-icon--user" aria-hidden="true" />
+        )}
+      </span>
+    );
+  };
+
   return (
     <>
-      <section className="admin-section glass-card">
+      <section className="admin-section glass-card admin-users-section">
         <div className="admin-section__header">
           <div>
             <h2 className="admin-section__title">Użytkownicy</h2>
@@ -66,7 +93,9 @@ function AdminUsersPanel({ adminUsers, user }) {
                   <tr>
                     <th>Imię</th>
                     <th>E-mail</th>
-                    <th>Typ konta</th>
+                    <th className="admin-users-table__account-col">Typ konta</th>
+                    <th>Utworzono</th>
+                    <th>Zalogowano</th>
                     <th aria-label="Akcje"></th>
                   </tr>
                 </thead>
@@ -74,18 +103,11 @@ function AdminUsersPanel({ adminUsers, user }) {
                   {filteredUsers.map((u, idx) => {
                     const email = u.email || '';
                     const isSelf = email.toLowerCase().trim() === user.email?.toLowerCase()?.trim();
-                    const avatarImage = getAvatarImage(u);
                     return (
                       <tr key={`${email}-${idx}`} className={isSelf ? 'row-highlight' : ''}>
                         <td>
                           <div className="table-user-info">
-                            <span className="admin-user-table-avatar">
-                              {avatarImage ? (
-                                <img src={avatarImage} alt="" />
-                              ) : (
-                                <span className="line-icon line-icon--user" aria-hidden="true" />
-                              )}
-                            </span>
+                            {renderUserAvatar(u)}
                             <span className="table-user-name">
                               {u.name || 'Bez nazwy'}
                             </span>
@@ -94,7 +116,7 @@ function AdminUsersPanel({ adminUsers, user }) {
                         <td>
                           <span className="table-email">{email}</span>
                         </td>
-                        <td>
+                        <td className="admin-users-table__account-col">
                           <button
                             type="button"
                             className={`account-type-pill ${u.isPremium ? 'account-type-pill--premium' : 'account-type-pill--free'}`}
@@ -103,6 +125,12 @@ function AdminUsersPanel({ adminUsers, user }) {
                           >
                             {u.isPremium ? 'Premium' : 'Free'}
                           </button>
+                        </td>
+                        <td>
+                          <span className="admin-table-date">{formatAdminDateTime(u.createdAt)}</span>
+                        </td>
+                        <td>
+                          <span className="admin-table-date">{formatAdminDateTime(u.lastLoginAt)}</span>
                         </td>
                         <td>
                           <div className="admin-user-table-actions">
@@ -129,6 +157,61 @@ function AdminUsersPanel({ adminUsers, user }) {
                   })}
                 </tbody>
               </table>
+              <div className="admin-users-mobile-list">
+                {filteredUsers.map((u, idx) => {
+                  const email = u.email || '';
+                  const isSelf = email.toLowerCase().trim() === user.email?.toLowerCase()?.trim();
+                  return (
+                    <article key={`${email}-${idx}-card`} className={`admin-mobile-card admin-mobile-user-card ${isSelf ? 'admin-mobile-card--self' : ''}`}>
+                      <div className="admin-mobile-card__top">
+                        {renderUserAvatar(u)}
+                        <div className="admin-mobile-card__identity">
+                          <strong>{u.name || 'Bez nazwy'}</strong>
+                          <span>{email}</span>
+                        </div>
+                        <button
+                          type="button"
+                          className={`account-type-pill ${u.isPremium ? 'account-type-pill--premium' : 'account-type-pill--free'}`}
+                          onClick={() => handleTogglePremium(email, u.isPremium)}
+                          title={u.isPremium ? 'Odbierz Premium' : 'Nadaj Premium'}
+                        >
+                          {u.isPremium ? 'Premium' : 'Free'}
+                        </button>
+                      </div>
+
+                      <div className="admin-mobile-card__meta">
+                        <div>
+                          <span>Utworzono</span>
+                          <strong>{formatAdminDateTime(u.createdAt)}</strong>
+                        </div>
+                        <div>
+                          <span>Zalogowano</span>
+                          <strong>{formatAdminDateTime(u.lastLoginAt)}</strong>
+                        </div>
+                      </div>
+
+                      <div className="admin-mobile-card__actions">
+                        <button
+                          type="button"
+                          className="admin-icon-btn"
+                          onClick={() => openUserEditor(u)}
+                          aria-label={`Edytuj profil ${u.name || maskEmail(email)}`}
+                        >
+                          <span className="svg-icon" style={{ '--icon': 'url(/icons/edit.svg)' }} aria-hidden="true" />
+                        </button>
+                        <button
+                          type="button"
+                          className="admin-icon-btn admin-icon-btn--danger"
+                          onClick={() => setDeletingEmail(email)}
+                          aria-label={`Usuń konto ${maskEmail(email)}`}
+                        >
+                          <span className="svg-icon" style={{ '--icon': 'url(/icons/trash.svg)' }} aria-hidden="true" />
+                        </button>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>
