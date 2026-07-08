@@ -223,42 +223,44 @@ function AdminChallengesPanel({ adminChallenges }) {
           <div className="admin-empty-state">
             <p>Brak wyzwań codziennych. Stwórz pierwsze wyzwanie przyciskiem powyżej.</p>
           </div>
-        ) : (
-          <div className="admin-challenge-groups">
-            {challengeGroups.map(group => (
-              <section className="admin-challenge-group" key={group.id}>
-                <div className="admin-challenge-group__header">
-                  <div>
-                    <h3>{group.title}</h3>
-                    <p>{group.desc}</p>
-                  </div>
-                  <span>{group.items.length}</span>
-                </div>
-                <div className="admin-challenge-table-wrap">
-                  <table className="admin-challenge-table">
-                    <thead>
-                      <tr>
-                        <th>Ramy</th>
-                        <th>Wyzwanie</th>
-                        <th>Tryb</th>
-                        <th>Rundy</th>
-                        <th>Status</th>
-                        <th>Akcje</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {renderChallengeRows(group.items, group.empty)}
-                    </tbody>
-                  </table>
-                </div>
-                <div className="admin-challenge-mobile-list">
-                  {renderChallengeCards(group.items, group.empty)}
-                </div>
-              </section>
-            ))}
-          </div>
-        )}
+        ) : null}
       </section>
+
+      {!loadingChallenges && challenges.length > 0 && (
+        <div className="admin-challenge-groups">
+          {challengeGroups.map(group => (
+            <section className="admin-section glass-card admin-challenge-group" key={group.id}>
+              <div className="admin-challenge-group__header">
+                <div>
+                  <h3>{group.title}</h3>
+                  <p>{group.desc}</p>
+                </div>
+                <span>{group.items.length}</span>
+              </div>
+              <div className="admin-challenge-table-wrap">
+                <table className="admin-challenge-table">
+                  <thead>
+                    <tr>
+                      <th>Ramy</th>
+                      <th>Wyzwanie</th>
+                      <th>Tryb</th>
+                      <th>Rundy</th>
+                      <th>Status</th>
+                      <th>Akcje</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {renderChallengeRows(group.items, group.empty)}
+                  </tbody>
+                </table>
+              </div>
+              <div className="admin-challenge-mobile-list">
+                {renderChallengeCards(group.items, group.empty)}
+              </div>
+            </section>
+          ))}
+        </div>
+      )}
 
       {challengeEditorOpen && (
         <div className="admin-modal-overlay animate-fade-in">

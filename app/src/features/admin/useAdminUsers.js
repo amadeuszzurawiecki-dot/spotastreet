@@ -173,7 +173,7 @@ export function useAdminUsers(user, setActionStatus) {
           email: p.email || 'Brak emaila',
           name: p.name || 'Użytkownik Spotastreet',
           town: p.town || 'Legnica',
-          avatarId: p.avatarId || '01',
+          avatarId: p.avatarId || '3ddd-1',
           customAvatar: p.customAvatar || null,
           car: p.car,
           stats: p.stats || {},
@@ -182,8 +182,6 @@ export function useAdminUsers(user, setActionStatus) {
           onlineWins: p.onlineWins || 0,
           onlineLosses: p.onlineLosses || 0,
           onlineDraws: p.onlineDraws || 0,
-          createdAt: p.createdAt || p.created || p.metadata?.creationTime || null,
-          lastLoginAt: p.lastLoginAt || p.lastLogin || p.lastSignInTime || p.metadata?.lastSignInTime || null,
           updatedAt: p.updatedAt,
           source: 'Chmura',
           isPremium: !!p.isPremium
@@ -199,7 +197,7 @@ export function useAdminUsers(user, setActionStatus) {
           email: p.email || profileMap[key]?.email || 'Brak emaila',
           name: p.name || profileMap[key]?.name || 'Użytkownik Spotastreet',
           town: p.town || profileMap[key]?.town || 'Legnica',
-          avatarId: p.avatarId || profileMap[key]?.avatarId || '01',
+          avatarId: p.avatarId || profileMap[key]?.avatarId || '3ddd-1',
           customAvatar: p.customAvatar || profileMap[key]?.customAvatar || null,
           car: p.car || profileMap[key]?.car,
           stats: p.stats || profileMap[key]?.stats || {},
@@ -208,8 +206,6 @@ export function useAdminUsers(user, setActionStatus) {
           onlineWins: p.onlineWins || profileMap[key]?.onlineWins || 0,
           onlineLosses: p.onlineLosses || profileMap[key]?.onlineLosses || 0,
           onlineDraws: p.onlineDraws || profileMap[key]?.onlineDraws || 0,
-          createdAt: p.createdAt || profileMap[key]?.createdAt || null,
-          lastLoginAt: p.lastLoginAt || p.lastLogin || profileMap[key]?.lastLoginAt || null,
           updatedAt: p.updatedAt || profileMap[key]?.updatedAt || null,
           source: profileMap[key] ? 'Chmura + Lokalnie' : 'Lokalnie',
           isPremium: !!p.isPremium || !!profileMap[key]?.isPremium
@@ -224,7 +220,7 @@ export function useAdminUsers(user, setActionStatus) {
           email: user.email,
           name: user.name || 'Aktywny Użytkownik',
           town: user.town || 'Legnica',
-          avatarId: user.avatarId || '01',
+          avatarId: user.avatarId || '3ddd-1',
           customAvatar: user.customAvatar || null,
           car: user.car,
           stats: user.stats || {},
@@ -233,8 +229,6 @@ export function useAdminUsers(user, setActionStatus) {
           onlineWins: user.onlineWins || 0,
           onlineLosses: user.onlineLosses || 0,
           onlineDraws: user.onlineDraws || 0,
-          createdAt: null,
-          lastLoginAt: null,
           source: 'Sesja Aktywna',
           isPremium: !!user.isPremium
         };

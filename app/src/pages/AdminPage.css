@@ -287,7 +287,7 @@
 }
 
 .admin-users-table--management {
-  min-width: 940px;
+  min-width: 720px;
 }
 
 .admin-users-table--management th:first-child,
@@ -295,8 +295,7 @@
   width: 100px;
 }
 
-.admin-users-table--management .admin-users-table__account-col,
-.admin-users-table--management .admin-users-table__account-col + td {
+.admin-users-table--management .admin-users-table__account-col {
   width: 120px;
 }
 
@@ -374,12 +373,6 @@
   border-radius: 0;
   font-family: inherit;
   font-size: 0.85rem;
-}
-
-.admin-table-date {
-  color: var(--text-secondary);
-  font-size: 0.8rem;
-  white-space: nowrap;
 }
 
 .table-source-tag {

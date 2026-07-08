@@ -1,20 +1,6 @@
 import { AVATARS } from '../../data/avatars';
 import { maskEmail } from '../../utils/privacy';
 
-function formatAdminDateTime(value) {
-  if (!value) return '—';
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '—';
-
-  return new Intl.DateTimeFormat('pl-PL', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(date);
-}
-
 function AdminUsersPanel({ adminUsers, user }) {
   const {
     allUsers,
@@ -94,8 +80,6 @@ function AdminUsersPanel({ adminUsers, user }) {
                     <th>Imię</th>
                     <th>E-mail</th>
                     <th className="admin-users-table__account-col">Typ konta</th>
-                    <th>Utworzono</th>
-                    <th>Zalogowano</th>
                     <th aria-label="Akcje"></th>
                   </tr>
                 </thead>
@@ -125,12 +109,6 @@ function AdminUsersPanel({ adminUsers, user }) {
                           >
                             {u.isPremium ? 'Premium' : 'Free'}
                           </button>
-                        </td>
-                        <td>
-                          <span className="admin-table-date">{formatAdminDateTime(u.createdAt)}</span>
-                        </td>
-                        <td>
-                          <span className="admin-table-date">{formatAdminDateTime(u.lastLoginAt)}</span>
                         </td>
                         <td>
                           <div className="admin-user-table-actions">
@@ -177,17 +155,6 @@ function AdminUsersPanel({ adminUsers, user }) {
                         >
                           {u.isPremium ? 'Premium' : 'Free'}
                         </button>
-                      </div>
-
-                      <div className="admin-mobile-card__meta">
-                        <div>
-                          <span>Utworzono</span>
-                          <strong>{formatAdminDateTime(u.createdAt)}</strong>
-                        </div>
-                        <div>
-                          <span>Zalogowano</span>
-                          <strong>{formatAdminDateTime(u.lastLoginAt)}</strong>
-                        </div>
                       </div>
 
                       <div className="admin-mobile-card__actions">
