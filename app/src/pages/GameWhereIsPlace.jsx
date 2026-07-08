@@ -17,10 +17,13 @@ import {
 } from '../features/game/gameRound';
 import { scorePlaceDistance } from '../features/game/gameScoring';
 import {
+  clearChallengeSummarySnapshot,
   getSummaryBotRounds,
   getSummaryBotScore,
   getSummaryTotalRounds,
+  readChallengeSummarySnapshot,
   resetSingleplayerSummary,
+  saveChallengeSummarySnapshot,
 } from '../features/game/gameSummary';
 import useSingleplayerGame from '../features/game/useSingleplayerGame';
 import { AVATARS } from '../data/avatars';
@@ -32,6 +35,11 @@ function GameWhereIsPlace() {
   const user = useUserProfile();
 
   const challenge = location.state?.challenge;
+  const restoredChallengeSummaryRef = useRef(undefined);
+  if (restoredChallengeSummaryRef.current === undefined) {
+    restoredChallengeSummaryRef.current = readChallengeSummarySnapshot(challenge?.id, 'where-is-place');
+  }
+  const restoredChallengeSummary = restoredChallengeSummaryRef.current;
 
   // Game Mode Variant State: 'select' | 'training' | 'ai' | 'challenge'
   const [gameVariant, setGameVariant] = useState(challenge ? 'challenge' : 'select');
@@ -49,9 +57,9 @@ function GameWhereIsPlace() {
   const [botPinPosition, setBotPinPosition] = useState(null);
   const [isRoundActive, setIsRoundActive] = useState(false);
   const [showResult, setShowResult] = useState(false);
-  const [isGameOver, setIsGameOver] = useState(false);
+  const [isGameOver, setIsGameOver] = useState(Boolean(restoredChallengeSummary));
   const [roundResult, setRoundResult] = useState(null);
-  const [summaryData, setSummaryData] = useState(null);
+  const [summaryData, setSummaryData] = useState(restoredChallengeSummary);
   const [closestPoint, setClosestPoint] = useState(null);
   const [showTarget, setShowTarget] = useState(false);
   const [currentBotResult, setCurrentBotResult] = useState(null);
@@ -271,7 +279,11 @@ function GameWhereIsPlace() {
   };
 
   const finishGameWithSummary = (summaryValues) => {
-    setSummaryData(prev => prev || createSummaryData(summaryValues));
+    const summary = createSummaryData(summaryValues);
+    if (gameVariant === 'challenge' && challenge?.id) {
+      saveChallengeSummarySnapshot(challenge.id, summary.gameMode, summary);
+    }
+    setSummaryData(prev => prev || summary);
     finishGame();
   };
 
@@ -320,17 +332,23 @@ function GameWhereIsPlace() {
         places={summary.places}
         isTraining={summary.isTraining}
         challengeId={summary.challengeId}
-        onPlayAgain={() => resetSingleplayerSummary({
-          setBotRounds,
-          setBotScore,
-          setCurrentRound,
-          setGameVariant,
-          setIsGameOver,
-          setPlayerRounds,
-          setPlayerScore,
-          setSummaryData,
-        })}
-        onExit={() => navigate('/')}
+        onPlayAgain={() => {
+          clearChallengeSummarySnapshot(summary.challengeId, summary.gameMode);
+          resetSingleplayerSummary({
+            setBotRounds,
+            setBotScore,
+            setCurrentRound,
+            setGameVariant,
+            setIsGameOver,
+            setPlayerRounds,
+            setPlayerScore,
+            setSummaryData,
+          });
+        }}
+        onExit={() => {
+          clearChallengeSummarySnapshot(summary.challengeId, summary.gameMode);
+          navigate('/');
+        }}
       />
     );
   }
