@@ -28,6 +28,7 @@ function QuizSummary({
   const user = useUserProfile();
   const [animatedScore, setAnimatedScore] = useState(0);
   const [showDetails, setShowDetails] = useState(false);
+  const [actionsEnabled, setActionsEnabled] = useState(false);
   const [challengeLeaderboard, setChallengeLeaderboard] = useState([]);
   const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
   const hasRecordedStatsRef = useRef(false);
@@ -50,6 +51,11 @@ function QuizSummary({
       console.warn('QuizSummary received incomplete round data; using safe fallbacks.');
     }
   }, [playerRounds, botRounds]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setActionsEnabled(true), 900);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   const recordSummaryStats = () => {
     if (!user.isLoggedIn) return;
@@ -153,6 +159,7 @@ function QuizSummary({
   };
 
   const handlePlayAgain = () => {
+    if (!actionsEnabled) return;
     recordSummaryStats();
     if (onPlayAgain) {
       onPlayAgain();
@@ -162,6 +169,7 @@ function QuizSummary({
   };
 
   const handleExit = () => {
+    if (!actionsEnabled) return;
     recordSummaryStats();
     if (onExit) {
       onExit();
@@ -397,10 +405,10 @@ function QuizSummary({
 
         {/* Actions */}
         <div className="quiz-summary__actions animate-fade-in-up" style={{ animationDelay: '1s' }}>
-          <button className="btn-primary" onClick={handlePlayAgain}>
+          <button className="btn-primary" onClick={handlePlayAgain} disabled={!actionsEnabled}>
             Zagraj ponownie
           </button>
-          <button className="btn-secondary" onClick={handleExit}>
+          <button className="btn-secondary" onClick={handleExit} disabled={!actionsEnabled}>
             Wróć do Menu
           </button>
         </div>
