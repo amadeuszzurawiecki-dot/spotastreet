@@ -7,6 +7,33 @@ import { maskEmail } from '../utils/privacy';
 import { TopNav } from './Navigation/TopNav';
 import './QuizSummary.css';
 
+function getChallengeRecordKey(challengeId, score) {
+  if (!challengeId) return null;
+  return `spotastreet:challenge-recorded:${challengeId}:${score}`;
+}
+
+function hasRecordedChallengeInSession(challengeId, score) {
+  const key = getChallengeRecordKey(challengeId, score);
+  if (!key || typeof window === 'undefined') return false;
+
+  try {
+    return window.sessionStorage.getItem(key) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function markChallengeRecordedInSession(challengeId, score) {
+  const key = getChallengeRecordKey(challengeId, score);
+  if (!key || typeof window === 'undefined') return;
+
+  try {
+    window.sessionStorage.setItem(key, '1');
+  } catch {
+    // Session storage is only a loop guard; failing here should not block the summary.
+  }
+}
+
 /**
  * Full-screen quiz summary with animated score reveal and round breakdown
  */
@@ -64,6 +91,8 @@ function QuizSummary({
 
     try {
       if (challengeId) {
+        if (hasRecordedChallengeInSession(challengeId, safePlayerScore)) return;
+        markChallengeRecordedInSession(challengeId, safePlayerScore);
         user.recordChallengeAttempt(challengeId, safePlayerScore);
       } else if (!isTraining && gameMode) {
         user.recordGameResult(gameMode, safePlayerScore > safeBotScore);
