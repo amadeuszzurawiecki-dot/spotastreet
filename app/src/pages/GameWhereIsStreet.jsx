@@ -169,7 +169,6 @@ function GameWhereIsStreet() {
     }));
 
     setIsRoundActive(false);
-    if (finishChallengeRoundIfComplete(finalSummaryValues)) return;
     setShowResult(true);
   };
 
@@ -218,7 +217,6 @@ function GameWhereIsStreet() {
       botDistance: isTrainingVariant(gameVariant) ? 0 : botResult.distance,
     }));
     setIsRoundActive(false);
-    if (finishChallengeRoundIfComplete(finalSummaryValues)) return;
     setShowResult(true);
   };
 
@@ -238,12 +236,6 @@ function GameWhereIsStreet() {
     setIsRoundActive,
     setShowResult,
   });
-
-  useEffect(() => {
-    if (gameVariant === 'challenge' && summaryData && !isGameOver) {
-      finishGame();
-    }
-  }, [gameVariant, summaryData, isGameOver, finishGame]);
 
   // Start first round when streets are loaded
   useEffect(() => {
@@ -279,13 +271,6 @@ function GameWhereIsStreet() {
     }
     setSummaryData(prev => prev || summary);
     finishGame();
-  };
-
-  const finishChallengeRoundIfComplete = (summaryValues) => {
-    const roundsLimit = getEffectiveTotalRounds(totalRounds, streets.length);
-    if (gameVariant !== 'challenge' || currentRound + 1 < roundsLimit) return false;
-    finishGameWithSummary(summaryValues);
-    return true;
   };
 
   // Handle map click

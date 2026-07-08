@@ -195,7 +195,6 @@ function GameWhatStreet() {
       botDistance: targetPoint && botPosition ? haversineDistance(targetPoint, botPosition) : undefined,
     }));
     setIsRoundActive(false);
-    if (finishChallengeRoundIfComplete(finalSummaryValues)) return;
     setShowResult(true);
   }, [
     botRounds,
@@ -227,12 +226,6 @@ function GameWhatStreet() {
     setIsRoundActive,
     setShowResult,
   });
-
-  useEffect(() => {
-    if (gameVariant === 'challenge' && summaryData && !isGameOver) {
-      finishGame();
-    }
-  }, [gameVariant, summaryData, isGameOver, finishGame]);
 
   // Start first round
   useEffect(() => {
@@ -276,13 +269,6 @@ function GameWhatStreet() {
     }
     setSummaryData(prev => prev || summary);
     finishGame();
-  };
-
-  const finishChallengeRoundIfComplete = (summaryValues) => {
-    const roundsLimit = getEffectiveTotalRounds(totalRounds, streets.length);
-    if (gameVariant !== 'challenge' || currentRound + 1 < roundsLimit) return false;
-    finishGameWithSummary(summaryValues);
-    return true;
   };
 
   // Handle street guess
@@ -340,7 +326,6 @@ function GameWhatStreet() {
       botDistance,
     }));
     setIsRoundActive(false);
-    if (finishChallengeRoundIfComplete(finalSummaryValues)) return;
     setShowResult(true);
   };
 

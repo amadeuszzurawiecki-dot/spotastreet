@@ -176,7 +176,6 @@ function GameWhereIsPlace() {
     }));
 
     setIsRoundActive(false);
-    if (finishChallengeRoundIfComplete(finalSummaryValues)) return;
     setShowResult(true);
   };
 
@@ -224,7 +223,6 @@ function GameWhereIsPlace() {
       botDistance: isTrainingVariant(gameVariant) ? 0 : botResult.distance,
     }));
     setIsRoundActive(false);
-    if (finishChallengeRoundIfComplete(finalSummaryValues)) return;
     setShowResult(true);
   };
 
@@ -244,12 +242,6 @@ function GameWhereIsPlace() {
     setIsRoundActive,
     setShowResult,
   });
-
-  useEffect(() => {
-    if (gameVariant === 'challenge' && summaryData && !isGameOver) {
-      finishGame();
-    }
-  }, [gameVariant, summaryData, isGameOver, finishGame]);
 
   // Start first round
   useEffect(() => {
@@ -285,13 +277,6 @@ function GameWhereIsPlace() {
     }
     setSummaryData(prev => prev || summary);
     finishGame();
-  };
-
-  const finishChallengeRoundIfComplete = (summaryValues) => {
-    const roundsLimit = getEffectiveTotalRounds(totalRounds, places.length);
-    if (gameVariant !== 'challenge' || currentRound + 1 < roundsLimit) return false;
-    finishGameWithSummary(summaryValues);
-    return true;
   };
 
   const handleMapClick = (position) => {
