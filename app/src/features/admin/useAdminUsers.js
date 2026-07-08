@@ -182,6 +182,8 @@ export function useAdminUsers(user, setActionStatus) {
           onlineWins: p.onlineWins || 0,
           onlineLosses: p.onlineLosses || 0,
           onlineDraws: p.onlineDraws || 0,
+          createdAt: p.createdAt || p.created || p.metadata?.creationTime || null,
+          lastLoginAt: p.lastLoginAt || p.lastLogin || p.lastSignInTime || p.metadata?.lastSignInTime || null,
           updatedAt: p.updatedAt,
           source: 'Chmura',
           isPremium: !!p.isPremium
@@ -206,6 +208,9 @@ export function useAdminUsers(user, setActionStatus) {
           onlineWins: p.onlineWins || profileMap[key]?.onlineWins || 0,
           onlineLosses: p.onlineLosses || profileMap[key]?.onlineLosses || 0,
           onlineDraws: p.onlineDraws || profileMap[key]?.onlineDraws || 0,
+          createdAt: p.createdAt || profileMap[key]?.createdAt || null,
+          lastLoginAt: p.lastLoginAt || p.lastLogin || profileMap[key]?.lastLoginAt || null,
+          updatedAt: p.updatedAt || profileMap[key]?.updatedAt || null,
           source: profileMap[key] ? 'Chmura + Lokalnie' : 'Lokalnie',
           isPremium: !!p.isPremium || !!profileMap[key]?.isPremium
         };
@@ -228,6 +233,8 @@ export function useAdminUsers(user, setActionStatus) {
           onlineWins: user.onlineWins || 0,
           onlineLosses: user.onlineLosses || 0,
           onlineDraws: user.onlineDraws || 0,
+          createdAt: null,
+          lastLoginAt: null,
           source: 'Sesja Aktywna',
           isPremium: !!user.isPremium
         };
