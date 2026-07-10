@@ -82,33 +82,8 @@
   border-bottom: 0;
 }
 
-.challenges-carousel {
+.home-challenges-container {
   padding: 16px;
-  overflow: hidden;
-}
-
-.challenges-carousel__track {
-  display: flex;
-  gap: 16px;
-  transform: translate3d(0, 0, 0);
-}
-
-.challenges-carousel__track--static {
-  justify-content: flex-start;
-}
-
-.challenges-carousel__track--looping {
-  width: max-content;
-  animation: challenges-carousel-loop 28s linear infinite;
-}
-
-.challenges-carousel:hover .challenges-carousel__track--looping {
-  animation-play-state: paused;
-}
-
-@keyframes challenges-carousel-loop {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(calc(-50% - 8px), 0, 0); }
 }
 
 .home-loading-challenges {
@@ -201,11 +176,23 @@
 }
 
 .challenge-card {
-  flex: 0 0 calc((100% - 32px) / 3);
   display: grid;
   grid-template-rows: 144px auto;
   border: 1px solid var(--border);
   border-radius: var(--radius-control) !important;
+}
+
+.home-challenges-container .challenges-page__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  padding: 0;
+}
+
+.home-challenges-container .challenges-page__card {
+  width: 100%;
+  flex: none;
+  text-align: left;
 }
 
 .challenge-card__top {
@@ -255,13 +242,7 @@
   text-align: left;
 }
 
-.challenge-card__title-container {
-  min-width: 0;
-  overflow: hidden;
-}
-
-.challenge-card__title,
-.marquee-text {
+.challenge-card__title {
   color: var(--text-primary);
   font-family: var(--font-display);
   font-size: 17px;
@@ -273,21 +254,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.marquee-text-wrapper {
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.marquee-text {
-  display: inline-block;
-  animation: marquee-scroll 10s linear infinite;
-}
-
-@keyframes marquee-scroll {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
 }
 
 .challenge-card__desc {
@@ -405,7 +371,6 @@
   align-self: center;
   justify-self: center;
   color: #fff;
-  transform: translateY(3px);
 }
 
 .mode-card__svg {
@@ -474,6 +439,12 @@
   }
 }
 
+@media (max-width: 840px) {
+  .home-challenges-container .challenges-page__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 620px) {
   .home-modes {
     width: calc(100% - 32px);
@@ -494,22 +465,12 @@
     display: block;
   }
 
-  .challenges-carousel {
-    display: block;
-  }
-
-  .challenges-carousel__track {
-    flex-direction: column;
-  }
-
-  .challenges-carousel__track--looping {
-    transform: none;
-    animation: none;
-  }
-
   .challenge-card {
-    flex-basis: 100%;
     grid-template-rows: minmax(132px, auto) auto;
+  }
+
+  .home-challenges-container .challenges-page__grid {
+    grid-template-columns: 1fr;
   }
 
   .challenge-card__top {

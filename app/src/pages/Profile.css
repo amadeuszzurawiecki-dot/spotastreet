@@ -17,6 +17,13 @@
   gap: var(--section-gap);
 }
 
+.profile-overview-row,
+.profile-settings-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-gap);
+}
+
 /* Header summary card */
 .profile-card-header {
   display: flex;
@@ -322,7 +329,7 @@
 
 .stats-item {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
   padding: var(--section-padding);
   background: transparent;
@@ -333,7 +340,7 @@
 .stats-item__icon {
   width: 22px;
   height: 22px;
-  margin-top: 1px;
+  margin-top: 0;
   background: currentColor;
   flex-shrink: 0;
   border: 0;
@@ -429,21 +436,25 @@
   }
 
   .profile-container {
-    display: grid;
-    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    display: flex;
+    flex-direction: column;
     gap: 32px;
-    align-items: start;
     padding: 0;
   }
 
-  .profile-card-header,
-  .profile-stats-section {
-    grid-column: 1;
+  .profile-overview-row,
+  .profile-settings-row {
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+    align-items: stretch;
   }
 
+  .profile-card-header,
+  .profile-stats-section,
   .profile-settings {
-    grid-column: 2;
-    grid-row: 1 / span 2;
+    flex: 1 1 0;
+    min-width: 0;
   }
 
   .profile-card-header {
@@ -462,8 +473,8 @@
   }
 
   .clean-avatar-grid {
-    grid-template-columns: repeat(12, 1fr);
-    gap: 6px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
   }
 }
 

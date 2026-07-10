@@ -83,164 +83,168 @@ export function Profile() {
       <TopNav />
 
       <main className="profile-container">
-        {/* Profile Card Header */}
-        <section className="profile-card-header glass-card">
-          <div 
-            className={`profile-card-header__avatar ${user.isPremium ? 'premium-glow-avatar' : ''}`} 
-            style={{ backgroundColor: selectedAvatar.bg }}
-          >
-            {selectedAvatar.image ? (
-              <img src={selectedAvatar.image} alt={selectedAvatar.name} />
-            ) : (
-              <span className="line-icon line-icon--user" aria-hidden="true" />
-            )}
-          </div>
-          <div className="profile-card-header__details">
-            <h2 className="profile-card-header__name" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-              {name || 'Kierowca'}
-              {user.isPremium && <span className="premium-badge-text">PREMIUM</span>}
-              {!user.isPremium && <span className="free-badge-text">FREE</span>}
-            </h2>
-            <span className="profile-card-header__town" style={{ opacity: 0.7, wordBreak: 'break-all' }}>{user.email || 'kierowca@gmail.com'}</span>
-          </div>
-        </section>
+        <div className="profile-overview-row">
+          {/* Profile Card Header */}
+          <section className="profile-card-header glass-card">
+            <div 
+              className={`profile-card-header__avatar ${user.isPremium ? 'premium-glow-avatar' : ''}`} 
+              style={{ backgroundColor: selectedAvatar.bg }}
+            >
+              {selectedAvatar.image ? (
+                <img src={selectedAvatar.image} alt={selectedAvatar.name} />
+              ) : (
+                <span className="line-icon line-icon--user" aria-hidden="true" />
+              )}
+            </div>
+            <div className="profile-card-header__details">
+              <h2 className="profile-card-header__name" style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                {name || 'Kierowca'}
+                {user.isPremium && <span className="premium-badge-text">PREMIUM</span>}
+                {!user.isPremium && <span className="free-badge-text">FREE</span>}
+              </h2>
+              <span className="profile-card-header__town" style={{ opacity: 0.7, wordBreak: 'break-all' }}>{user.email || 'kierowca@gmail.com'}</span>
+            </div>
+          </section>
 
-        {/* Profile Edit Settings */}
-        <section className="profile-settings glass-card">
-          <h3 className="profile-section-title">Ustawienia Profilu</h3>
-          
-          {message && <div className="profile-settings__message">{message}</div>}
+          {/* Profile Statistics */}
+          <section className="profile-stats-section glass-card">
+            <h3 className="profile-section-title">Statystyki Gier</h3>
+            
+            <div className="stats-list">
+              <div className="stats-item">
+                <span className="stats-item__icon svg-icon" style={{ '--icon': 'url(/icons/umiesc.svg)' }} aria-hidden="true" />
+                <div className="stats-item__info">
+                  <div className="stats-item__title">Wskaż ulicę</div>
+                  <div className="stats-item__val">
+                    wygrane: <span className="stats-win">{user.stats?.['where-is-street']?.wins || 0}</span> / przegrane: <span className="stats-loss">{user.stats?.['where-is-street']?.losses || 0}</span>
+                  </div>
+                </div>
+              </div>
 
-          <div className="profile-form-row">
-            <div className="form-group">
-              <label className="form-label">Imię / Nick</label>
-              <input
-                type="text"
-                className="form-input"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder="Twój nick..."
-              />
+              <div className="stats-item">
+                <span className="stats-item__icon svg-icon" style={{ '--icon': 'url(/icons/nazwij.svg)' }} aria-hidden="true" />
+                <div className="stats-item__info">
+                  <div className="stats-item__title">Nazwij ulicę</div>
+                  <div className="stats-item__val">
+                    wygrane: <span className="stats-win">{user.stats?.['what-street']?.wins || 0}</span> / przegrane: <span className="stats-loss">{user.stats?.['what-street']?.losses || 0}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="stats-item">
+                <span className="stats-item__icon svg-icon" style={{ '--icon': 'url(/icons/pojedynek.svg)' }} aria-hidden="true" />
+                <div className="stats-item__info">
+                  <div className="stats-item__title">Pojedynki online</div>
+                  <div className="stats-item__val">
+                    wygrane: <span className="stats-win">{user.onlineWins || 0}</span> / przegrane: <span className="stats-loss">{user.onlineLosses || 0}</span> / remisy: <span className="stats-draw" style={{ color: 'var(--text-tertiary)' }}>{user.onlineDraws || 0}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="stats-item">
+                <span className="stats-item__icon svg-icon" style={{ '--icon': 'url(/icons/ribbon.svg)' }} aria-hidden="true" />
+                <div className="stats-item__info">
+                  <div className="stats-item__title">Ukończone wyzwania</div>
+                  <div className="stats-item__val">
+                    wykonano wyzwań: <strong style={{ color: 'var(--green-primary)' }}>{Object.keys(user.challengeAttempts || {}).length}</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div className="profile-settings-row">
+          {/* Profile Edit Settings */}
+          <section className="profile-settings glass-card">
+            <h3 className="profile-section-title">Ustawienia Profilu</h3>
+            
+            {message && <div className="profile-settings__message">{message}</div>}
+
+            <div className="profile-form-row">
+              <div className="form-group">
+                <label className="form-label">Imię / Nick</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                  placeholder="Twój nick..."
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Miejscowość</label>
+                <input
+                  type="text"
+                  list="towns-list"
+                  className="form-input"
+                  value={town}
+                  onChange={e => setTown(e.target.value)}
+                  placeholder="Legnica..."
+                />
+                <datalist id="towns-list">
+                  {TOWNS.map(t => <option key={t} value={t} />)}
+                </datalist>
+              </div>
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Miejscowość</label>
-              <input
-                type="text"
-                list="towns-list"
-                className="form-input"
-                value={town}
-                onChange={e => setTown(e.target.value)}
-                placeholder="Legnica..."
+            <label className="profile-hide-email-inline profile-hide-email-setting" htmlFor="profile-hide-email">
+              <input 
+                type="checkbox" 
+                id="profile-hide-email"
+                checked={hideEmail}
+                onChange={e => setHideEmail(e.target.checked)}
               />
-              <datalist id="towns-list">
-                {TOWNS.map(t => <option key={t} value={t} />)}
-              </datalist>
-            </div>
-          </div>
+              <span>Ukryj mój adres e-mail w rankingu</span>
+            </label>
 
-          <label className="profile-hide-email-inline profile-hide-email-setting" htmlFor="profile-hide-email">
-            <input 
-              type="checkbox" 
-              id="profile-hide-email"
-              checked={hideEmail}
-              onChange={e => setHideEmail(e.target.checked)}
-            />
-            <span>Ukryj mój adres e-mail w rankingu</span>
-          </label>
-
-          {/* Clean circle avatar selection */}
-          <div className="form-group">
-            <label className="form-label">Wybierz avatar</label>
-            <input 
-              type="file" 
-              id="profile-image-file" 
-              accept="image/*" 
-              onChange={handleImageUpload} 
-              style={{ display: 'none' }}
-            />
-            <div className="clean-avatar-grid">
-              <label
-                htmlFor="profile-image-file"
-                className={`clean-avatar-card clean-avatar-card--upload ${avatarId === 'custom' ? 'clean-avatar-card--selected' : ''}`}
-                title="Własne zdjęcie"
-              >
-                {user.customAvatar ? (
-                  <img src={user.customAvatar} alt="Własne" className="clean-avatar-card__img" />
-                ) : (
-                  <span className="line-icon line-icon--camera" aria-hidden="true" />
-                )}
-              </label>
-
-              {AVATARS.map(avatar => (
-                <button
-                  key={avatar.id}
-                  className={`clean-avatar-card ${avatarId === avatar.id ? 'clean-avatar-card--selected' : ''}`}
-                  onClick={() => setAvatarId(avatar.id)}
-                  style={{ backgroundColor: avatar.bg }}
-                  title={avatar.name}
+            {/* Clean circle avatar selection */}
+            <div className="form-group">
+              <label className="form-label">Wybierz avatar</label>
+              <input 
+                type="file" 
+                id="profile-image-file" 
+                accept="image/*" 
+                onChange={handleImageUpload} 
+                style={{ display: 'none' }}
+              />
+              <div className="clean-avatar-grid">
+                <label
+                  htmlFor="profile-image-file"
+                  className={`clean-avatar-card clean-avatar-card--upload ${avatarId === 'custom' ? 'clean-avatar-card--selected' : ''}`}
+                  title="Własne zdjęcie"
                 >
-                  {avatar.image ? (
-                    <img src={avatar.image} alt="Avatar" className="clean-avatar-card__img" />
+                  {user.customAvatar ? (
+                    <img src={user.customAvatar} alt="Własne" className="clean-avatar-card__img" />
                   ) : (
-                    <span className="line-icon line-icon--user" aria-hidden="true" />
+                    <span className="line-icon line-icon--camera" aria-hidden="true" />
                   )}
-                </button>
-              ))}
-            </div>
-          </div>
+                </label>
 
-          <button className="btn-primary profile-save-btn" onClick={handleSave}>
-            Zapisz zmiany
-          </button>
-        </section>
-
-        {/* Profile Statistics */}
-        <section className="profile-stats-section glass-card">
-          <h3 className="profile-section-title">Statystyki Gier</h3>
-          
-          <div className="stats-list">
-            <div className="stats-item">
-              <span className="stats-item__icon svg-icon" style={{ '--icon': 'url(/icons/umiesc.svg)' }} aria-hidden="true" />
-              <div className="stats-item__info">
-                <div className="stats-item__title">Wskaż ulicę</div>
-                <div className="stats-item__val">
-                  wygrane: <span className="stats-win">{user.stats?.['where-is-street']?.wins || 0}</span> / przegrane: <span className="stats-loss">{user.stats?.['where-is-street']?.losses || 0}</span>
-                </div>
+                {AVATARS.map(avatar => (
+                  <button
+                    key={avatar.id}
+                    className={`clean-avatar-card ${avatarId === avatar.id ? 'clean-avatar-card--selected' : ''}`}
+                    onClick={() => setAvatarId(avatar.id)}
+                    style={{ backgroundColor: avatar.bg }}
+                    title={avatar.name}
+                  >
+                    {avatar.image ? (
+                      <img src={avatar.image} alt="Avatar" className="clean-avatar-card__img" />
+                    ) : (
+                      <span className="line-icon line-icon--user" aria-hidden="true" />
+                    )}
+                  </button>
+                ))}
               </div>
             </div>
 
-            <div className="stats-item">
-              <span className="stats-item__icon svg-icon" style={{ '--icon': 'url(/icons/nazwij.svg)' }} aria-hidden="true" />
-              <div className="stats-item__info">
-                <div className="stats-item__title">Nazwij ulicę</div>
-                <div className="stats-item__val">
-                  wygrane: <span className="stats-win">{user.stats?.['what-street']?.wins || 0}</span> / przegrane: <span className="stats-loss">{user.stats?.['what-street']?.losses || 0}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="stats-item">
-              <span className="stats-item__icon svg-icon" style={{ '--icon': 'url(/icons/pojedynek.svg)' }} aria-hidden="true" />
-              <div className="stats-item__info">
-                <div className="stats-item__title">Pojedynki online</div>
-                <div className="stats-item__val">
-                  wygrane: <span className="stats-win">{user.onlineWins || 0}</span> / przegrane: <span className="stats-loss">{user.onlineLosses || 0}</span> / remisy: <span className="stats-draw" style={{ color: 'var(--text-tertiary)' }}>{user.onlineDraws || 0}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="stats-item">
-              <span className="stats-item__icon svg-icon" style={{ '--icon': 'url(/icons/ribbon.svg)' }} aria-hidden="true" />
-              <div className="stats-item__info">
-                <div className="stats-item__title">Ukończone wyzwania</div>
-                <div className="stats-item__val">
-                  wykonano wyzwań: <strong style={{ color: 'var(--green-primary)' }}>{Object.keys(user.challengeAttempts || {}).length}</strong>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+            <button className="btn-primary profile-save-btn" onClick={handleSave}>
+              Zapisz zmiany
+            </button>
+          </section>
+        </div>
       </main>
 
     </div>

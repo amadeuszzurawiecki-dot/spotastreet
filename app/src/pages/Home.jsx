@@ -70,11 +70,9 @@ function Home() {
   const [loadingChallenges, setLoadingChallenges] = useState(true);
   const [isOffline, setIsOffline] = useState(false);
   const [currentTime, setCurrentTime] = useState(() => new Date());
-  const [isMobileView, setIsMobileView] = useState(false);
 
   const userAttempts = user.challengeAttempts || {};
   const completedChallenges = dailyChallenges.filter(ch => userAttempts[ch.id] !== undefined).length;
-  const shouldLoopChallenges = !isMobileView && dailyChallenges.length >= 4;
 
   // Countdown timer tick for challenge time windows.
   useEffect(() => {
@@ -107,21 +105,6 @@ function Home() {
     }
     load();
   }, []);
-
-  useEffect(() => {
-    const updateViewportMode = () => {
-      setIsMobileView(window.innerWidth <= 620);
-    };
-
-    updateViewportMode();
-    window.addEventListener('resize', updateViewportMode, { passive: true });
-
-    return () => window.removeEventListener('resize', updateViewportMode);
-  }, []);
-
-  const visibleChallenges = shouldLoopChallenges
-    ? [...dailyChallenges, ...dailyChallenges]
-    : dailyChallenges;
 
   const handleChallengeClick = (challenge) => {
     const attemptScore = userAttempts[challenge.id];
@@ -196,14 +179,14 @@ function Home() {
           <div className="challenges-header-container">
             <div className="home-section-heading">
               <h2 className="home-modes__title text-heading">Wyzwania</h2>
-              <p>Ukończono {completedChallenges} z {dailyChallenges.length || 0} dzisiejszych wyzwań</p>
+              <p>Ukończono {completedChallenges} z {dailyChallenges.length || 0} aktualnych wyzwań</p>
             </div>
           </div>
 
-          <div className="challenges-carousel">
+          <div className="home-challenges-container">
             {loadingChallenges ? (
               <div className="home-loading-challenges">Wczytywanie wyzwań...</div>
-            ) : visibleChallenges.length === 0 ? (
+            ) : dailyChallenges.length === 0 ? (
               <div className="home-empty-challenges">
                 <span className="home-empty-challenges__icon line-icon line-icon--target" aria-hidden="true" />
                 <div>
@@ -212,17 +195,15 @@ function Home() {
                 </div>
               </div>
             ) : (
-              <div
-                className={`challenges-carousel__track ${shouldLoopChallenges ? 'challenges-carousel__track--looping' : 'challenges-carousel__track--static'}`}
-              >
-                {visibleChallenges.map((challenge, visibleIndex) => {
+              <div className="challenges-page__grid">
+                {dailyChallenges.map((challenge) => {
                   const score = userAttempts[challenge.id];
                   const hasPlayed = score !== undefined;
                   const maxScore = (challenge.rounds || 15) * 100;
                   return (
                     <div
-                      key={`${challenge.id}-${visibleIndex}`}
-                      className={`challenge-card ${hasPlayed ? 'challenge-card--played' : ''}`}
+                      key={challenge.id}
+                      className={`challenge-card challenges-page__card ${hasPlayed ? 'challenge-card--played' : ''}`}
                       onClick={() => handleChallengeClick(challenge)}
                     >
                       <div className="challenge-card__top">
@@ -248,17 +229,7 @@ function Home() {
 
                       <div className="challenge-card__bottom">
                         <div className="challenge-card__details">
-                          <div className="challenge-card__title-container">
-                            {shouldLoopChallenges && challenge.title.length > 22 ? (
-                              <div className="marquee-text-wrapper">
-                                <span className="marquee-text">
-                                  {challenge.title} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {challenge.title} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                </span>
-                              </div>
-                            ) : (
-                              <h3 className="challenge-card__title">{challenge.title}</h3>
-                            )}
-                          </div>
+                          <h3 className="challenge-card__title">{challenge.title}</h3>
                           <p className="challenge-card__desc">{challenge.description}</p>
                         </div>
                         <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />

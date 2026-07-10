@@ -301,7 +301,7 @@
 .leaderboard-menu-card__icon {
   width: 42px;
   height: 42px;
-  color: var(--green-primary);
+  color: var(--text-primary);
 }
 
 .leaderboard-menu-card__title {
@@ -325,10 +325,29 @@
 
 .leaderboard-tabs-chooser .leaderboard-menu-card {
   min-height: auto;
+  grid-template-columns: 42px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-items: center;
+  align-content: center;
+  column-gap: 14px;
+  row-gap: 4px;
 }
 
 .leaderboard-tabs-chooser .leaderboard-menu-card:first-child {
   grid-column: auto;
+}
+
+.leaderboard-tabs-chooser .leaderboard-menu-card__icon {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  align-self: center;
+  justify-self: center;
+}
+
+.leaderboard-tabs-chooser .leaderboard-menu-card__title,
+.leaderboard-tabs-chooser .leaderboard-menu-card__subtitle {
+  grid-column: 2;
+  min-width: 0;
 }
 
 .leaderboard-menu-card--active {
@@ -444,9 +463,14 @@
   }
 
   .leaderboard-menu-card {
-    grid-template-columns: 1fr;
     align-content: start;
     align-items: start;
+  }
+
+  .leaderboard-tabs-chooser .leaderboard-menu-card {
+    grid-template-columns: 42px minmax(0, 1fr);
+    align-content: center;
+    align-items: center;
   }
 }
 
