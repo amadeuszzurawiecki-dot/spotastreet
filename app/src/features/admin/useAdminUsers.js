@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   fetchAllCloudProfiles,
+  fetchDailyChallenges,
   resetUserChallengeAttempt,
   updateUserPremiumStatus,
   updateUserProfileByEmail,
@@ -16,6 +17,7 @@ export function useAdminUsers(user, setActionStatus) {
   const [editingUser, setEditingUser] = useState(null);
   const [userDraft, setUserDraft] = useState(null);
   const [resetChallengeId, setResetChallengeId] = useState('');
+  const [availableChallenges, setAvailableChallenges] = useState([]);
 
   const loadProfiles = async () => {
     setLoading(true);
@@ -27,6 +29,7 @@ export function useAdminUsers(user, setActionStatus) {
   useEffect(() => {
     if (!user.authReady || !user.isLoggedIn || !user.isAdmin) return;
     loadProfiles();
+    fetchDailyChallenges().then(items => setAvailableChallenges(items || [])).catch(() => setAvailableChallenges([]));
   }, [user.authReady, user.isLoggedIn, user.isAdmin]);
 
   const getAvatarImage = (profile) => {
@@ -290,6 +293,7 @@ export function useAdminUsers(user, setActionStatus) {
     setSearchTerm,
     setUserDraft,
     userDraft,
+    availableChallenges,
   };
 }
 

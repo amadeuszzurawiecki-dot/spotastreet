@@ -12,8 +12,6 @@ function AdminUsersPanel({ adminUsers, user }) {
     handleDeleteConfirm,
     handleResetUserChallenge,
     handleSaveUserProfile,
-    handleUserPhotoChange,
-    loadProfiles,
     loading,
     openUserEditor,
     resetChallengeId,
@@ -23,7 +21,17 @@ function AdminUsersPanel({ adminUsers, user }) {
     setSearchTerm,
     setUserDraft,
     userDraft,
+    availableChallenges,
   } = adminUsers;
+
+  const challengeTitleById = Object.fromEntries(
+    (availableChallenges || []).map(challenge => [challenge.id, challenge.title || challenge.id])
+  );
+
+  const statItems = [
+    { id: 'where-is-street', label: 'Wskaż ulicę', icon: '/icons/umiesc.svg' },
+    { id: 'what-street', label: 'Nazwij ulicę', icon: '/icons/nazwij.svg' },
+  ];
 
   const renderUserAvatar = (u) => {
     const avatarImage = getAvatarImage(u);
@@ -55,9 +63,6 @@ function AdminUsersPanel({ adminUsers, user }) {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button className="btn-secondary admin-refresh-btn" onClick={loadProfiles} title="Odśwież listę kont">
-              Odśwież
-            </button>
           </div>
         </div>
 
@@ -193,39 +198,26 @@ function AdminUsersPanel({ adminUsers, user }) {
       )}
 
       {editingUser && userDraft && (
-        <div className="admin-modal-overlay animate-fade-in">
-          <div className="admin-modal admin-user-editor glass-card animate-scale-in">
+        <div className="admin-modal-overlay animate-fade-in" onClick={closeUserEditor}>
+          <div className="admin-modal admin-user-editor glass-card animate-scale-in" onClick={(event) => event.stopPropagation()}>
             <div className="admin-modal__header">
-              <span className="admin-modal__icon line-icon line-icon--user" aria-hidden="true" />
+              <span className="admin-modal__avatar" aria-hidden="true">
+                {getAvatarImage(userDraft) ? (
+                  <img src={getAvatarImage(userDraft)} alt="" />
+                ) : (
+                  <span className="line-icon line-icon--user" aria-hidden="true" />
+                )}
+              </span>
               <div>
-                <h3>Edytuj profil użytkownika</h3>
-                <code className="admin-editor-email">{maskEmail(userDraft.email)}</code>
+                <h3>{userDraft.name || 'Użytkownik Spotastreet'}</h3>
+                <code className="admin-editor-email">{userDraft.email}</code>
               </div>
+              <button type="button" className="admin-icon-btn admin-modal__close" onClick={closeUserEditor} aria-label="Zamknij modal">
+                <span className="svg-icon" style={{ '--icon': 'url(/icons/x.svg)' }} aria-hidden="true" />
+              </button>
             </div>
 
             <div className="admin-editor-layout">
-              <aside className="admin-editor-side">
-                <div className="admin-editor-photo">
-                  {getAvatarImage(userDraft) ? (
-                    <img src={getAvatarImage(userDraft)} alt="" />
-                  ) : (
-                    <span className="line-icon line-icon--user" aria-hidden="true" />
-                  )}
-                </div>
-                <label className="btn-secondary btn-sm admin-file-btn">
-                  Wgraj zdjęcie
-                  <input type="file" accept="image/*" onChange={handleUserPhotoChange} />
-                </label>
-                {userDraft.customAvatar && (
-                  <button
-                    className="btn-secondary btn-sm"
-                    onClick={() => setUserDraft(prev => ({ ...prev, customAvatar: null }))}
-                  >
-                    Usuń zdjęcie
-                  </button>
-                )}
-              </aside>
-
               <div className="admin-editor-main">
                 <div className="admin-editor-grid">
                   <div className="form-group">
@@ -273,7 +265,7 @@ function AdminUsersPanel({ adminUsers, user }) {
                       checked={userDraft.hideEmail}
                       onChange={(e) => setUserDraft(prev => ({ ...prev, hideEmail: e.target.checked }))}
                     />
-                    <span>Ukryj adres email w widokach publicznych</span>
+                    <span>Ukryj adres e-mail w rankingu</span>
                   </label>
                   <label className="admin-toggle-row">
                     <input
@@ -281,22 +273,32 @@ function AdminUsersPanel({ adminUsers, user }) {
                       checked={userDraft.isPremium}
                       onChange={(e) => setUserDraft(prev => ({ ...prev, isPremium: e.target.checked }))}
                     />
-                    <span>Konto Premium</span>
+                    <span>Konto premium</span>
                   </label>
                 </div>
 
                 <div className="admin-editor-section">
                   <div className="admin-editor-section__title">Statystyki</div>
                   <div className="admin-editor-stats">
-                    {Object.entries(userDraft.stats || {}).map(([mode, values]) => (
-                      <div key={mode}>
-                        <span>{mode}</span>
+                    {statItems.map(({ id, label, icon }) => {
+                      const values = userDraft.stats?.[id] || {};
+                      return (
+                      <div key={id}>
+                        <span className="admin-editor-stat-icon svg-icon" style={{ '--icon': `url(${icon})` }} aria-hidden="true" />
+                        <span>{label}</span>
                         <strong>{values?.wins || 0}W / {values?.losses || 0}L</strong>
                       </div>
-                    ))}
+                      );
+                    })}
                     <div>
-                      <span>online</span>
+                      <span className="admin-editor-stat-icon svg-icon" style={{ '--icon': 'url(/icons/pojedynek.svg)' }} aria-hidden="true" />
+                      <span>Pojedynki</span>
                       <strong>{userDraft.onlineWins}W / {userDraft.onlineLosses}L / {userDraft.onlineDraws}D</strong>
+                    </div>
+                    <div>
+                      <span className="admin-editor-stat-icon svg-icon" style={{ '--icon': 'url(/icons/ribbon.svg)' }} aria-hidden="true" />
+                      <span>Wyzwania</span>
+                      <strong>{Object.keys(userDraft.challengeAttempts || {}).length}</strong>
                     </div>
                   </div>
                 </div>
@@ -307,7 +309,7 @@ function AdminUsersPanel({ adminUsers, user }) {
                     <select value={resetChallengeId} onChange={(e) => setResetChallengeId(e.target.value)}>
                       <option value="">Wszystkie zapisane wyzwania</option>
                       {Object.entries(userDraft.challengeAttempts || {}).map(([id, score]) => (
-                        <option key={id} value={id}>{id} · {score} pkt</option>
+                        <option key={id} value={id}>{challengeTitleById[id] || id} · {score} pkt</option>
                       ))}
                     </select>
                     <button className="btn-secondary btn-sm" onClick={handleResetUserChallenge}>
@@ -319,7 +321,7 @@ function AdminUsersPanel({ adminUsers, user }) {
                       <span>Brak zapisanych podejść.</span>
                     ) : (
                       Object.entries(userDraft.challengeAttempts || {}).map(([id, score]) => (
-                        <span key={id}>{id}: {score} pkt</span>
+                        <span key={id}>{challengeTitleById[id] || id}: {score} pkt</span>
                       ))
                     )}
                   </div>

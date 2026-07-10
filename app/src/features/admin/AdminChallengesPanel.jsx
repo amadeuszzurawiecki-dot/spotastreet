@@ -1,3 +1,5 @@
+import { useEffect, useMemo, useState } from 'react';
+import { loadStreetNames } from '../../utils/streets';
 import { gameModeLabels } from './useAdminChallenges';
 
 const gameModeIcons = {
@@ -26,6 +28,8 @@ function formatDateTime(value) {
 }
 
 function AdminChallengesPanel({ adminChallenges }) {
+  const [streetNameInput, setStreetNameInput] = useState('');
+  const [streetNames, setStreetNames] = useState([]);
   const {
     challengeEditorOpen,
     challengeGroups,
@@ -39,11 +43,57 @@ function AdminChallengesPanel({ adminChallenges }) {
     handleImageFileChange,
     handleStartEdit,
     handleToggleDisable,
-    loadChallengesList,
     loadingChallenges,
     openChallengeCreator,
     updateForm,
   } = adminChallenges;
+
+  useEffect(() => {
+    loadStreetNames().then(setStreetNames).catch(() => setStreetNames([]));
+  }, []);
+
+  const gameModeOptions = [
+    {
+      id: 'where-is-street',
+      title: 'Wskaż ulicę',
+      subtitle: 'Umieść pinezkę nad tą ulicą',
+      icon: '/icons/umiesc.svg',
+    },
+    {
+      id: 'what-street',
+      title: 'Nazwij ulicę',
+      subtitle: 'Nazwij podświetloną ulicę',
+      icon: '/icons/nazwij.svg',
+    },
+    {
+      id: 'where-is-place',
+      title: 'Wskaż miejsce',
+      subtitle: 'Znajdź kultowe miejsce',
+      icon: '/icons/pin.svg',
+    },
+  ];
+
+  const selectedStreetNames = useMemo(() => (
+    form.challengeStreets
+      .split('\n')
+      .map(name => name.trim())
+      .filter(Boolean)
+  ), [form.challengeStreets]);
+
+  const updateSelectedStreets = (items) => {
+    updateForm('challengeStreets', items.join('\n'));
+  };
+
+  const handleAddStreet = () => {
+    const value = streetNameInput.trim();
+    if (!value || selectedStreetNames.some(name => name.toLowerCase() === value.toLowerCase())) return;
+    updateSelectedStreets([...selectedStreetNames, value]);
+    setStreetNameInput('');
+  };
+
+  const handleRemoveStreet = (nameToRemove) => {
+    updateSelectedStreets(selectedStreetNames.filter(name => name !== nameToRemove));
+  };
 
   const renderChallengeRows = (items, emptyMessage) => {
     if (items.length === 0) {
@@ -204,9 +254,6 @@ function AdminChallengesPanel({ adminChallenges }) {
             <button type="button" className="btn-primary" onClick={openChallengeCreator}>
               Stwórz nowe
             </button>
-            <button type="button" className="btn-secondary admin-refresh-btn" onClick={loadChallengesList}>
-              Odśwież
-            </button>
           </div>
         </div>
 
@@ -259,8 +306,8 @@ function AdminChallengesPanel({ adminChallenges }) {
       )}
 
       {challengeEditorOpen && (
-        <div className="admin-modal-overlay animate-fade-in">
-          <section className="admin-modal admin-challenge-editor-modal glass-card animate-scale-in">
+        <div className="admin-modal-overlay animate-fade-in" onClick={handleCancelEdit}>
+          <section className="admin-modal admin-challenge-editor-modal glass-card animate-scale-in" onClick={(event) => event.stopPropagation()}>
             <div className="admin-modal__header admin-challenge-editor-header">
               <div>
                 <h3>{editingChallengeId ? 'Edycja wyzwania' : 'Nowe wyzwanie'}</h3>
@@ -274,137 +321,221 @@ function AdminChallengesPanel({ adminChallenges }) {
             </div>
 
             <form onSubmit={handleCreateChallenge} className="admin-challenge-form">
-              <div className="form-row">
-              <div className="form-group flex-2">
-                <label>Tytuł wyzwania *</label>
-                <input
-                  type="text"
-                  placeholder="np. Znawca Dzielnicy Cudów"
-                  value={form.challengeTitle}
-                  onChange={(e) => updateForm('challengeTitle', e.target.value)}
-                  required
-                />
-              </div>
-              <div className="form-group flex-1">
-                <label>Ikona liniowa</label>
-                <input
-                  type="text"
-                  placeholder="np. target, pin, scan"
-                  value={form.challengeIcon}
-                  onChange={(e) => updateForm('challengeIcon', e.target.value)}
-                />
-              </div>
-              </div>
+              <div className="admin-challenge-form-grid">
+                <div className="admin-challenge-form-column">
+                  <div className="form-group">
+                    <label>Tytuł wyzwania *</label>
+                    <input
+                      type="text"
+                      placeholder="np. Znawca Dzielnicy Cudów"
+                      value={form.challengeTitle}
+                      onChange={(e) => updateForm('challengeTitle', e.target.value)}
+                      required
+                    />
+                  </div>
 
-            <div className="form-group">
-              <label>Opis / Podtytuł wyzwania</label>
-              <input
-                type="text"
-                placeholder="np. Henryk byłby dumny"
-                value={form.challengeDesc}
-                onChange={(e) => updateForm('challengeDesc', e.target.value)}
-              />
-            </div>
+                  <div className="form-group">
+                    <label>Opis / Podtytuł wyzwania</label>
+                    <input
+                      type="text"
+                      placeholder="np. Henryk byłby dumny"
+                      value={form.challengeDesc}
+                      onChange={(e) => updateForm('challengeDesc', e.target.value)}
+                    />
+                  </div>
 
-            <div className="form-row">
-              <div className="form-group">
-                <label>Tryb rozgrywki</label>
-                <select value={form.challengeGameMode} onChange={(e) => updateForm('challengeGameMode', e.target.value)}>
-                  <option value="where-is-street">Gdzie jest ta ulica? (pinezka)</option>
-                  <option value="where-is-place">Gdzie jest to miejsce? (miejsca)</option>
-                  <option value="what-street">Co to za ulica? (quiz 4 opcje)</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label>Liczba rund</label>
-                <input
-                  type="number"
-                  min="1"
-                  max="30"
-                  value={form.challengeRounds}
-                  onChange={(e) => updateForm('challengeRounds', e.target.value)}
-                />
-              </div>
-              <div className="form-group">
-                <label>Czas na rundę (sekund)</label>
-                <input
-                  type="number"
-                  min="3"
-                  max="60"
-                  value={form.challengeTimeLimit}
-                  onChange={(e) => updateForm('challengeTimeLimit', e.target.value)}
-                />
-              </div>
-            </div>
+                  <div className="form-group">
+                    <label>Tryb rozgrywki</label>
+                    <div className="admin-mode-chooser" role="tablist" aria-label="Tryb wyzwania">
+                      {gameModeOptions.map(option => {
+                        const isActive = form.challengeGameMode === option.id;
+                        return (
+                          <button
+                            key={option.id}
+                            type="button"
+                            className={`admin-mode-card ${isActive ? 'admin-mode-card--active' : ''}`}
+                            role="tab"
+                            aria-selected={isActive}
+                            onClick={() => updateForm('challengeGameMode', option.id)}
+                          >
+                            <span className="admin-mode-card__icon svg-icon" style={{ '--icon': `url(${option.icon})` }} aria-hidden="true" />
+                            <span className="admin-mode-card__copy">
+                              <strong>{option.title}</strong>
+                              <small>{option.subtitle}</small>
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
 
-            <div className="form-row">
-              <div className="form-group flex-1">
-                <label>Początek wyzwania *</label>
-                <input
-                  type="datetime-local"
-                  value={form.challengeStartAt}
-                  onChange={(e) => updateForm('challengeStartAt', e.target.value)}
-                  required
-                />
-              </div>
-              <div className="form-group flex-1">
-                <label>Koniec wyzwania *</label>
-                <input
-                  type="datetime-local"
-                  value={form.challengeEndAt}
-                  onChange={(e) => updateForm('challengeEndAt', e.target.value)}
-                  required
-                />
-              </div>
-              <div className="form-group flex-2 admin-checkbox-field">
-                <label className="form-checkbox-label">
-                  <input
-                    type="checkbox"
-                    checked={form.challengeDisabled}
-                    onChange={(e) => updateForm('challengeDisabled', e.target.checked)}
-                  />
-                  Wyzwanie wyłączone / zablokowane
-                </label>
-              </div>
-            </div>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Liczba rund</label>
+                      <input
+                        type="number"
+                        min="1"
+                        max="30"
+                        value={form.challengeRounds}
+                        onChange={(e) => updateForm('challengeRounds', e.target.value)}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Czas na rundę (sekund)</label>
+                      <input
+                        type="number"
+                        min="3"
+                        max="60"
+                        value={form.challengeTimeLimit}
+                        onChange={(e) => updateForm('challengeTimeLimit', e.target.value)}
+                      />
+                    </div>
+                  </div>
 
-            <div className="form-group">
-              <label>Zdjęcie wyzwania</label>
-              <div className="admin-challenge-image-row">
-                <input type="file" accept="image/*" onChange={handleImageFileChange} />
-                <input
-                  type="text"
-                  placeholder="Lub wpisz bezpośredni URL do obrazka..."
-                  value={form.challengeImageUrl}
-                  onChange={(e) => updateForm('challengeImageUrl', e.target.value)}
-                />
-              </div>
-              {form.challengeImageUrl && (
-                <div className="admin-challenge-preview">
-                  <span>Podgląd miniatury:</span>
-                  <img src={form.challengeImageUrl} alt="Podgląd wyzwania" />
+                  <div className="form-row">
+                    <div className="form-group flex-1">
+                      <label>Początek wyzwania *</label>
+                      <input
+                        type="datetime-local"
+                        value={form.challengeStartAt}
+                        onChange={(e) => updateForm('challengeStartAt', e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="form-group flex-1">
+                      <label>Koniec wyzwania *</label>
+                      <input
+                        type="datetime-local"
+                        value={form.challengeEndAt}
+                        onChange={(e) => updateForm('challengeEndAt', e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Lista ulic</label>
+                    <div className="admin-street-picker">
+                      <input
+                        type="text"
+                        list="admin-street-names"
+                        placeholder="Wpisz nazwę ulicy..."
+                        value={streetNameInput}
+                        onChange={(e) => setStreetNameInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            handleAddStreet();
+                          }
+                        }}
+                      />
+                      <button type="button" className="btn-secondary" onClick={handleAddStreet}>
+                        Dodaj
+                      </button>
+                      <datalist id="admin-street-names">
+                        {streetNames.map(name => <option key={name} value={name} />)}
+                      </datalist>
+                    </div>
+                    <div className="admin-street-pill-list">
+                      {selectedStreetNames.map(name => (
+                        <span className="admin-street-pill" key={name}>
+                          {name}
+                          <button type="button" onClick={() => handleRemoveStreet(name)} aria-label={`Usuń ${name}`}>
+                            <span className="svg-icon" style={{ '--icon': 'url(/icons/x.svg)' }} aria-hidden="true" />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-              )}
-            </div>
 
-            <div className="form-group">
-              <label>Lista nazw ulic lub kultowych miejsc</label>
-              <textarea
-                rows="6"
-                placeholder="np.&#10;Kamienna&#10;Partyzantów&#10;Henryka Pobożnego"
-                value={form.challengeStreets}
-                onChange={(e) => updateForm('challengeStreets', e.target.value)}
-              />
-            </div>
+                <div className="admin-challenge-form-column">
+                  <div className="form-group">
+                    <label>Zdjęcie wyzwania</label>
+                    <div className="admin-challenge-image-row">
+                      <div className="admin-challenge-image-fields">
+                        <input type="file" accept="image/*" onChange={handleImageFileChange} />
+                        <label>Link do zdjęcia</label>
+                        <input
+                          type="text"
+                          placeholder="https://..."
+                          value={form.challengeImageUrl}
+                          onChange={(e) => updateForm('challengeImageUrl', e.target.value)}
+                        />
+                        <label>Ikona liniowa</label>
+                        <input
+                          type="text"
+                          placeholder="np. target, pin, scan"
+                          value={form.challengeIcon}
+                          onChange={(e) => updateForm('challengeIcon', e.target.value)}
+                        />
+                      </div>
+                      <div className="admin-challenge-preview">
+                        <span>Podgląd miniatury</span>
+                        {form.challengeImageUrl ? (
+                          <img src={form.challengeImageUrl} alt="Podgląd wyzwania" />
+                        ) : (
+                          <div className="admin-challenge-preview__empty">
+                            <span className="svg-icon" style={{ '--icon': 'url(/icons/flag.svg)' }} aria-hidden="true" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
 
-            <div className="admin-challenge-form-actions">
-              <button type="submit" className="btn-primary">
-                {editingChallengeId ? 'Zapisz zmiany' : 'Zaplanuj wyzwanie'}
-              </button>
-              <button type="button" className="btn-secondary" onClick={handleCancelEdit}>
-                Anuluj
-              </button>
-            </div>
+                  <div className="admin-live-challenge-preview">
+                    <span className="admin-editor-section__title">Podgląd kafelka</span>
+                    <div className="challenge-card challenges-page__card">
+                      <div className="challenge-card__top">
+                        {form.challengeImageUrl ? (
+                          <img src={form.challengeImageUrl} alt="" className="challenge-card__img" />
+                        ) : (
+                          <div className="challenge-card__fallback-img">
+                            <span className="challenge-card__fallback-icon svg-icon" style={{ '--icon': 'url(/icons/flag.svg)' }} aria-hidden="true" />
+                          </div>
+                        )}
+                        <div className="challenge-card__image-pills">
+                          <span className="challenge-pill challenge-pill--light">
+                            <span className="svg-icon" style={{ '--icon': 'url(/icons/flag.svg)' }} aria-hidden="true" />
+                            {Number(form.challengeRounds) || 0} rund
+                          </span>
+                          <span className="challenge-pill challenge-pill--dark">
+                            <span className="svg-icon" style={{ '--icon': 'url(/icons/alarm.svg)' }} aria-hidden="true" />
+                            {Number(form.challengeTimeLimit) || 0}s
+                          </span>
+                        </div>
+                      </div>
+                      <div className="challenge-card__bottom">
+                        <div className="challenge-card__details">
+                          <h3 className="challenge-card__title">{form.challengeTitle || 'Tytuł wyzwania'}</h3>
+                          <p className="challenge-card__desc">{form.challengeDesc || 'Opis wyzwania'}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="admin-challenge-form-actions">
+                <div className="admin-challenge-form-actions__left">
+                  <button type="button" className="btn-secondary" onClick={() => updateForm('challengeDisabled', true)}>
+                    Wstrzymaj wyzwanie
+                  </button>
+                  {editingChallengeId && (
+                    <button type="button" className="btn-danger" onClick={() => handleDeleteChallenge(editingChallengeId)}>
+                      Usuń wyzwanie
+                    </button>
+                  )}
+                </div>
+                <div className="admin-challenge-form-actions__right">
+                  <button type="button" className="btn-secondary" onClick={handleCancelEdit}>
+                    Anuluj
+                  </button>
+                  <button type="submit" className="btn-primary">
+                    {editingChallengeId ? 'Zapisz zmiany' : 'Utwórz wyzwanie'}
+                  </button>
+                </div>
+              </div>
             </form>
           </section>
         </div>
