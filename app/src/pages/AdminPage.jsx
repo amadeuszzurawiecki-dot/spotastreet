@@ -4,6 +4,7 @@ import useUserProfile from '../hooks/useUserProfile';
 import useGoogleAuth from '../features/auth/useGoogleAuth';
 import AdminAccessGate from '../features/admin/AdminAccessGate';
 import AdminChallengesPanel from '../features/admin/AdminChallengesPanel';
+import AdminDashboardPanel from '../features/admin/AdminDashboardPanel';
 import AdminLayout from '../features/admin/AdminLayout';
 import AdminSettingsPanel from '../features/admin/AdminSettingsPanel';
 import AdminUsersPanel from '../features/admin/AdminUsersPanel';
@@ -16,7 +17,7 @@ export function AdminPage() {
   const navigate = useNavigate();
   const user = useUserProfile();
   const [actionStatus, setActionStatus] = useState(null);
-  const [activeTab, setActiveTab] = useState('users');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const {
     isSigningIn,
     loginWithCredentialResponse,
@@ -32,6 +33,7 @@ export function AdminPage() {
     appSettings,
     handleToggleSummaryMap,
     loadSettings,
+    updateAppSetting,
   } = useAdminSettings(setActionStatus);
 
   useEffect(() => {
@@ -71,7 +73,14 @@ export function AdminPage() {
         onAdminTabChange={setActiveTab}
         onClearStatus={() => setActionStatus(null)}
       >
-        {activeTab === 'users' ? (
+        {activeTab === 'dashboard' ? (
+          <AdminDashboardPanel
+            adminChallenges={adminChallenges}
+            adminUsers={adminUsers}
+            appSettings={appSettings}
+            onAdminTabChange={setActiveTab}
+          />
+        ) : activeTab === 'users' ? (
           <AdminUsersPanel adminUsers={adminUsers} user={user} />
         ) : activeTab === 'challenges' ? (
           <AdminChallengesPanel adminChallenges={adminChallenges} />
@@ -79,6 +88,7 @@ export function AdminPage() {
           <AdminSettingsPanel
             appSettings={appSettings}
             onToggleSummaryMap={handleToggleSummaryMap}
+            onUpdateAppSetting={updateAppSetting}
           />
         )}
       </AdminLayout>

@@ -34,6 +34,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export const LEGACY_USER_CREATED_AT = '2026-07-01T00:00:00.000Z';
 
 // Exporting additional Firestore functions for use in real-time matchmaking & gameplay
 export { updateDoc, addDoc, onSnapshot, query, where, collection, doc, getDocs };
@@ -98,7 +99,10 @@ export async function syncUserProfile(userProfile) {
   }
   try {
     const cleanEmail = userProfile.email.toLowerCase().replace(/[^a-z0-9]/g, '_');
-    await setDoc(doc(db, "users", cleanEmail), {
+    const userRef = doc(db, "users", cleanEmail);
+    const currentSnap = await getDoc(userRef);
+    const currentData = currentSnap.exists() ? currentSnap.data() : {};
+    await setDoc(userRef, {
       email: userProfile.email,
       name: userProfile.name,
       town: userProfile.town,
@@ -116,6 +120,7 @@ export async function syncUserProfile(userProfile) {
       onlineLosses: userProfile.onlineLosses || 0,
       onlineDraws: userProfile.onlineDraws || 0,
       mapStyle: userProfile.mapStyle || 'dark',
+      createdAt: currentData.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString()
     }, { merge: true });
   } catch (e) {
@@ -201,13 +206,46 @@ export async function fetchAllCloudProfiles() {
   try {
     const querySnapshot = await withRetry(() => getDocs(collection(db, "users")));
     const users = [];
+    const canBackfillCreatedAt = await currentUserIsAdmin();
+    const backfillWrites = [];
     querySnapshot.forEach((docSnap) => {
-      users.push(docSnap.data());
+      const data = docSnap.data();
+      const userData = {
+        ...data,
+        createdAt: data.createdAt || LEGACY_USER_CREATED_AT,
+      };
+      if (!data.createdAt && canBackfillCreatedAt) {
+        backfillWrites.push(setDoc(doc(db, "users", docSnap.id), {
+          createdAt: LEGACY_USER_CREATED_AT
+        }, { merge: true }));
+      }
+      users.push(userData);
     });
+    if (backfillWrites.length > 0) {
+      await Promise.allSettled(backfillWrites);
+    }
     return users;
   } catch (e) {
     console.warn('Firestore fetchAllCloudProfiles error/timeout after retries:', e.message);
     return null;
+  }
+}
+
+export async function fetchAdminDashboardMetrics() {
+  try {
+    if (!(await currentUserIsAdmin())) return { completedMatches: 0 };
+    const querySnapshot = await withRetry(() => getDocs(collection(db, "matches")));
+    let completedMatches = 0;
+    querySnapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      if (data.status === 'finished' || data.status === 'completed') {
+        completedMatches += 1;
+      }
+    });
+    return { completedMatches };
+  } catch (e) {
+    console.warn('Firestore fetchAdminDashboardMetrics error:', e.message);
+    return { completedMatches: 0 };
   }
 }
 

@@ -67,7 +67,7 @@ export function TopNav({ variant = 'front', adminTab = 'users', onAdminTabChange
 
   const handleLogoClick = () => {
     if (isAdminVariant) {
-      handleAdminTab('users');
+      handleAdminTab('dashboard');
       return;
     }
     handleNavigate('/');
@@ -80,6 +80,7 @@ export function TopNav({ variant = 'front', adminTab = 'users', onAdminTabChange
   ].filter(item => item.path !== '/admin' || canSeeAdmin);
 
   const adminNavItems = [
+    { label: 'Dashboard', id: 'dashboard', icon: '/icons/admin.svg', railIcon: 'settings', desc: 'Panel' },
     { label: 'Użytkownicy', id: 'users', icon: '/icons/user.svg', railIcon: 'user', desc: 'Konta' },
     { label: 'Wyzwania', id: 'challenges', icon: '/icons/star.svg', railIcon: 'target', desc: 'Codzienne' },
     { label: 'Ustawienia aplikacji', id: 'settings', icon: '/icons/admin.svg', railIcon: 'settings', desc: 'Globalne' },

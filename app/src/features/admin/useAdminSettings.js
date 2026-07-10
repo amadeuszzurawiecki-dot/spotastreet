@@ -23,10 +23,26 @@ export function useAdminSettings(setActionStatus) {
     });
   };
 
+  const updateAppSetting = async (fields, label = 'ustawienia') => {
+    setActionStatus({
+      type: 'info',
+      message: `Zapisywanie: ${label}...`
+    });
+
+    const ok = await appSettings.updateSettings(fields);
+    setActionStatus({
+      type: ok ? 'success' : 'error',
+      message: ok
+        ? 'Ustawienia aplikacji zostały zapisane.'
+        : 'Nie udało się zapisać ustawień aplikacji.'
+    });
+  };
+
   return {
     appSettings,
     loadSettings,
     handleToggleSummaryMap,
+    updateAppSetting,
   };
 }
 

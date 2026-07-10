@@ -1,5 +1,6 @@
 export {
   fetchAllCloudProfiles,
+  fetchAdminDashboardMetrics,
   saveDailyChallenge,
   fetchDailyChallenges,
   deleteDailyChallenge,

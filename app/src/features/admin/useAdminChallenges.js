@@ -87,7 +87,7 @@ export function useAdminChallenges({ activeTab, user, setActionStatus }) {
 
   useEffect(() => {
     if (!user.authReady || !user.isLoggedIn || !user.isAdmin) return;
-    if (activeTab === 'challenges') {
+    if (activeTab === 'dashboard' || activeTab === 'challenges') {
       loadChallengesList();
     }
   }, [activeTab, user.authReady, user.isLoggedIn, user.isAdmin]);

@@ -1,6 +1,20 @@
 import { AVATARS } from '../../data/avatars';
 import { maskEmail } from '../../utils/privacy';
 
+function formatCreatedAt(value) {
+  if (!value) return 'Brak danych';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Brak danych';
+  return new Intl.DateTimeFormat('pl-PL', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }).format(date);
+}
+
 function AdminUsersPanel({ adminUsers, user }) {
   const {
     allUsers,
@@ -56,13 +70,16 @@ function AdminUsersPanel({ adminUsers, user }) {
           </div>
 
           <div className="admin-section__actions">
-            <input
-              type="text"
-              className="admin-search-input"
-              placeholder="Szukaj po nazwie, emailu lub mieście..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+            <label className="admin-search-field">
+              <span className="admin-search-field__icon" aria-hidden="true" />
+              <input
+                type="text"
+                className="admin-search-input"
+                placeholder="Szukaj po nazwie lub e-mailu"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </label>
           </div>
         </div>
 
@@ -83,6 +100,7 @@ function AdminUsersPanel({ adminUsers, user }) {
                   <tr>
                     <th>Imię</th>
                     <th>E-mail</th>
+                    <th>CreatedAt</th>
                     <th aria-label="Akcje"></th>
                   </tr>
                 </thead>
@@ -102,6 +120,9 @@ function AdminUsersPanel({ adminUsers, user }) {
                         </td>
                         <td>
                           <span className="table-email">{email}</span>
+                        </td>
+                        <td>
+                          <span className="table-date">{formatCreatedAt(u.createdAt)}</span>
                         </td>
                         <td>
                           <div className="admin-user-table-actions">

@@ -4,7 +4,38 @@ import { fetchAppSettings, saveAppSettings } from '../config/firebase';
 
 const DEFAULT_APP_SETTINGS = {
   summaryMapEnabled: true,
+  registrationEnabled: true,
+  activeGameModes: {
+    'where-is-street': true,
+    'what-street': true,
+    'where-is-place': false,
+  },
+  defaultRoundTime: 15,
+  globalMessage: '',
 };
+
+function sanitizeSettings(settings) {
+  const nextSettings = {
+    ...DEFAULT_APP_SETTINGS,
+    ...settings,
+    activeGameModes: {
+      ...DEFAULT_APP_SETTINGS.activeGameModes,
+      ...(settings?.activeGameModes || {}),
+    },
+  };
+
+  return {
+    summaryMapEnabled: !!nextSettings.summaryMapEnabled,
+    registrationEnabled: !!nextSettings.registrationEnabled,
+    activeGameModes: {
+      'where-is-street': !!nextSettings.activeGameModes['where-is-street'],
+      'what-street': !!nextSettings.activeGameModes['what-street'],
+      'where-is-place': !!nextSettings.activeGameModes['where-is-place'],
+    },
+    defaultRoundTime: Math.max(3, Math.min(60, Number(nextSettings.defaultRoundTime) || DEFAULT_APP_SETTINGS.defaultRoundTime)),
+    globalMessage: String(nextSettings.globalMessage || ''),
+  };
+}
 
 const useAppSettings = create(
   persist(
@@ -16,8 +47,7 @@ const useAppSettings = create(
         const cloudSettings = await fetchAppSettings();
         if (cloudSettings) {
           set({
-            ...DEFAULT_APP_SETTINGS,
-            ...cloudSettings,
+            ...sanitizeSettings(cloudSettings),
             isLoaded: true,
           });
           return;
@@ -27,15 +57,13 @@ const useAppSettings = create(
 
       updateSettings: async (fields) => {
         const previousSettings = {
-          summaryMapEnabled: !!get().summaryMapEnabled,
+          ...sanitizeSettings(get()),
         };
         const nextSettings = {
           ...get(),
           ...fields,
         };
-        const cleanSettings = {
-          summaryMapEnabled: !!nextSettings.summaryMapEnabled,
-        };
+        const cleanSettings = sanitizeSettings(nextSettings);
 
         set(cleanSettings);
         const ok = await saveAppSettings(cleanSettings);
@@ -48,7 +76,7 @@ const useAppSettings = create(
     {
       name: 'spotastreet-app-settings',
       partialize: (state) => ({
-        summaryMapEnabled: state.summaryMapEnabled,
+        ...sanitizeSettings(state),
       }),
     }
   )
