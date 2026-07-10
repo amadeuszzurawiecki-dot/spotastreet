@@ -12,7 +12,6 @@ function AdminUsersPanel({ adminUsers, user }) {
     handleDeleteConfirm,
     handleResetUserChallenge,
     handleSaveUserProfile,
-    handleTogglePremium,
     handleUserPhotoChange,
     loadProfiles,
     loading,
@@ -45,7 +44,7 @@ function AdminUsersPanel({ adminUsers, user }) {
         <div className="admin-section__header">
           <div>
             <h2 className="admin-section__title">Użytkownicy</h2>
-            <p className="admin-section__desc">{allUsers.length} aktywnych użytkowników.</p>
+            <p className="admin-section__desc admin-section__desc--pill">{allUsers.length} aktywnych kont</p>
           </div>
 
           <div className="admin-section__actions">
@@ -56,7 +55,7 @@ function AdminUsersPanel({ adminUsers, user }) {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button className="btn-secondary" onClick={loadProfiles} title="Odśwież listę kont">
+            <button className="btn-secondary admin-refresh-btn" onClick={loadProfiles} title="Odśwież listę kont">
               Odśwież
             </button>
           </div>
@@ -79,7 +78,6 @@ function AdminUsersPanel({ adminUsers, user }) {
                   <tr>
                     <th>Imię</th>
                     <th>E-mail</th>
-                    <th className="admin-users-table__account-col">Typ konta</th>
                     <th aria-label="Akcje"></th>
                   </tr>
                 </thead>
@@ -99,16 +97,6 @@ function AdminUsersPanel({ adminUsers, user }) {
                         </td>
                         <td>
                           <span className="table-email">{email}</span>
-                        </td>
-                        <td className="admin-users-table__account-col">
-                          <button
-                            type="button"
-                            className={`account-type-pill ${u.isPremium ? 'account-type-pill--premium' : 'account-type-pill--free'}`}
-                            onClick={() => handleTogglePremium(email, u.isPremium)}
-                            title={u.isPremium ? 'Odbierz Premium' : 'Nadaj Premium'}
-                          >
-                            {u.isPremium ? 'Premium' : 'Free'}
-                          </button>
                         </td>
                         <td>
                           <div className="admin-user-table-actions">
@@ -147,14 +135,6 @@ function AdminUsersPanel({ adminUsers, user }) {
                           <strong>{u.name || 'Bez nazwy'}</strong>
                           <span>{email}</span>
                         </div>
-                        <button
-                          type="button"
-                          className={`account-type-pill ${u.isPremium ? 'account-type-pill--premium' : 'account-type-pill--free'}`}
-                          onClick={() => handleTogglePremium(email, u.isPremium)}
-                          title={u.isPremium ? 'Odbierz Premium' : 'Nadaj Premium'}
-                        >
-                          {u.isPremium ? 'Premium' : 'Free'}
-                        </button>
                       </div>
 
                       <div className="admin-mobile-card__actions">

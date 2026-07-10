@@ -242,7 +242,7 @@ export function useAdminChallenges({ activeTab, user, setActionStatus }) {
     const endMs = getChallengeTimeValue(endAt);
     const nowMs = Date.now();
 
-    if (startMs !== null && endMs !== null && startMs <= nowMs && endMs >= nowMs) return { label: 'Aktywne teraz', type: 'active' };
+    if (startMs !== null && endMs !== null && startMs <= nowMs && endMs >= nowMs) return { label: 'Aktywne', type: 'active' };
     if (startMs !== null && startMs > nowMs) return { label: 'Zaplanowane', type: 'scheduled' };
     return { label: 'Historyczne', type: 'history' };
   };
@@ -256,7 +256,7 @@ export function useAdminChallenges({ activeTab, user, setActionStatus }) {
     return [
       {
         id: 'active',
-        title: 'Aktywne teraz',
+        title: 'Aktywne',
         desc: 'Wyzwania dostępne teraz dla graczy.',
         empty: 'Brak aktywnych wyzwań na dziś.',
         items: sortedChallenges.filter(ch => getChallengeStatus(ch).type === 'active'),
@@ -271,7 +271,7 @@ export function useAdminChallenges({ activeTab, user, setActionStatus }) {
       {
         id: 'history',
         title: 'Historyczne',
-        desc: 'Wyzwania z poprzednich dni oraz wyłączone pozycje.',
+        desc: 'Wyzwania zakończone i zawieszone',
         empty: 'Brak historycznych wyzwań.',
         items: [...sortedChallenges]
           .filter(ch => ['history', 'disabled'].includes(getChallengeStatus(ch).type))

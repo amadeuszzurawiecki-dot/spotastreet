@@ -157,11 +157,11 @@ function AdminChallengesPanel({ adminChallenges }) {
 
           <div className="admin-mobile-card__meta">
             <div>
-              <span>Start</span>
+              <span>Od</span>
               <strong>{formatDateTime(startAt)}</strong>
             </div>
             <div>
-              <span>Koniec</span>
+              <span>Do</span>
               <strong>{formatDateTime(endAt)}</strong>
             </div>
           </div>
@@ -169,7 +169,7 @@ function AdminChallengesPanel({ adminChallenges }) {
           <div className="admin-mobile-card__pills">
             <span className="challenge-pill challenge-pill--light">
               <span className="svg-icon" style={{ '--icon': 'url(/icons/flag.svg)' }} aria-hidden="true" />
-              {Number(ch.rounds) || 0} rund
+              {Number(ch.rounds) || 0}x
             </span>
             <span className="challenge-pill challenge-pill--dark">
               <span className="svg-icon" style={{ '--icon': 'url(/icons/alarm.svg)' }} aria-hidden="true" />
@@ -178,18 +178,14 @@ function AdminChallengesPanel({ adminChallenges }) {
             <span className={`admin-challenge-status admin-challenge-status--${status.type}`}>
               {status.label}
             </span>
-          </div>
-
-          <div className="admin-mobile-card__actions">
-            <button className="admin-icon-btn" type="button" onClick={() => handleStartEdit(ch)} aria-label={`Edytuj ${ch.title || 'wyzwanie'}`} title="Edytuj">
-              <span className="svg-icon" style={{ '--icon': 'url(/icons/edit.svg)' }} aria-hidden="true" />
-            </button>
-            <button className="admin-icon-btn" type="button" onClick={() => handleToggleDisable(ch)} aria-label={ch.disabled ? 'Włącz wyzwanie' : 'Wyłącz wyzwanie'} title={ch.disabled ? 'Włącz' : 'Wyłącz'}>
-              <span className="svg-icon" style={{ '--icon': `url(${ch.disabled ? '/icons/play.svg' : '/icons/x.svg'})` }} aria-hidden="true" />
-            </button>
-            <button className="admin-icon-btn admin-icon-btn--danger" type="button" onClick={() => handleDeleteChallenge(ch.id)} aria-label={`Usuń ${ch.title || 'wyzwanie'}`} title="Usuń">
-              <span className="svg-icon" style={{ '--icon': 'url(/icons/trash.svg)' }} aria-hidden="true" />
-            </button>
+            <div className="admin-mobile-card__actions">
+              <button className="admin-icon-btn" type="button" onClick={() => handleStartEdit(ch)} aria-label={`Edytuj ${ch.title || 'wyzwanie'}`} title="Edytuj">
+                <span className="svg-icon" style={{ '--icon': 'url(/icons/edit.svg)' }} aria-hidden="true" />
+              </button>
+              <button className="admin-icon-btn admin-icon-btn--danger" type="button" onClick={() => handleDeleteChallenge(ch.id)} aria-label={`Usuń ${ch.title || 'wyzwanie'}`} title="Usuń">
+                <span className="svg-icon" style={{ '--icon': 'url(/icons/trash.svg)' }} aria-hidden="true" />
+              </button>
+            </div>
           </div>
         </article>
       );
@@ -208,7 +204,7 @@ function AdminChallengesPanel({ adminChallenges }) {
             <button type="button" className="btn-primary" onClick={openChallengeCreator}>
               Stwórz nowe
             </button>
-            <button type="button" className="btn-secondary" onClick={loadChallengesList}>
+            <button type="button" className="btn-secondary admin-refresh-btn" onClick={loadChallengesList}>
               Odśwież
             </button>
           </div>
@@ -229,7 +225,7 @@ function AdminChallengesPanel({ adminChallenges }) {
       {!loadingChallenges && challenges.length > 0 && (
         <div className="admin-challenge-groups">
           {challengeGroups.map(group => (
-            <section className="admin-section glass-card admin-challenge-group" key={group.id}>
+            <section className={`admin-section glass-card admin-challenge-group admin-challenge-group--${group.id}`} key={group.id}>
               <div className="admin-challenge-group__header">
                 <div>
                   <h3>{group.title}</h3>
