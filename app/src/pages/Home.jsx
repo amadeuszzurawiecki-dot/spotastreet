@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useUserProfile from '../hooks/useUserProfile';
 import TopNav from '../components/Navigation/TopNav';
-import { AVATARS } from '../data/avatars';
 import { fetchDailyChallenges } from '../config/firebase';
 import './Home.css';
 
@@ -71,13 +70,8 @@ function Home() {
   const [loadingChallenges, setLoadingChallenges] = useState(true);
   const [isOffline, setIsOffline] = useState(false);
   const [currentTime, setCurrentTime] = useState(() => new Date());
-  const [challengeIndex, setChallengeIndex] = useState(0);
-  const [isChallengeSliding, setIsChallengeSliding] = useState(false);
-  const [challengeSlideDistance, setChallengeSlideDistance] = useState(0);
   const [isMobileView, setIsMobileView] = useState(false);
-  const challengeViewportRef = useRef(null);
 
-  const avatar = AVATARS.find(a => a.id === user.avatarId) || AVATARS[0];
   const userAttempts = user.challengeAttempts || {};
   const completedChallenges = dailyChallenges.filter(ch => userAttempts[ch.id] !== undefined).length;
   const shouldLoopChallenges = !isMobileView && dailyChallenges.length >= 4;
@@ -115,42 +109,18 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    if (!shouldLoopChallenges) return undefined;
-
-    const interval = setInterval(() => {
-      setIsChallengeSliding(true);
-      window.setTimeout(() => {
-        setChallengeIndex((currentIndex) => (currentIndex + 1) % dailyChallenges.length);
-        setIsChallengeSliding(false);
-      }, 640);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [shouldLoopChallenges, dailyChallenges.length]);
-
-  useEffect(() => {
-    const updateSlideDistance = () => {
-      const viewport = challengeViewportRef.current;
+    const updateViewportMode = () => {
       setIsMobileView(window.innerWidth <= 620);
-      if (!viewport) return;
-
-      const cardGap = 16;
-      const visibleCards = window.innerWidth <= 620 ? 1 : 3;
-      const cardWidth = visibleCards === 1
-        ? viewport.clientWidth
-        : (viewport.clientWidth - cardGap * (visibleCards - 1)) / visibleCards;
-
-      setChallengeSlideDistance(cardWidth + cardGap);
     };
 
-    updateSlideDistance();
-    window.addEventListener('resize', updateSlideDistance, { passive: true });
+    updateViewportMode();
+    window.addEventListener('resize', updateViewportMode, { passive: true });
 
-    return () => window.removeEventListener('resize', updateSlideDistance);
-  }, [dailyChallenges.length]);
+    return () => window.removeEventListener('resize', updateViewportMode);
+  }, []);
 
   const visibleChallenges = shouldLoopChallenges
-    ? [0, 1, 2, 3].map((offset) => dailyChallenges[(challengeIndex + offset) % dailyChallenges.length])
+    ? [...dailyChallenges, ...dailyChallenges]
     : dailyChallenges;
 
   const handleChallengeClick = (challenge) => {
@@ -212,7 +182,7 @@ function Home() {
 
       {/* Game Modes & Challenges */}
       <main className="home-modes">
-        {/* Section: Codzienne wyzwania */}
+        {/* Section: Wyzwania */}
         <div className="home-modes__section">
           {isOffline && (
             <div className="offline-banner">
@@ -225,12 +195,12 @@ function Home() {
 
           <div className="challenges-header-container">
             <div className="home-section-heading">
-              <h2 className="home-modes__title text-heading">Codzienne wyzwania</h2>
+              <h2 className="home-modes__title text-heading">Wyzwania</h2>
               <p>Ukończono {completedChallenges} z {dailyChallenges.length || 0} dzisiejszych wyzwań</p>
             </div>
           </div>
 
-          <div className="challenges-carousel" ref={challengeViewportRef}>
+          <div className="challenges-carousel">
             {loadingChallenges ? (
               <div className="home-loading-challenges">Wczytywanie wyzwań...</div>
             ) : visibleChallenges.length === 0 ? (
@@ -243,8 +213,7 @@ function Home() {
               </div>
             ) : (
               <div
-                className={`challenges-carousel__track ${shouldLoopChallenges ? 'challenges-carousel__track--looping' : 'challenges-carousel__track--static'} ${isChallengeSliding ? 'challenges-carousel__track--sliding' : ''}`}
-                style={{ '--challenge-slide-distance': `${challengeSlideDistance}px` }}
+                className={`challenges-carousel__track ${shouldLoopChallenges ? 'challenges-carousel__track--looping' : 'challenges-carousel__track--static'}`}
               >
                 {visibleChallenges.map((challenge, visibleIndex) => {
                   const score = userAttempts[challenge.id];

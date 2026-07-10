@@ -77,12 +77,6 @@ export function Profile() {
     reader.readAsDataURL(file);
   };
 
-  // Calculate total wins
-  const totalWins = 
-    (user.stats?.['where-is-street']?.wins || 0) +
-    (user.stats?.['where-is-place']?.wins || 0) +
-    (user.stats?.['what-street']?.wins || 0);
-
   return (
     <div className="profile-page">
       {/* Redesigned top navbar */}
@@ -108,15 +102,6 @@ export function Profile() {
               {!user.isPremium && <span className="free-badge-text">FREE</span>}
             </h2>
             <span className="profile-card-header__town" style={{ opacity: 0.7, wordBreak: 'break-all' }}>{user.email || 'kierowca@gmail.com'}</span>
-            <label className="profile-hide-email-inline" htmlFor="profile-hide-email">
-              <input 
-                type="checkbox" 
-                id="profile-hide-email"
-                checked={hideEmail}
-                onChange={e => setHideEmail(e.target.checked)}
-              />
-              <span>Ukryj mój adres e-mail w rankingu</span>
-            </label>
           </div>
         </section>
 
@@ -153,6 +138,16 @@ export function Profile() {
               </datalist>
             </div>
           </div>
+
+          <label className="profile-hide-email-inline profile-hide-email-setting" htmlFor="profile-hide-email">
+            <input 
+              type="checkbox" 
+              id="profile-hide-email"
+              checked={hideEmail}
+              onChange={e => setHideEmail(e.target.checked)}
+            />
+            <span>Ukryj mój adres e-mail w rankingu</span>
+          </label>
 
           {/* Clean circle avatar selection */}
           <div className="form-group">
@@ -206,51 +201,41 @@ export function Profile() {
           
           <div className="stats-list">
             <div className="stats-item">
-              <span className="stats-item__icon line-icon line-icon--pin" aria-hidden="true" />
+              <span className="stats-item__icon svg-icon" style={{ '--icon': 'url(/icons/umiesc.svg)' }} aria-hidden="true" />
               <div className="stats-item__info">
-                <div className="stats-item__title">Gdzie jest ta ulica?</div>
+                <div className="stats-item__title">Wskaż ulicę</div>
                 <div className="stats-item__val">
-                  Wygrane: <span className="stats-win">{user.stats?.['where-is-street']?.wins || 0}</span> / Przegrane: <span className="stats-loss">{user.stats?.['where-is-street']?.losses || 0}</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="stats-item">
-              <span className="stats-item__icon line-icon line-icon--target" aria-hidden="true" />
-              <div className="stats-item__info">
-                <div className="stats-item__title">Gdzie jest to miejsce?</div>
-                <div className="stats-item__val">
-                  Wygrane: <span className="stats-win">{user.stats?.['where-is-place']?.wins || 0}</span> / Przegrane: <span className="stats-loss">{user.stats?.['where-is-place']?.losses || 0}</span>
+                  wygrane: <span className="stats-win">{user.stats?.['where-is-street']?.wins || 0}</span> / przegrane: <span className="stats-loss">{user.stats?.['where-is-street']?.losses || 0}</span>
                 </div>
               </div>
             </div>
 
             <div className="stats-item">
-              <span className="stats-item__icon line-icon line-icon--scan" aria-hidden="true" />
+              <span className="stats-item__icon svg-icon" style={{ '--icon': 'url(/icons/nazwij.svg)' }} aria-hidden="true" />
               <div className="stats-item__info">
-                <div className="stats-item__title">Co to za ulica?</div>
+                <div className="stats-item__title">Nazwij ulicę</div>
                 <div className="stats-item__val">
-                  Wygrane: <span className="stats-win">{user.stats?.['what-street']?.wins || 0}</span> / Przegrane: <span className="stats-loss">{user.stats?.['what-street']?.losses || 0}</span>
+                  wygrane: <span className="stats-win">{user.stats?.['what-street']?.wins || 0}</span> / przegrane: <span className="stats-loss">{user.stats?.['what-street']?.losses || 0}</span>
                 </div>
               </div>
             </div>
 
             <div className="stats-item">
-              <span className="stats-item__icon line-icon line-icon--ranking" aria-hidden="true" />
+              <span className="stats-item__icon svg-icon" style={{ '--icon': 'url(/icons/pojedynek.svg)' }} aria-hidden="true" />
               <div className="stats-item__info">
-                <div className="stats-item__title">Pojedynki online (1v1)</div>
+                <div className="stats-item__title">Pojedynki online</div>
                 <div className="stats-item__val">
-                  Wygrane: <span className="stats-win">{user.onlineWins || 0}</span> / Przegrane: <span className="stats-loss">{user.onlineLosses || 0}</span> / Remisy: <span className="stats-draw" style={{ color: 'var(--text-tertiary)' }}>{user.onlineDraws || 0}</span>
+                  wygrane: <span className="stats-win">{user.onlineWins || 0}</span> / przegrane: <span className="stats-loss">{user.onlineLosses || 0}</span> / remisy: <span className="stats-draw" style={{ color: 'var(--text-tertiary)' }}>{user.onlineDraws || 0}</span>
                 </div>
               </div>
             </div>
 
             <div className="stats-item">
-              <span className="stats-item__icon line-icon line-icon--trophy" aria-hidden="true" />
+              <span className="stats-item__icon svg-icon" style={{ '--icon': 'url(/icons/ribbon.svg)' }} aria-hidden="true" />
               <div className="stats-item__info">
                 <div className="stats-item__title">Ukończone wyzwania</div>
                 <div className="stats-item__val">
-                  Wykonano wyzwań: <strong style={{ color: 'var(--green-primary)' }}>{Object.keys(user.challengeAttempts || {}).length}</strong>
+                  wykonano wyzwań: <strong style={{ color: 'var(--green-primary)' }}>{Object.keys(user.challengeAttempts || {}).length}</strong>
                 </div>
               </div>
             </div>

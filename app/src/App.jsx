@@ -7,6 +7,7 @@ import Welcome from './pages/Welcome';
 import ProfileSetup from './components/Profile/ProfileSetup';
 import OnboardingModal from './components/Onboarding/OnboardingModal';
 import Home from './pages/Home';
+import Challenges from './pages/Challenges';
 import Profile from './pages/Profile';
 import Leaderboard from './pages/Leaderboard';
 import GameWhereIsStreet from './pages/GameWhereIsStreet';
@@ -209,6 +210,7 @@ function App() {
     <AppChrome>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/challenges" element={<Challenges />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/game/where-is-street" element={<GameWhereIsStreet />} />

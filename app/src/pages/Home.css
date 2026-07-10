@@ -97,9 +97,18 @@
   justify-content: flex-start;
 }
 
-.challenges-carousel__track--sliding {
-  transform: translate3d(calc(var(--challenge-slide-distance) * -1), 0, 0);
-  transition: transform 640ms cubic-bezier(0.76, 0, 0.24, 1);
+.challenges-carousel__track--looping {
+  width: max-content;
+  animation: challenges-carousel-loop 28s linear infinite;
+}
+
+.challenges-carousel:hover .challenges-carousel__track--looping {
+  animation-play-state: paused;
+}
+
+@keyframes challenges-carousel-loop {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(calc(-50% - 8px), 0, 0); }
 }
 
 .home-loading-challenges {
@@ -357,7 +366,7 @@
   width: 100%;
   display: grid;
   grid-template-columns: 40px minmax(0, 1fr);
-  align-items: start;
+  align-items: center;
   gap: 12px;
   padding: 18px;
   border: 1px solid var(--border);
@@ -393,7 +402,10 @@
   height: 36px;
   display: grid;
   place-items: center;
+  align-self: center;
+  justify-self: center;
   color: #fff;
+  transform: translateY(3px);
 }
 
 .mode-card__svg {
@@ -404,6 +416,7 @@
 .mode-card__content {
   min-width: 0;
   padding-right: 28px;
+  align-self: center;
 }
 
 .mode-card__title {
@@ -489,9 +502,9 @@
     flex-direction: column;
   }
 
-  .challenges-carousel__track--sliding {
+  .challenges-carousel__track--looping {
     transform: none;
-    transition: none;
+    animation: none;
   }
 
   .challenge-card {

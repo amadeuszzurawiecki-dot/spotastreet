@@ -75,6 +75,10 @@
 }
 
 .topnav-user-pill--premium {
+  border-color: var(--border-strong);
+}
+
+.topnav-user-pill--premium .topnav-user-pill__avatar {
   border-color: var(--green-primary);
 }
 
@@ -248,7 +252,7 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) 42px;
   align-items: center;
-  padding: var(--safe-top) 32px 0;
+  padding: var(--safe-top) 18px 0;
   border-bottom: 1px solid var(--border);
 }
 
@@ -295,6 +299,15 @@
   background: var(--surface);
 }
 
+.menu-drawer__group {
+  display: grid;
+  border-bottom: 1px solid var(--border);
+}
+
+.menu-drawer__group .menu-drawer__link .menu-drawer__icon {
+  color: #fff;
+}
+
 .menu-drawer__account-actions {
   display: grid;
   gap: 0;
@@ -332,7 +345,8 @@
   font-weight: 500;
 }
 
-.menu-drawer__nav-links .menu-drawer__link:last-child {
+.menu-drawer__nav-links > .menu-drawer__link:last-child,
+.menu-drawer__group .menu-drawer__link:last-child {
   border-bottom: 0;
 }
 

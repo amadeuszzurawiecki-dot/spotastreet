@@ -87,6 +87,11 @@ export function TopNav({ variant = 'front', adminTab = 'users', onAdminTabChange
   ];
 
   const navItems = isAdminVariant ? adminNavItems : frontNavItems;
+  const gameDrawerItems = isAdminVariant ? [] : [
+    { label: 'Wyzwania', path: '/challenges', icon: '/icons/ribbon.svg' },
+    { label: 'Wskaż ulicę', path: '/game/where-is-street', icon: '/icons/umiesc.svg' },
+    { label: 'Nazwij ulicę', path: '/game/what-street', icon: '/icons/nazwij.svg' },
+  ];
   const activeTheme = isolatedThemeToggle ? isolatedTheme : theme;
 
   const handleThemeToggle = () => {
@@ -225,6 +230,20 @@ export function TopNav({ variant = 'front', adminTab = 'users', onAdminTabChange
 
         <nav className="menu-drawer__nav">
           <div className="menu-drawer__nav-links">
+            {gameDrawerItems.length > 0 && (
+              <div className="menu-drawer__group">
+                {gameDrawerItems.map(item => (
+                  <button
+                    key={item.path}
+                    className={`menu-drawer__link ${location.pathname === item.path ? 'menu-drawer__link--active' : ''}`}
+                    onClick={() => handleNavigate(item.path)}
+                  >
+                    <span className="svg-icon menu-drawer__icon" style={{ '--icon': `url(${item.icon})` }} aria-hidden="true" />
+                    <span>{item.label}</span>
+                  </button>
+                ))}
+              </div>
+            )}
             {navItems.map(item => (
               <button
                 key={item.path || item.id}
@@ -238,7 +257,10 @@ export function TopNav({ variant = 'front', adminTab = 'users', onAdminTabChange
           </div>
 
           <div className="menu-drawer__account-actions">
-            <button className="menu-drawer__theme" onClick={handleThemeToggle}>
+            <button type="button" className="menu-drawer__theme" onClick={(event) => {
+              event.stopPropagation();
+              handleThemeToggle();
+            }}>
               <span
                 className="svg-icon menu-drawer__icon"
                 style={{ '--icon': `url(/icons/${activeTheme === 'dark' ? 'light' : 'dark'}.svg)` }}

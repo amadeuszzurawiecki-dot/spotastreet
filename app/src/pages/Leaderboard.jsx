@@ -7,7 +7,7 @@ import './Leaderboard.css';
 
 export function Leaderboard() {
   const user = useUserProfile();
-  const [view, setView] = useState('menu'); // 'menu' | 'challenges' | 'where-is-street' | 'what-street'
+  const [view, setView] = useState('challenges'); // 'challenges' | 'where-is-street' | 'what-street'
   const [leaderboard, setLeaderboard] = useState([]);
   const [challenges, setChallenges] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -93,6 +93,35 @@ export function Leaderboard() {
       .slice(0, 10);
   };
 
+  const rankingTabs = [
+    {
+      id: 'challenges',
+      title: 'Wyzwania codzienne',
+      subtitle: 'Historia wyzwań i wyniki',
+      headerTitle: 'Ranking Wyzwań Codziennych',
+      headerSubtitle: 'Historia wyzwań i najlepsi gracze (najnowsze u góry)',
+      icon: '/icons/ribbon.svg',
+    },
+    {
+      id: 'where-is-street',
+      title: 'Wskaż ulicę',
+      subtitle: 'Umieść pinezkę nad tą ulicą',
+      headerTitle: 'Wskaż ulicę',
+      headerSubtitle: 'Najlepsi w lokalizowaniu ulic na mapie',
+      icon: '/icons/umiesc.svg',
+    },
+    {
+      id: 'what-street',
+      title: 'Nazwij ulicę',
+      subtitle: 'Nazwij podświetloną ulicę',
+      headerTitle: 'Nazwij ulicę',
+      headerSubtitle: 'Najlepsi w podawaniu nazw podświetlonych ulic',
+      icon: '/icons/nazwij.svg',
+    },
+  ];
+
+  const activeRanking = rankingTabs.find(tab => tab.id === view) || rankingTabs[0];
+
   const renderChallengesView = () => {
     const getChallengeIcon = (icon) => {
       const supportedIcons = ['alarm', 'flag', 'keyboard', 'pin', 'ribbon', 'star'];
@@ -101,17 +130,6 @@ export function Leaderboard() {
 
     return (
       <div className="leaderboard-challenges-container animate-fade-in">
-        <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '20px' }}>
-          <button className="btn-secondary leaderboard-back-btn" onClick={() => setView('menu')}>
-            ‹ Powrót do wyboru rankingu
-          </button>
-        </div>
-
-        <header className="leaderboard-header">
-          <h2 className="leaderboard-title text-display">Ranking Wyzwań Codziennych</h2>
-          <p className="leaderboard-subtitle">Historia wyzwań i najlepsi gracze (najnowsze u góry)</p>
-        </header>
-        
         {challenges.length === 0 ? (
           <p style={{ textAlign: 'center', color: 'var(--text-tertiary)', marginTop: '24px' }}>Brak zapisanych wyzwań.</p>
         ) : (
@@ -212,21 +230,10 @@ export function Leaderboard() {
     );
   };
 
-  const renderModeView = (mode, title, subtitle) => {
+  const renderModeView = (mode) => {
     const list = getProcessedListForFilter(mode);
     return (
       <div className="leaderboard-mode-container animate-fade-in">
-        <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '20px' }}>
-          <button className="btn-secondary leaderboard-back-btn" onClick={() => setView('menu')}>
-            ‹ Powrót do wyboru rankingu
-          </button>
-        </div>
-
-        <header className="leaderboard-header">
-          <h2 className="leaderboard-title text-display">{title}</h2>
-          <p className="leaderboard-subtitle">{subtitle}</p>
-        </header>
-
         <div className="leaderboard-table-card glass-card">
           {loading ? (
             <div className="leaderboard-loading">
@@ -315,41 +322,34 @@ export function Leaderboard() {
           </div>
         )}
 
-        {view === 'menu' && (
-          <div className="leaderboard-menu-container animate-fade-in">
-            <header className="leaderboard-header">
-              <h1 className="leaderboard-title hero__title text-display">Rankingi Legnicy</h1>
-              <p className="leaderboard-subtitle">Wybierz kategorię, aby zobaczyć najlepszych kierowców</p>
-            </header>
+        <div className="leaderboard-menu-grid leaderboard-tabs-chooser" role="tablist" aria-label="Kategorie rankingu">
+          {rankingTabs.map(tab => {
+            const isActive = view === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                className={`leaderboard-menu-card leaderboard-tab-card ${isActive ? 'leaderboard-menu-card--active' : ''}`}
+                onClick={() => setView(tab.id)}
+                role="tab"
+                aria-selected={isActive}
+              >
+                <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': `url(${tab.icon})` }} aria-hidden="true" />
+                <span className="leaderboard-menu-card__title">{tab.title}</span>
+                <span className="leaderboard-menu-card__subtitle">{tab.subtitle}</span>
+              </button>
+            );
+          })}
+        </div>
 
-            <div className="leaderboard-menu-grid">
-              <div className="leaderboard-menu-card" onClick={() => setView('challenges')}>
-                <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/ribbon.svg)' }} aria-hidden="true" />
-                <span className="leaderboard-menu-card__title">Wyzwania codzienne</span>
-                <span className="leaderboard-menu-card__subtitle">Historia wyzwań i wyniki</span>
-                <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
-              </div>
-
-              <div className="leaderboard-menu-card" onClick={() => setView('where-is-street')}>
-                <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/umiesc.svg)' }} aria-hidden="true" />
-                <span className="leaderboard-menu-card__title">Wskaż ulicę</span>
-                <span className="leaderboard-menu-card__subtitle">Umieść pinezkę nad tą ulicą</span>
-                <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
-              </div>
-
-              <div className="leaderboard-menu-card" onClick={() => setView('what-street')}>
-                <span className="leaderboard-menu-card__icon svg-icon" style={{ '--icon': 'url(/icons/nazwij.svg)' }} aria-hidden="true" />
-                <span className="leaderboard-menu-card__title">Nazwij ulicę</span>
-                <span className="leaderboard-menu-card__subtitle">Nazwij podświetloną ulicę</span>
-                <span className="card-arrow svg-icon" style={{ '--icon': 'url(/icons/arrows/right.svg)' }} aria-hidden="true" />
-              </div>
-            </div>
-          </div>
-        )}
+        <header className="leaderboard-header">
+          <h1 className="leaderboard-title hero__title text-display">{activeRanking.headerTitle}</h1>
+          <p className="leaderboard-subtitle">{activeRanking.headerSubtitle}</p>
+        </header>
 
         {view === 'challenges' && renderChallengesView()}
-        {view === 'where-is-street' && renderModeView('where-is-street', 'Wskaż ulicę', 'Najlepsi w lokalizowaniu ulic na mapie')}
-        {view === 'what-street' && renderModeView('what-street', 'Nazwij ulicę', 'Najlepsi w podawaniu nazw podświetlonych ulic')}
+        {view === 'where-is-street' && renderModeView('where-is-street')}
+        {view === 'what-street' && renderModeView('what-street')}
       </main>
     </div>
   );
