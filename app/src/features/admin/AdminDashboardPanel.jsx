@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { fetchAdminDashboardMetrics } from './adminService';
 
 function parseDate(value) {
@@ -26,6 +27,7 @@ function getChallengeWindow(challenge) {
 }
 
 function AdminDashboardPanel({ adminUsers, adminChallenges, appSettings, onAdminTabChange }) {
+  const navigate = useNavigate();
   const [metrics, setMetrics] = useState({ completedMatches: 0 });
   const users = adminUsers.allUsers || [];
   const challenges = adminChallenges.challenges || [];
@@ -96,26 +98,40 @@ function AdminDashboardPanel({ adminUsers, adminChallenges, appSettings, onAdmin
     <div className="admin-dashboard">
       <div className="admin-dashboard-grid">
         <aside className="admin-dashboard-side">
-          <section className="admin-dashboard-stats">
-            {statCards.map(card => (
-              <article className="admin-dashboard-stat glass-card" key={card.title}>
-                <span className="admin-dashboard-stat__icon svg-icon" style={{ '--icon': `url(${card.icon})` }} aria-hidden="true" />
-                <div className="admin-dashboard-stat-header">
-                  <strong>{card.title}</strong>
-                  <span className="admin-dashboard-stats-subtitle">{card.subtitle}</span>
-                </div>
-              </article>
-            ))}
+          <section className="admin-section glass-card admin-dashboard-card">
+            <div className="admin-section__header">
+              <div>
+                <h3>Statystyki</h3>
+                <p>Co nowego w aplikacji?</p>
+              </div>
+              <button type="button" className="btn-primary admin-dashboard-action-btn" onClick={() => navigate('/')}>
+                <span className="svg-icon" style={{ '--icon': 'url(/icons/play.svg)' }} aria-hidden="true" />
+                Przejdź na front
+              </button>
+            </div>
+
+            <section className="admin-dashboard-stats">
+              {statCards.map(card => (
+                <article className="admin-dashboard-stat glass-card" key={card.title}>
+                  <span className="admin-dashboard-stat__icon svg-icon" style={{ '--icon': `url(${card.icon})` }} aria-hidden="true" />
+                  <div className="admin-dashboard-stat-header">
+                    <strong>{card.title}</strong>
+                    <span className="admin-dashboard-stats-subtitle">{card.subtitle}</span>
+                  </div>
+                </article>
+              ))}
+            </section>
           </section>
 
           <section className="admin-section glass-card admin-dashboard-users">
             <div className="admin-section__header">
               <div>
-                <h2 className="admin-section__title">Użytkownicy</h2>
+                <h3>Użytkownicy</h3>
                 <p className="admin-section__desc">Najnowszy podgląd kont w bazie.</p>
               </div>
-              <button type="button" className="btn-secondary" onClick={() => onAdminTabChange('users')}>
-                Wszyscy użytkownicy
+              <button type="button" className="btn-primary admin-dashboard-action-btn" onClick={() => onAdminTabChange('users')}>
+                <span className="svg-icon" style={{ '--icon': 'url(/icons/user.svg)' }} aria-hidden="true" />
+                Użytkownicy
               </button>
             </div>
 
@@ -138,10 +154,11 @@ function AdminDashboardPanel({ adminUsers, adminChallenges, appSettings, onAdmin
           <section className="admin-section glass-card admin-dashboard-card">
             <div className="admin-section__header">
               <div>
-                <h2 className="admin-section__title">Aktywne wyzwania</h2>
+                <h3>Aktywne wyzwania</h3>
                 <p className="admin-section__desc">Wyzwania dostępne teraz dla graczy.</p>
               </div>
-              <button type="button" className="btn-secondary" onClick={() => onAdminTabChange('challenges')}>
+              <button type="button" className="btn-primary admin-dashboard-action-btn" onClick={() => onAdminTabChange('challenges')}>
+                <span className="svg-icon" style={{ '--icon': 'url(/icons/ribbon.svg)' }} aria-hidden="true" />
                 Wszystkie wyzwania
               </button>
             </div>
@@ -165,11 +182,12 @@ function AdminDashboardPanel({ adminUsers, adminChallenges, appSettings, onAdmin
           <section className="admin-section glass-card admin-dashboard-card">
             <div className="admin-section__header">
               <div>
-                <h2 className="admin-section__title">Ustawienia aplikacji</h2>
-                <p className="admin-section__desc">Szybki podgląd kluczowych przełączników.</p>
+                <h3>Ustawienia aplikacji</h3>
+                <p className="admin-section__desc">Podgląd kluczowych przełączników.</p>
               </div>
-              <button type="button" className="btn-secondary" onClick={() => onAdminTabChange('settings')}>
-                Wszystkie ustawienia
+              <button type="button" className="btn-primary admin-dashboard-action-btn" onClick={() => onAdminTabChange('settings')}>
+                <span className="svg-icon" style={{ '--icon': 'url(/icons/admin.svg)' }} aria-hidden="true" />
+                Ustawienia
               </button>
             </div>
 
