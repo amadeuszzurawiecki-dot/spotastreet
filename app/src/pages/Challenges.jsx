@@ -128,7 +128,7 @@ function Challenges() {
               <h1 className="home-modes__title text-heading">Wyzwania</h1>
               <p className="challenges-page__lead">Wybierz aktywne wyzwanie i powalcz o miejsce w rankingu.</p>
             </div>
-            <p>Ukończono {completedChallenges} z {challenges.length || 0} aktywnych wyzwań</p>
+            <p className="challenges-page__completion-pill"><strong>Ukończono {completedChallenges}</strong> z {challenges.length || 0}</p>
           </div>
 
           {loading ? (

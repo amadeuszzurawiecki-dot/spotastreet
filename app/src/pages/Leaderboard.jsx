@@ -98,7 +98,6 @@ export function Leaderboard() {
       id: 'challenges',
       title: 'Wyzwania',
       subtitle: 'Historia wyzwań i wyniki',
-      headerTitle: 'Ranking Wyzwań Codziennych',
       headerSubtitle: 'Historia wyzwań i najlepsi gracze (najnowsze u góry)',
       icon: '/icons/ribbon.svg',
     },
@@ -106,7 +105,6 @@ export function Leaderboard() {
       id: 'where-is-street',
       title: 'Wskaż ulicę',
       subtitle: 'Umieść pinezkę nad tą ulicą',
-      headerTitle: 'Wskaż ulicę',
       headerSubtitle: 'Najlepsi w lokalizowaniu ulic na mapie',
       icon: '/icons/umiesc.svg',
     },
@@ -114,7 +112,6 @@ export function Leaderboard() {
       id: 'what-street',
       title: 'Nazwij ulicę',
       subtitle: 'Nazwij podświetloną ulicę',
-      headerTitle: 'Nazwij ulicę',
       headerSubtitle: 'Najlepsi w podawaniu nazw podświetlonych ulic',
       icon: '/icons/nazwij.svg',
     },
@@ -123,11 +120,6 @@ export function Leaderboard() {
   const activeRanking = rankingTabs.find(tab => tab.id === view) || rankingTabs[0];
 
   const renderChallengesView = () => {
-    const getChallengeIcon = (icon) => {
-      const supportedIcons = ['alarm', 'flag', 'keyboard', 'pin', 'ribbon', 'star'];
-      return supportedIcons.includes(icon) ? `/icons/${icon}.svg` : '/icons/flag.svg';
-    };
-
     return (
       <div className="leaderboard-challenges-container animate-fade-in">
         {challenges.length === 0 ? (
@@ -156,9 +148,8 @@ export function Leaderboard() {
               <div key={ch.id} className="glass-card challenge-rank-card">
                 <div className="challenge-rank-card__header">
                   <div className="challenge-rank-card__title-group">
-                    <span className="challenge-rank-card__icon svg-icon" style={{ '--icon': `url(${getChallengeIcon(ch.icon)})` }} aria-hidden="true" />
                     <div className="challenge-rank-card__copy">
-                      <h4 style={{ margin: 0, fontWeight: 700, fontSize: '1.05rem', color: 'var(--green-primary)' }}>{ch.title}</h4>
+                      <h4 className="challenge-rank-card__title">{ch.title}</h4>
                       <p className="challenge-rank-card__desc">{ch.description}</p>
                     </div>
                   </div>
@@ -322,6 +313,10 @@ export function Leaderboard() {
           </div>
         )}
 
+        <header className="leaderboard-header leaderboard-header--top">
+          <h1 className="leaderboard-title hero__title text-display">Ranking</h1>
+        </header>
+
         <div className="leaderboard-menu-grid leaderboard-tabs-chooser" role="tablist" aria-label="Kategorie rankingu">
           {rankingTabs.map(tab => {
             const isActive = view === tab.id;
@@ -342,8 +337,7 @@ export function Leaderboard() {
           })}
         </div>
 
-        <header className="leaderboard-header">
-          <h1 className="leaderboard-title hero__title text-display">{activeRanking.headerTitle}</h1>
+        <header className="leaderboard-header leaderboard-header--subtitle">
           <p className="leaderboard-subtitle">{activeRanking.headerSubtitle}</p>
         </header>
 

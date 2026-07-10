@@ -128,7 +128,7 @@
 .form-label {
   font-size: 0.78rem;
   font-weight: 400;
-  color: var(--text-secondary);
+  color: var(--text-tertiary);
   text-transform: none;
   letter-spacing: 0;
 }
@@ -215,7 +215,7 @@
 }
 
 .profile-save-btn {
-  margin-top: var(--space-sm);
+  margin-top: 0;
   width: 100%;
 }
 
@@ -350,7 +350,7 @@
   background: currentColor;
   flex-shrink: 0;
   border: 0;
-  color: #fff;
+  color: var(--text-primary);
 }
 
 .stats-item__icon::before,
@@ -523,8 +523,15 @@
 
 .form-input,
 .stats-item {
-  background: transparent;
   border-color: var(--border);
+}
+
+.stats-item {
+  background: transparent;
+}
+
+:root[data-theme="dark"] .form-input {
+  background: var(--bg-primary);
 }
 
 .form-input:focus {
@@ -566,10 +573,6 @@
   .profile-card-header {
     padding-left: 16px;
     padding-right: 16px;
-  }
-
-  .profile-card-header__avatar {
-    margin-left: 16px;
   }
 
   .profile-section-title {

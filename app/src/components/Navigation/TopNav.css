@@ -306,7 +306,7 @@
 }
 
 .menu-drawer__group .menu-drawer__link .menu-drawer__icon {
-  color: #fff;
+  color: currentColor;
 }
 
 .menu-drawer__account-actions {

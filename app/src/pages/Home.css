@@ -285,6 +285,7 @@
 .challenge-pill .svg-icon {
   width: 14px;
   height: 14px;
+  margin-right: 6px;
 }
 
 .challenge-card__image-pills {
@@ -315,6 +316,7 @@
 }
 
 .challenge-pill--score {
+  gap: 0;
   background: var(--main-color);
   border-color: var(--main-color);
   color: #fff;
@@ -322,6 +324,7 @@
 
 .challenge-pill__score {
   color: #fff;
+  font-weight: 700;
 }
 
 .challenge-pill__max {

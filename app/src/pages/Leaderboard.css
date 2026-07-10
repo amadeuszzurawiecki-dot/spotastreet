@@ -24,6 +24,15 @@
   border-bottom: 0;
 }
 
+.leaderboard-header--top {
+  margin-bottom: 0;
+}
+
+.leaderboard-header--subtitle {
+  margin-bottom: 0;
+  padding-top: 0;
+}
+
 .leaderboard-title {
   font-size: 24px;
   font-weight: 700;
@@ -405,12 +414,21 @@
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: 10px;
   flex: 1 1 auto;
 }
 
 .challenge-rank-card__copy {
   min-width: 0;
+}
+
+.challenge-rank-card__title {
+  margin: 0;
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .challenge-rank-card__desc {
@@ -514,7 +532,7 @@
   }
 
   .leaderboard-tabs-chooser .leaderboard-menu-card--active {
-    gap: 12px;
+    gap: 8px;
     padding: 12px;
   }
 

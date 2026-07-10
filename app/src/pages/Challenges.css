@@ -20,6 +20,26 @@
   text-align: left !important;
 }
 
+.challenges-page__completion-pill {
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-self: end;
+  gap: 4px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.challenges-page__completion-pill strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
 .challenges-page__grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -30,6 +50,7 @@
 .challenges-page__card {
   width: 100%;
   flex: none;
+  background: var(--bg-secondary);
   text-align: left;
 }
 
