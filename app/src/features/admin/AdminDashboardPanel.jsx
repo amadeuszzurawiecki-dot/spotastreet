@@ -71,59 +71,68 @@ function AdminDashboardPanel({ adminUsers, adminChallenges, appSettings, onAdmin
   const activeModesCount = Object.values(appSettings.activeGameModes || {}).filter(Boolean).length;
   const statCards = [
     {
-      label: `${dashboardData.newAccountsThisMonth} nowych kont w tym miesiącu`,
+      title: `${dashboardData.newAccountsThisMonth} nowych kont`,
+      subtitle: 'w tym miesiącu',
       icon: '/icons/user.svg',
     },
     {
-      label: `${dashboardData.finishedChallenges} zakończonych wyzwań`,
+      title: `${dashboardData.finishedChallenges} wyzwań`,
+      subtitle: 'zakończonych',
       icon: '/icons/ribbon.svg',
     },
     {
-      label: `${metrics.completedMatches || 0} rozegranych pojedynków`,
+      title: `${metrics.completedMatches || 0} meczów`,
+      subtitle: 'rozegranych przez graczy i AI',
       icon: '/icons/pojedynek.svg',
     },
     {
-      label: '0 opublikowanych aktualizacji',
+      title: '0 aktualizacji',
+      subtitle: 'opublikowanych od startu',
       icon: '/icons/flag.svg',
     },
   ];
 
   return (
     <div className="admin-dashboard">
-      <section className="admin-dashboard-stats">
-        {statCards.map(card => (
-          <article className="admin-dashboard-stat glass-card" key={card.label}>
-            <span className="admin-dashboard-stat__icon svg-icon" style={{ '--icon': `url(${card.icon})` }} aria-hidden="true" />
-            <strong>{card.label}</strong>
-          </article>
-        ))}
-      </section>
-
       <div className="admin-dashboard-grid">
-        <section className="admin-section glass-card admin-dashboard-users">
-          <div className="admin-section__header">
-            <div>
-              <h2 className="admin-section__title">Użytkownicy</h2>
-              <p className="admin-section__desc">Najnowszy podgląd kont w bazie.</p>
-            </div>
-            <button type="button" className="btn-secondary" onClick={() => onAdminTabChange('users')}>
-              Wszyscy użytkownicy
-            </button>
-          </div>
-
-          <div className="admin-dashboard-mini-table">
-            {dashboardData.recentUsers.map(profile => (
-              <div className="admin-dashboard-mini-row" key={profile.email || profile.name}>
-                <strong>{profile.name || 'Bez nazwy'}</strong>
-                <span>{profile.email || 'Brak e-maila'}</span>
-                <time>{formatDateTime(profile.createdAt)}</time>
-              </div>
+        <aside className="admin-dashboard-side">
+          <section className="admin-dashboard-stats">
+            {statCards.map(card => (
+              <article className="admin-dashboard-stat glass-card" key={card.title}>
+                <span className="admin-dashboard-stat__icon svg-icon" style={{ '--icon': `url(${card.icon})` }} aria-hidden="true" />
+                <div className="admin-dashboard-stat-header">
+                  <strong>{card.title}</strong>
+                  <span className="admin-dashboard-stats-subtitle">{card.subtitle}</span>
+                </div>
+              </article>
             ))}
-            {dashboardData.recentUsers.length === 0 && (
-              <p className="admin-dashboard-empty">Brak użytkowników do wyświetlenia.</p>
-            )}
-          </div>
-        </section>
+          </section>
+
+          <section className="admin-section glass-card admin-dashboard-users">
+            <div className="admin-section__header">
+              <div>
+                <h2 className="admin-section__title">Użytkownicy</h2>
+                <p className="admin-section__desc">Najnowszy podgląd kont w bazie.</p>
+              </div>
+              <button type="button" className="btn-secondary" onClick={() => onAdminTabChange('users')}>
+                Wszyscy użytkownicy
+              </button>
+            </div>
+
+            <div className="admin-dashboard-mini-table">
+              {dashboardData.recentUsers.map(profile => (
+                <div className="admin-dashboard-mini-row" key={profile.email || profile.name}>
+                  <strong>{profile.name || 'Bez nazwy'}</strong>
+                  <span>{profile.email || 'Brak e-maila'}</span>
+                  <time>{formatDateTime(profile.createdAt)}</time>
+                </div>
+              ))}
+              {dashboardData.recentUsers.length === 0 && (
+                <p className="admin-dashboard-empty">Brak użytkowników do wyświetlenia.</p>
+              )}
+            </div>
+          </section>
+        </aside>
 
         <aside className="admin-dashboard-side">
           <section className="admin-section glass-card admin-dashboard-card">
