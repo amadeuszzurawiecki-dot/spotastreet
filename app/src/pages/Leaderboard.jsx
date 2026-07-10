@@ -96,7 +96,7 @@ export function Leaderboard() {
   const rankingTabs = [
     {
       id: 'challenges',
-      title: 'Wyzwania codzienne',
+      title: 'Wyzwania',
       subtitle: 'Historia wyzwań i wyniki',
       headerTitle: 'Ranking Wyzwań Codziennych',
       headerSubtitle: 'Historia wyzwań i najlepsi gracze (najnowsze u góry)',
@@ -155,14 +155,14 @@ export function Leaderboard() {
             return (
               <div key={ch.id} className="glass-card challenge-rank-card">
                 <div className="challenge-rank-card__header">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div className="challenge-rank-card__title-group">
                     <span className="challenge-rank-card__icon svg-icon" style={{ '--icon': `url(${getChallengeIcon(ch.icon)})` }} aria-hidden="true" />
-                    <div>
+                    <div className="challenge-rank-card__copy">
                       <h4 style={{ margin: 0, fontWeight: 700, fontSize: '1.05rem', color: 'var(--green-primary)' }}>{ch.title}</h4>
-                      <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>{ch.description}</p>
+                      <p className="challenge-rank-card__desc">{ch.description}</p>
                     </div>
                   </div>
-                  <div>
+                  <div className="challenge-rank-card__date">
                     <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-tertiary)', background: 'rgba(255,255,255,0.05)', padding: '4px 10px', borderRadius: '4px' }}>
                       {ch.date}
                     </span>
@@ -170,7 +170,7 @@ export function Leaderboard() {
                 </div>
 
                 {ranks.length === 0 ? (
-                  <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', padding: '8px 0' }}>Nikt jeszcze nie ukończył tego wyzwania. Bądź pierwszy!</p>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', padding: '12px' }}>Nikt jeszcze nie ukończył tego wyzwania. Bądź pierwszy!</p>
                 ) : (
                   <table className="clean-leaderboard-table" style={{ width: '100%', fontSize: '0.82rem' }}>
                     <thead>

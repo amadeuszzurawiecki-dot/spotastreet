@@ -704,6 +704,10 @@ footer {
   border-radius: 0 !important;
 }
 
+.premium-glow-avatar {
+  border: 2px solid var(--green-primary) !important;
+}
+
 .app-info-bar {
   width: 100%;
   margin-top: var(--section-gap);

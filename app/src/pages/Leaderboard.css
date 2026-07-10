@@ -398,7 +398,32 @@
   gap: 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   padding: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 0;
+}
+
+.challenge-rank-card__title-group {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 auto;
+}
+
+.challenge-rank-card__copy {
+  min-width: 0;
+}
+
+.challenge-rank-card__desc {
+  margin: 0;
+  overflow: hidden;
+  color: var(--text-tertiary);
+  font-size: 0.8rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.challenge-rank-card__date {
+  flex: 0 0 auto;
 }
 
 .challenge-rank-card__icon {
@@ -482,13 +507,23 @@
   }
 
   .leaderboard-tabs-chooser .leaderboard-menu-card {
+    display: flex;
+    flex-direction: column;
     gap: 8px;
     padding: 10px 8px;
+  }
+
+  .leaderboard-tabs-chooser .leaderboard-menu-card--active {
+    gap: 12px;
+    padding: 12px;
   }
 
   .leaderboard-tabs-chooser .leaderboard-menu-card__icon {
     width: 26px;
     height: 26px;
+    align-self: flex-start;
+    justify-self: auto;
+    place-self: auto;
   }
 
   .leaderboard-tabs-chooser .leaderboard-menu-card__title {
@@ -497,6 +532,10 @@
 
   .leaderboard-tabs-chooser .leaderboard-menu-card__subtitle {
     display: none;
+  }
+
+  .leaderboard-header {
+    padding: 24px;
   }
 }
 

@@ -219,6 +219,12 @@
   width: 100%;
 }
 
+.profile-hide-email-setting,
+.profile-avatar-form-group,
+.profile-save-btn {
+  grid-column: 1 / -1;
+}
+
 .map-style-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -551,11 +557,54 @@
     width: calc(100% - 32px);
   }
 
-  .profile-card-header,
   .profile-settings,
-  .profile-stats-section,
+  .profile-stats-section {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .profile-card-header {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .profile-card-header__avatar {
+    margin-left: 16px;
+  }
+
+  .profile-section-title {
+    margin-bottom: 0;
+    padding-left: 16px;
+  }
+
+  .stats-list {
+    gap: 8px;
+    padding: 16px 16px 0;
+  }
+
   .stats-item {
     padding-left: 16px;
     padding-right: 16px;
+    background: var(--bg-primary);
+  }
+
+  .stats-item__icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .profile-form-row {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .profile-hide-email-setting,
+  .profile-avatar-form-group,
+  .profile-save-btn {
+    grid-column: 1 / -1;
+  }
+
+  .profile-hide-email-setting {
+    margin-top: 0;
   }
 }

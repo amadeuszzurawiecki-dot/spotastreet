@@ -79,6 +79,7 @@
 }
 
 .topnav-user-pill--premium .topnav-user-pill__avatar {
+  border-width: 2px;
   border-color: var(--green-primary);
 }
 

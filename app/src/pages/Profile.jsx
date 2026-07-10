@@ -187,62 +187,62 @@ export function Profile() {
                   {TOWNS.map(t => <option key={t} value={t} />)}
                 </datalist>
               </div>
-            </div>
 
-            <label className="profile-hide-email-inline profile-hide-email-setting" htmlFor="profile-hide-email">
-              <input 
-                type="checkbox" 
-                id="profile-hide-email"
-                checked={hideEmail}
-                onChange={e => setHideEmail(e.target.checked)}
-              />
-              <span>Ukryj mój adres e-mail w rankingu</span>
-            </label>
+              <label className="profile-hide-email-inline profile-hide-email-setting" htmlFor="profile-hide-email">
+                <input 
+                  type="checkbox" 
+                  id="profile-hide-email"
+                  checked={hideEmail}
+                  onChange={e => setHideEmail(e.target.checked)}
+                />
+                <span>Ukryj mój adres e-mail w rankingu</span>
+              </label>
 
-            {/* Clean circle avatar selection */}
-            <div className="form-group">
-              <label className="form-label">Wybierz avatar</label>
-              <input 
-                type="file" 
-                id="profile-image-file" 
-                accept="image/*" 
-                onChange={handleImageUpload} 
-                style={{ display: 'none' }}
-              />
-              <div className="clean-avatar-grid">
-                <label
-                  htmlFor="profile-image-file"
-                  className={`clean-avatar-card clean-avatar-card--upload ${avatarId === 'custom' ? 'clean-avatar-card--selected' : ''}`}
-                  title="Własne zdjęcie"
-                >
-                  {user.customAvatar ? (
-                    <img src={user.customAvatar} alt="Własne" className="clean-avatar-card__img" />
-                  ) : (
-                    <span className="line-icon line-icon--camera" aria-hidden="true" />
-                  )}
-                </label>
-
-                {AVATARS.map(avatar => (
-                  <button
-                    key={avatar.id}
-                    className={`clean-avatar-card ${avatarId === avatar.id ? 'clean-avatar-card--selected' : ''}`}
-                    onClick={() => setAvatarId(avatar.id)}
-                    style={{ backgroundColor: avatar.bg }}
-                    title={avatar.name}
+              {/* Clean circle avatar selection */}
+              <div className="form-group profile-avatar-form-group">
+                <label className="form-label">Wybierz avatar</label>
+                <input 
+                  type="file" 
+                  id="profile-image-file" 
+                  accept="image/*" 
+                  onChange={handleImageUpload} 
+                  style={{ display: 'none' }}
+                />
+                <div className="clean-avatar-grid">
+                  <label
+                    htmlFor="profile-image-file"
+                    className={`clean-avatar-card clean-avatar-card--upload ${avatarId === 'custom' ? 'clean-avatar-card--selected' : ''}`}
+                    title="Własne zdjęcie"
                   >
-                    {avatar.image ? (
-                      <img src={avatar.image} alt="Avatar" className="clean-avatar-card__img" />
+                    {user.customAvatar ? (
+                      <img src={user.customAvatar} alt="Własne" className="clean-avatar-card__img" />
                     ) : (
-                      <span className="line-icon line-icon--user" aria-hidden="true" />
+                      <span className="line-icon line-icon--camera" aria-hidden="true" />
                     )}
-                  </button>
-                ))}
-              </div>
-            </div>
+                  </label>
 
-            <button className="btn-primary profile-save-btn" onClick={handleSave}>
-              Zapisz zmiany
-            </button>
+                  {AVATARS.map(avatar => (
+                    <button
+                      key={avatar.id}
+                      className={`clean-avatar-card ${avatarId === avatar.id ? 'clean-avatar-card--selected' : ''}`}
+                      onClick={() => setAvatarId(avatar.id)}
+                      style={{ backgroundColor: avatar.bg }}
+                      title={avatar.name}
+                    >
+                      {avatar.image ? (
+                        <img src={avatar.image} alt="Avatar" className="clean-avatar-card__img" />
+                      ) : (
+                        <span className="line-icon line-icon--user" aria-hidden="true" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button className="btn-primary profile-save-btn" onClick={handleSave}>
+                Zapisz zmiany
+              </button>
+            </div>
           </section>
         </div>
       </main>

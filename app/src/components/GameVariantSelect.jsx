@@ -127,11 +127,12 @@ function GameVariantSelect({ gameTitle, gameIcon, onSelectVariant, onBack }) {
       <TopNav />
       <div className="variant-select-container animate-fade-in">
         <div className="variant-select-glow" />
-      
-      <header className="variant-select-header">
+
         <h1 className="variant-select-header__title text-display">
           WYBIERZ WARIANT GRY
         </h1>
+
+      <header className="variant-select-header">
         <div className="mode-card mode-card--static variant-select-header__mode-card">
           <span className="mode-card__icon-wrap" aria-hidden="true">
             <span className="svg-icon mode-card__svg" style={{ '--icon': `url(${modeInfo.icon})` }} />
@@ -141,41 +142,41 @@ function GameVariantSelect({ gameTitle, gameIcon, onSelectVariant, onBack }) {
             <p className="mode-card__desc">{modeInfo.description}</p>
           </div>
         </div>
+
+        <div className="variant-grid animate-scale-in">
+          {/* Trening */}
+          <button type="button" className="variant-card" onClick={() => setSelectedMainOption('training')}>
+            <span className="variant-card__icon svg-icon" style={{ '--icon': 'url(/icons/trening.svg)' }} aria-hidden="true" />
+            <span>
+              <h3 className="variant-card__title">Trening</h3>
+              <p className="variant-card__desc">Ustaw i ćwicz</p>
+            </span>
+          </button>
+
+          {/* Walka z AI */}
+          <button type="button" className="variant-card" onClick={handleStartAi}>
+            <span className="variant-card__icon svg-icon" style={{ '--icon': 'url(/icons/funny.svg)' }} aria-hidden="true" />
+            <span>
+              <h3 className="variant-card__title">Walka z AI</h3>
+              <p className="variant-card__desc">Pokonaj bota</p>
+            </span>
+          </button>
+
+          {/* Pojedynek */}
+          <button 
+            type="button"
+            className="variant-card" 
+            onClick={handleStartMultiplayer}
+          >
+            <span className="variant-card__icon svg-icon" style={{ '--icon': 'url(/icons/pojedynek.svg)' }} aria-hidden="true" />
+            <span>
+              <h3 className="variant-card__title">Pojedynek</h3>
+              <p className="variant-card__desc">Rywalizacja 1v1 online</p>
+            </span>
+            {!user.isPremium && <div className="variant-card__lock-badge">PREMIUM</div>}
+          </button>
+        </div>
       </header>
-
-      <div className="variant-grid animate-scale-in">
-        {/* Trening */}
-        <button type="button" className="variant-card" onClick={() => setSelectedMainOption('training')}>
-          <span className="variant-card__icon svg-icon" style={{ '--icon': 'url(/icons/trening.svg)' }} aria-hidden="true" />
-          <span>
-            <h3 className="variant-card__title">Trening</h3>
-            <p className="variant-card__desc">Ustaw i ćwicz</p>
-          </span>
-        </button>
-
-        {/* Walka z AI */}
-        <button type="button" className="variant-card" onClick={handleStartAi}>
-          <span className="variant-card__icon svg-icon" style={{ '--icon': 'url(/icons/funny.svg)' }} aria-hidden="true" />
-          <span>
-            <h3 className="variant-card__title">Walka z AI</h3>
-            <p className="variant-card__desc">Pokonaj bota</p>
-          </span>
-        </button>
-
-        {/* Pojedynek */}
-        <button 
-          type="button"
-          className="variant-card" 
-          onClick={handleStartMultiplayer}
-        >
-          <span className="variant-card__icon svg-icon" style={{ '--icon': 'url(/icons/pojedynek.svg)' }} aria-hidden="true" />
-          <span>
-            <h3 className="variant-card__title">Pojedynek</h3>
-            <p className="variant-card__desc">Rywalizacja 1v1 online</p>
-          </span>
-          {!user.isPremium && <div className="variant-card__lock-badge">PREMIUM</div>}
-        </button>
-      </div>
 
       <button type="button" className="btn-secondary back-btn-variant" onClick={onBack}>
         Wróć do menu
