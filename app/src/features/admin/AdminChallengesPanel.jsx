@@ -27,7 +27,7 @@ function formatDateTime(value) {
   }).format(date);
 }
 
-function AdminChallengesPanel({ adminChallenges }) {
+function AdminChallengesPanel({ adminChallenges, onAdminTabChange }) {
   const [streetNameInput, setStreetNameInput] = useState('');
   const [streetNames, setStreetNames] = useState([]);
   const {
@@ -112,10 +112,6 @@ function AdminChallengesPanel({ adminChallenges }) {
       const modeIcon = gameModeIcons[ch.gameMode] || '/icons/flag.svg';
       return (
         <tr key={ch.id}>
-          <td className="admin-challenge-table__date">
-            <span>{formatDateTime(startAt)}</span>
-            <small>{formatDateTime(endAt)}</small>
-          </td>
           <td>
             <div className="admin-challenge-table__challenge">
               {ch.imageUrl ? (
@@ -128,6 +124,10 @@ function AdminChallengesPanel({ adminChallenges }) {
                 <span>{ch.description || 'Brak opisu'}</span>
               </div>
             </div>
+          </td>
+          <td className="admin-challenge-table__date">
+            <span>{formatDateTime(startAt)}</span>
+            <small>{formatDateTime(endAt)}</small>
           </td>
           <td>
             <span
@@ -251,8 +251,13 @@ function AdminChallengesPanel({ adminChallenges }) {
             <p className="admin-section__desc">Tabela wyzwań podzielona na aktywne, zaplanowane i historyczne.</p>
           </div>
           <div className="admin-challenges-actions">
+            <button type="button" className="btn-secondary admin-dashboard-return-btn" onClick={() => onAdminTabChange?.('dashboard')}>
+              <span className="svg-icon" style={{ '--icon': 'url(/icons/admin.svg)' }} aria-hidden="true" />
+              Wróć na dashboard
+            </button>
             <button type="button" className="btn-primary" onClick={openChallengeCreator}>
-              Stwórz nowe
+              <span className="admin-plus-icon" aria-hidden="true" />
+              Utwórz wyzwanie
             </button>
           </div>
         </div>
@@ -284,8 +289,8 @@ function AdminChallengesPanel({ adminChallenges }) {
                 <table className="admin-challenge-table">
                   <thead>
                     <tr>
-                      <th>Ramy</th>
                       <th>Wyzwanie</th>
+                      <th>Ramy czasowe</th>
                       <th>Tryb</th>
                       <th>Rundy</th>
                       <th>Status</th>

@@ -2938,3 +2938,214 @@
     gap: 4px;
   }
 }
+
+/* === Admin dashboard/user/challenge table refinements === */
+.admin-dashboard-grid {
+  grid-template-columns: 1fr 1fr;
+}
+
+.admin-dashboard-stats {
+  gap: 8px;
+  padding: 16px;
+}
+
+.admin-dashboard-stat.glass-card {
+  border-radius: var(--radius-control);
+  background: var(--surface-muted);
+}
+
+.admin-dashboard-stat {
+  min-height: 0;
+}
+
+.admin-dashboard-stat-header {
+  gap: 6px;
+}
+
+.admin-dashboard-stat strong {
+  font-size: 16px;
+}
+
+.admin-dashboard-stats-subtitle {
+  font-size: 12px;
+}
+
+.admin-dashboard-users .admin-section__header h3,
+.admin-dashboard-card .admin-section__header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 750;
+  text-transform: none;
+}
+
+.admin-dashboard-users .admin-section__header p,
+.admin-dashboard-card .admin-section__header p {
+  margin: 4px 0 0;
+  color: var(--text-tertiary);
+  font-size: 0.84rem;
+  font-weight: 500;
+}
+
+.admin-dashboard-action-btn,
+.admin-dashboard-return-btn,
+.admin-challenges-actions .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.admin-dashboard-action-btn .svg-icon,
+.admin-dashboard-return-btn .svg-icon,
+.admin-challenges-actions .btn-primary .svg-icon {
+  width: 18px;
+  height: 18px;
+  color: currentColor;
+}
+
+.admin-plus-icon {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+}
+
+.admin-plus-icon::before,
+.admin-plus-icon::after {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 2px;
+  right: 2px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.admin-plus-icon::after {
+  transform: rotate(90deg);
+}
+
+.admin-dashboard-mini-table {
+  max-height: none;
+  overflow: visible;
+}
+
+.admin-dashboard-mini-row {
+  min-height: 46px;
+  grid-template-columns: 24px minmax(80px, 0.75fr) minmax(140px, 1fr) minmax(126px, 0.75fr);
+  padding: 8px 16px;
+}
+
+.admin-dashboard-user-avatar {
+  width: 24px;
+  height: 24px;
+  display: inline-grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--surface-muted);
+  color: var(--text-primary);
+}
+
+.admin-dashboard-user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.admin-dashboard-list-item__main {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-dashboard-list-item__icon {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  color: var(--text-primary);
+}
+
+.admin-dashboard-list-item .challenge-pill {
+  flex: 0 0 auto;
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: var(--radius-control);
+}
+
+.admin-dashboard-list-item .challenge-pill .svg-icon {
+  width: 14px;
+  height: 14px;
+  margin-right: 0;
+}
+
+.admin-search-field {
+  min-width: 200px;
+  width: 200px;
+}
+
+.admin-search-field__icon {
+  width: 16px;
+  height: 16px;
+  border: 0;
+  border-radius: 0;
+  color: var(--border-strong);
+}
+
+.admin-search-field__icon::after {
+  display: none;
+}
+
+.admin-search-field .admin-search-input {
+  min-width: 0;
+}
+
+.admin-section__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-users-table--management th:last-child {
+  text-align: right;
+}
+
+.admin-user-table-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-control);
+}
+
+.table-user-info {
+  gap: 16px;
+}
+
+.table-user-name {
+  color: var(--text-primary);
+}
+
+.admin-challenges-overview {
+  padding: 0;
+}
+
+.admin-challenges-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-challenge-table__thumb,
+.admin-challenge-table__icon {
+  border-radius: var(--radius-control);
+}
+
+.admin-challenge-table .challenge-pill--dark {
+  border-color: #464646;
+}

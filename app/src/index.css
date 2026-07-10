@@ -327,9 +327,7 @@ textarea {
 }
 
 .glass-card {
-  background: var(--bg-glass);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
@@ -692,16 +690,6 @@ textarea,
 .desktop-rail__theme,
 .desktop-rail__logout {
   border-radius: var(--radius-control) !important;
-}
-
-.glass-card,
-section,
-main,
-article,
-aside,
-header,
-footer {
-  border-radius: 0 !important;
 }
 
 .premium-glow-avatar {

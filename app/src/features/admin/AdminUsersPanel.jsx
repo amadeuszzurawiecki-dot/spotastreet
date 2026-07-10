@@ -15,7 +15,7 @@ function formatCreatedAt(value) {
   }).format(date);
 }
 
-function AdminUsersPanel({ adminUsers, user }) {
+function AdminUsersPanel({ adminUsers, user, onAdminTabChange }) {
   const {
     allUsers,
     closeUserEditor,
@@ -70,8 +70,12 @@ function AdminUsersPanel({ adminUsers, user }) {
           </div>
 
           <div className="admin-section__actions">
+            <button type="button" className="btn-secondary admin-dashboard-return-btn" onClick={() => onAdminTabChange?.('dashboard')}>
+              <span className="svg-icon" style={{ '--icon': 'url(/icons/admin.svg)' }} aria-hidden="true" />
+              Wróć na dashboard
+            </button>
             <label className="admin-search-field">
-              <span className="admin-search-field__icon" aria-hidden="true" />
+              <span className="admin-search-field__icon svg-icon" style={{ '--icon': 'url(/icons/search.svg)' }} aria-hidden="true" />
               <input
                 type="text"
                 className="admin-search-input"
@@ -100,8 +104,8 @@ function AdminUsersPanel({ adminUsers, user }) {
                   <tr>
                     <th>Imię</th>
                     <th>E-mail</th>
-                    <th>CreatedAt</th>
-                    <th aria-label="Akcje"></th>
+                    <th>Utworzono</th>
+                    <th>Akcje</th>
                   </tr>
                 </thead>
                 <tbody>

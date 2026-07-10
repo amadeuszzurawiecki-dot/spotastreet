@@ -81,9 +81,9 @@ export function AdminPage() {
             onAdminTabChange={setActiveTab}
           />
         ) : activeTab === 'users' ? (
-          <AdminUsersPanel adminUsers={adminUsers} user={user} />
+          <AdminUsersPanel adminUsers={adminUsers} user={user} onAdminTabChange={setActiveTab} />
         ) : activeTab === 'challenges' ? (
-          <AdminChallengesPanel adminChallenges={adminChallenges} />
+          <AdminChallengesPanel adminChallenges={adminChallenges} onAdminTabChange={setActiveTab} />
         ) : (
           <AdminSettingsPanel
             appSettings={appSettings}
