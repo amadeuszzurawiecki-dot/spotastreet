@@ -2692,7 +2692,7 @@
 
 .admin-dashboard-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(340px, 0.8fr);
+  grid-template-columns: 1fr 1fr;
   gap: 24px;
   align-items: start;
 }
@@ -2710,12 +2710,12 @@
 }
 
 .admin-dashboard-stat {
-  min-height: 92px;
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 16px;
-  background: var(--surface);
+  border-radius: var(--radius-control);
+  background: var(--surface-muted);
 }
 
 .admin-dashboard-stat__icon {
@@ -2728,7 +2728,7 @@
 .admin-dashboard-stat-header {
   min-width: 0;
   display: grid;
-  gap: 3px;
+  gap: 6px;
 }
 
 .admin-dashboard-stat strong {
@@ -2755,6 +2755,41 @@
 .admin-dashboard-card .admin-section__header {
   padding: 16px;
   margin-bottom: 0;
+}
+
+.admin-dashboard-users .admin-section__header h3,
+.admin-dashboard-card .admin-section__header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 750;
+  text-transform: none;
+}
+
+.admin-dashboard-users .admin-section__header p,
+.admin-dashboard-card .admin-section__header p {
+  margin: 4px 0 0;
+  color: var(--text-tertiary);
+  font-size: 0.84rem;
+  font-weight: 500;
+}
+
+.admin-dashboard-card .admin-dashboard-stats {
+  padding: 16px;
+}
+
+.admin-dashboard-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.admin-dashboard-action-btn .svg-icon {
+  width: 18px;
+  height: 18px;
+  color: currentColor;
 }
 
 .admin-dashboard-mini-table,
